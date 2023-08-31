@@ -66,8 +66,8 @@ const FrontPage: FC = () => {
           paddingBottom={2}
         />
       </div>
-      <div className="flex flex-col w-full h-2/4 p-5 sm:flex-row sm:flex sm:w-full sm:h-2/4 sm:p-5">
-        <div className="bg-light-blue w-full h-1/2 flex flex-col justify-center items-center gap-2 sm:w-1/2 sm:h-full sm:flex sm:flex-col sm:gap-2 sm:justify-center sm:items-center 2xl:h-full">
+      <div className="flex flex-col w-full h-2/4 p-5 sm:flex-row sm:flex sm:w-full sm:h-2/4 sm:p-5 ">
+        <div className="bg-light-blue w-full h-1/2 flex flex-col justify-center items-center gap-2 sm:rounded-l-lg md:rounded-l-lg lg:rounded-l-lg xl:rounded-l-lg 2xl:rounded-l-lg sm:w-1/2 sm:h-full sm:flex sm:flex-col sm:gap-2 sm:justify-center sm:items-center 2xl:h-full">
           <p className="text-white font-semibold text-2xl">Rental House</p>
           <p className="text-white flex text-center font-semibold text-2xl">
             Finding apartments without the seasrch.
@@ -82,7 +82,7 @@ const FrontPage: FC = () => {
           </div>
         </div>
         <img
-          className="w-full h-1/2 rounded-bl-lg rounded-br-lg flex justify-center items-center sm:w-1/2 sm:h-full sm:rounded-none sm:flex sm:justify-center sm:items-center 2xl:h-full"
+          className="w-full h-1/2 rounded-bl-lg rounded-br-lg flex justify-center items-center sm:rounded-r-lg md:rounded-r-lg lg:rounded-r-lg xl:rounded-r-lg 2xl:rounded-r-lg sm:w-1/2 sm:h-full sm:rounded-none sm:flex sm:justify-center sm:items-center 2xl:h-full"
           src="https://www.eliteholidayhomes.com.au/wp-content/uploads/2023/07/banner3-1.jpg"
           alt="image"
         />
