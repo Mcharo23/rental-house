@@ -6,9 +6,17 @@ import CustomInputField from "../components/custom-input-field";
 import { useNavigate } from "react-router-dom";
 import RadioButton from "../components/radio-button";
 import { AccountType, Gender } from "../lib/enums/gender";
+import { useQueryClient } from "@tanstack/react-query";
+import {
+  CreateUserInputMutation,
+  useCreateUserInputMutation,
+} from "../generated/graphql";
+import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
+import { GraphQLError } from "graphql";
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleNAme] = useState("");
   const [lastname, setLastName] = useState("");
@@ -18,8 +26,25 @@ const RegisterPage: FC = () => {
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [graphQLError, setGraphQLError] = useState<string | null>(null);
 
-  const handleRegister = () => {
+  const { mutate } = useCreateUserInputMutation(graphqlRequestClient, {
+    onSuccess: (data: CreateUserInputMutation) => {
+      queryClient.invalidateQueries(["createUserInput"]);
+      return console.log("mutation data", data);
+    },
+    onError: (error: GraphQLError) => {
+      const errorMessage = Array.isArray(
+        error.response.errors[0].message.message
+      )
+        ? error.response.errors[0].message.message.join(", ")
+        : error.response.errors[0].message.message;
+
+      setGraphQLError(errorMessage);
+    },
+  });
+
+  const handleRegister = async () => {
     if (
       firstName.length === 0 &&
       middleName.length === 0 &&
@@ -33,18 +58,18 @@ const RegisterPage: FC = () => {
     } else if (password !== confirmPassword) {
       alert("Passwords do not match");
     } else {
-      //   await mutate({
-      //     input: {
-      //       username: email,
-      //       firstName: firstName,
-      //       middleName: middleName,
-      //       lastname: lastname,
-      //       gender: gender,
-      //       phoneNumber: phoneNumber,
-      //       accountType: accountType,
-      //       password: password,
-      //     },
-      //   });
+      await mutate({
+        input: {
+          username: email,
+          firstName: firstName,
+          middleName: middleName,
+          lastname: lastname,
+          gender: gender,
+          phoneNumber: phoneNumber,
+          accountType: accountType,
+          password: password,
+        },
+      });
     }
   };
 

@@ -1,5 +1,11 @@
 export const HOUSE = [
   {
+    name: "Black House",
+    price: "$200.56",
+    location: "Iringa",
+    img: "https://us.123rf.com/450wm/altitudevisual/altitudevisual2303/altitudevisual230302636/200859262-house-with-exterior-lighting-and-security-system-providing-safety-and-comfort-created-with.jpg?ver=6",
+  },
+  {
     name: "Senantiasa House",
     price: "$61.234",
     location: "Dar es salaam",
@@ -18,9 +24,15 @@ export const HOUSE = [
     img: "https://ar.happyvalentinesday2020.online/pics/architecturebeast.com/wp-content/uploads/2014/08/Top_50_Modern_House_Designs_Ever_Built_featured_on_architecture_beast_52.jpg",
   },
   {
-    name: "Black House",
-    price: "$200.56",
-    location: "Iringa",
-    img: "https://us.123rf.com/450wm/altitudevisual/altitudevisual2303/altitudevisual230302636/200859262-house-with-exterior-lighting-and-security-system-providing-safety-and-comfort-created-with.jpg?ver=6",
+    name: "Exterior House",
+    price: "$300",
+    location: "Mbeya",
+    img: "https://us.123rf.com/450wm/aukid/aukid2304/aukid230400876/201941013-evening-view-of-a-luxurious-modern-house.jpg?ver=6",
+  },
+  {
+    name: "Contemporary Home",
+    price: "$250.657",
+    location: "Dar es salaam",
+    img: "https://us.123rf.com/450wm/emmy2289/emmy22892307/emmy2289230700734/207906937-modern-house-scandinavian-style-neutral-colors-minimalism-high-quality-photo-generative-ai.jpg?ver=6",
   },
 ];
