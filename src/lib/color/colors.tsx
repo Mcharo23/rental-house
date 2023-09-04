@@ -5,4 +5,5 @@ export default {
   transparent: "#ffffff00",
   black: "#000000",
   lightColor: "#0A0A0A",
+  lightBlue: "#3273F4",
 };

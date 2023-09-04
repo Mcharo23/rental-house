@@ -13,6 +13,7 @@ import {
 } from "../generated/graphql";
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
 import { GraphQLError } from "graphql";
+import SelectsComponent from "../global/components/select";
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();
@@ -80,7 +81,7 @@ const RegisterPage: FC = () => {
   return (
     <div className="bg-slate-200 w-full h-screen items-center justify-center flex">
       <div className="flex flex-col w-full h-5/6 bg-white mx-10 rounded-lg sm:flex-row sm:flex sm:w-full sm:h-4/6 sm:bg-white md:w-4/6 lg:w-4/6 xl:w-6/12 2xl:w-5/12">
-        <div className="rounded-t-lg  w-full h-1/4 flex flex-col justify-center items-center gap-2 sm:w-1/2 sm:h-full sm:flex sm:flex-col sm:gap-2 sm:justify-center sm:items-center sm:rounded-lg  2xl:h-full">
+        <div className="rounded-t-lg overflow-auto  w-full h-1/4 flex flex-col justify-center items-center gap-2 sm:w-1/2 sm:h-full sm:flex sm:flex-col sm:gap-2 sm:justify-center sm:items-center sm:rounded-lg  2xl:h-full">
           <p className="text-stone-700 font-semibold text-2xl">Welcome</p>
           <div
             className="rounded-full flex text-center"
@@ -100,7 +101,7 @@ const RegisterPage: FC = () => {
         <BackgroundImage
           src={`${"https://us.123rf.com/450wm/altitudevisual/altitudevisual2303/altitudevisual230302636/200859262-house-with-exterior-lighting-and-security-system-providing-safety-and-comfort-created-with.jpg?ver=6"}`}
           radius="md"
-          className="w-full h-3/4 gap-5 rounded-b-lg flex flex-col justify-center items-center sm:w-1/2 sm:h-full sm:Right-to-left sm:flex sm:justify-center sm:items-center 2xl:h-full"
+          className="w-full overflow-auto h-3/4 gap-5 rounded-b-lg flex flex-col justify-center items-center sm:w-1/2 sm:h-full sm:Right-to-left sm:flex sm:justify-center sm:items-center 2xl:h-full"
         >
           <img
             src="https://cdn-icons-png.flaticon.com/128/3005/3005358.png"
@@ -164,31 +165,23 @@ const RegisterPage: FC = () => {
               onChange={setPhoneNumber}
             />
             <div className="flex place-content-between">
-              <RadioButton
-                label={Gender.MALE}
-                value={Gender.MALE}
-                checked={gender === Gender.MALE}
-                onChange={setGender}
-              />
-              <RadioButton
-                label={Gender.FEMALE}
-                value={Gender.FEMALE}
-                checked={gender === Gender.FEMALE}
+              <SelectsComponent
+                label={"Gender"}
+                options={[
+                  { value: Gender.MALE, label: Gender.MALE },
+                  { value: Gender.FEMALE, label: Gender.FEMALE },
+                ]}
                 onChange={setGender}
               />
             </div>
             <div className="flex place-content-between">
-              <RadioButton
-                label={AccountType.OWNER}
-                value={AccountType.OWNER}
-                checked={accountType === AccountType.OWNER}
-                onChange={setAccountType}
-              />
-              <RadioButton
-                label={AccountType.TENANT}
-                value={AccountType.TENANT}
-                checked={accountType === AccountType.TENANT}
-                onChange={setAccountType}
+              <SelectsComponent
+                label={"Account type"}
+                options={[
+                  { value: AccountType.OWNER, label: AccountType.OWNER },
+                  { value: AccountType.TENANT, label: AccountType.TENANT },
+                ]}
+                onChange={setGender}
               />
             </div>
             <CustomInputField

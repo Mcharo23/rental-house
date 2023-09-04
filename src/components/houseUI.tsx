@@ -14,7 +14,9 @@ const HouseUI: FC<HouseProps> = ({ img, location, name, price }) => {
         className="w-full h-3/4 flex flex-col justify-end items-end p-2"
       >
         <div>
-          <Text className="flex bg-slate-300 rounded-lg p-1">{price}</Text>
+          <Text className="flex bg-slate-300 text-sm rounded-lg p-1">
+            {price}
+          </Text>
         </div>
       </BackgroundImage>
       <div className="flex flex-col text-sm h-1/4 items-center justify-center bg">

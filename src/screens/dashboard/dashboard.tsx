@@ -31,12 +31,7 @@ const Dashboard: FC = () => {
         ) : searchLength === 0 ? (
           houses.map((house, index) => (
             <li key={index}>
-              <HouseUI
-                name={house.name}
-                price={house.price}
-                location={house.location}
-                img={house.img}
-              />
+              <HouseUI {...house} />
             </li>
           ))
         ) : (
@@ -56,8 +51,8 @@ const Dashboard: FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full w-full">
-      <div className="w-full flex flex-row h-14 p-1 gap-5 items-center place-content-between">
+    <div className="flex flex-col h-full w-full text-gray-800 gap-5">
+      <div className="w-full flex flex-row h-11 p-1 gap-5 items-center place-content-between">
         <div className="w-1/2 sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full h-full sm:flex sm:justify-center  sm:items-center md:justify-center md:items-center lg:justify-center lg:items-center xl:justify-center xl:items-center 2xl:justify-center 2xl:items-center ">
           <SearchBar onSearch={handleSearch} />
         </div>
@@ -79,16 +74,14 @@ const Dashboard: FC = () => {
           </div>
         </div>
       </div>
-      <div className="w-full mt-5 overflow-auto flex flex-col h-full">
+      <div className="w-full overflow-auto flex flex-col h-full text-lg">
         <div className="flex flex-row place-content-between gap-2">
-          <Text className="font-semibold text-2xl font-serif">
-            Popular of the week
-          </Text>
+          <Text className="font-semibold font-serif">Popular of the week</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
-        <div className="w-full h-2/6 flex-row mt-5">{renderHouses()}</div>
+        <div className="w-full h-2/6 flex-row">{renderHouses()}</div>
         <div className="flex flex-row place-content-between mt-5 gap-2">
-          <Text className="font-semibold text-2xl font-serif ">
+          <Text className="font-semibold font-serif ">
             Find the nearest of you
           </Text>
           <Text className="font-sans text-blue-600 flex flex-row gap-3">
