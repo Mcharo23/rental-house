@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Text } from "@mantine/core";
 import { HOUSE } from "../../house";
 import { HouseProps } from "../../lib/design-interface/house-type";
@@ -6,13 +6,24 @@ import HouseUI from "../../components/houseUI";
 import { FiBell, FiMapPin } from "react-icons/fi";
 import ToggleButtonGroup from "../../global/components/toggle-button";
 import SearchBar from "../../global/components/search-bar";
-import InputText from "../../global/components/input-text";
+import CustomInputField from "../../global/components/input-text";
 import CustomButton from "../../components/custom-button";
 import colors from "../../lib/color/colors";
-import TextArea from "../../global/components/text-area";
 import { FaMinus, FaPlus } from "react-icons/fa";
+import {
+  CreateHouseInputMutation,
+  useCreateHouseInputMutation,
+} from "../../generated/graphql";
+import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
+import { useQueryClient } from "@tanstack/react-query";
+import { GraphQLError } from "graphql";
+import { getUserAccessToken } from "../../utils/localStorageUtils";
+import { notifications } from "@mantine/notifications";
 
 const House: FC = () => {
+  const queryClient = useQueryClient();
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+
   const [selectedButton, setSelectedButton] = useState<string>("Mine");
   const [houses, setHouses] = useState<HouseProps[]>(HOUSE);
   const [filteredHouse, setFilteredHouse] = useState<HouseProps[]>([]);
@@ -21,17 +32,76 @@ const House: FC = () => {
   const [region, setRegion] = useState<string>("");
   const [district, setDistrict] = useState<string>("");
   const [ward, setWard] = useState<string>("");
-  const [prica, setPrice] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
   const [status, setStatus] = useState<string>("");
   const [image, setImage] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  // const [imageLength, setImageLength] = useState<number>();
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [hidePlus, setHidePlus] = useState<boolean>(false);
   const [hideMinus, setHideMinus] = useState<boolean>(true);
 
-  const handleAddhouse = () => {
-    console.log(imageUrl);
+  useEffect(() => {
+    const token = getUserAccessToken();
+    if (token) {
+      setAccessToken(token);
+    }
+  }, []);
+
+  const { mutate } = useCreateHouseInputMutation(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {
+      onSuccess: (data: CreateHouseInputMutation) => {
+        queryClient.invalidateQueries(["createUserInput"]);
+        alert("Successfull");
+        return console.log("mutation data", data);
+      },
+      onError: (error: GraphQLError) => {
+        Array.isArray(error.response.errors[0].extensions.originalError.message)
+          ? Array(
+              error.response.errors[0].extensions.originalError.message.length
+            )
+              .fill(0)
+              .forEach((_, index) => {
+                setTimeout(() => {
+                  notifications.show({
+                    title: `Notification ${index + 1}`,
+                    message: "message",
+                  });
+                }, 200 * index);
+              })
+          : alert("message");
+      },
+    }
+  );
+
+  const handleAddhouse = async () => {
+    if (
+      name.length === 0 ||
+      region.length === 0 ||
+      ward.length === 0 ||
+      district.length === 0 ||
+      status.length === 0 ||
+      description.length === 0
+    ) {
+      alert("All fields are required");
+    } else if (price.length === 0) {
+      alert("are you sure the price is 0?");
+    } else if (imageUrl.length !== 5) {
+      alert("Your are required to upload 5 images");
+    } else {
+      await mutate({
+        input: {
+          name: name,
+          Region: region,
+          District: district,
+          Ward: ward,
+          Description: description,
+          status: status,
+          price: Number(price),
+          imgUrl: imageUrl,
+        },
+      });
+    }
   };
 
   const handleSearch = (search: string) => {
@@ -59,11 +129,11 @@ const House: FC = () => {
   const handleMinusImage = () => {
     const updatedImageUrl = [...imageUrl];
     updatedImageUrl.pop();
+    setHidePlus(false);
 
     setImageUrl(updatedImageUrl);
     if (imageUrl.length === 1) {
       setHideMinus(true);
-      setHidePlus(false);
     }
   };
 
@@ -136,33 +206,54 @@ const House: FC = () => {
             <FiMapPin /> Kinondoni
           </Text>
         </div>
-        <div className="bg-white w-full h-full flex-col flex rounded-lg p-3 overflow-auto">
-          <div className="sm:grid sm:grid-cols-2 sm:gap-3 md:grid-cols-1 md:gap-1 lg:grid-cols-2 lg:gap-3 xl:grid-cols-2 xl:gap-3 2xl:grid-cols-3 gap-3">
-            <InputText onChange={setName} name={"House Name"} />
-            <InputText onChange={setRegion} name={"Region"} />
-            <InputText onChange={setDistrict} name={"District"} />
-            <InputText onChange={setWard} name={"Ward"} />
-            <TextArea onChange={setDescription} name={"Desription"} />
-            <InputText onChange={setPrice} name={"Price"} />
-            <InputText onChange={setStatus} name={"Region"} />
-            <div className="flex relative pr-4 w-full h-auto flex-row place-content-between">
+        <div className="bg-white w-full h-full flex-col flex rounded-lg p-3 overflow-auto ">
+          <div className="gap-6 pt-4 flex flex-col sm:grid sm:grid-cols-2 sm:gap-10 md:grid-cols-1 md:gap-6 lg:grid-cols-2 lg:gap-6 xl:grid-cols-2 xl:gap-6 2xl:grid-cols-3 2xl:gap-6 ">
+            <CustomInputField
+              onChange={setName}
+              name={"House Name"}
+              id={"name"}
+            />
+            <CustomInputField
+              onChange={setRegion}
+              name={"Region"}
+              id={"region"}
+            />
+            <CustomInputField
+              onChange={setDistrict}
+              name={"District"}
+              id={"district"}
+            />
+            <CustomInputField onChange={setWard} name={"Ward"} id={"ward"} />
+            <CustomInputField
+              onChange={setDescription}
+              name={"Desription"}
+              id={"description"}
+            />
+            <CustomInputField onChange={setPrice} name={"Price"} id={"price"} />
+            <CustomInputField
+              onChange={setStatus}
+              name={"Status"}
+              id={"status"}
+            />
+            <div className="flex relative w-full h-auto flex-row place-content-between">
               <div className="w-full">
-                <InputText
+                <CustomInputField
                   onChange={setImage}
                   name={`${imageUrl.length} image`}
+                  id={"image"}
                 />
               </div>
-              <span className="inset-y-0 flex mt-2 items-center">
-                <div className="flex flex-col gap-2">
+              <span className="inset-y-0 flex h-full pl-2 pr-2 items-center">
+                <div className="flex flex-col gap-1">
                   <FaPlus
                     className={`cursor-pointer text-light-blue ${
-                      hidePlus ? "hidden" : ""
+                      hidePlus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
                     }`}
                     onClick={handleAddImage}
                   />
                   <FaMinus
                     className={`cursor-pointer text-light-blue ${
-                      hideMinus ? "hidden" : ""
+                      hideMinus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
                     }`}
                     onClick={handleMinusImage}
                   />

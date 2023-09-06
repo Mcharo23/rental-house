@@ -12,12 +12,16 @@ import {
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
 import { saveUserData } from "../utils/localStorageUtils";
 import { GraphQLError } from "graphql";
+import showMessage from "../global/components/notification";
+import { notifications } from "@mantine/notifications";
+import LoadingNotification from "../global/components/load-notification";
+import UpdateNotification from "../global/components/update-notification";
 
 const LoginPage: FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [graphQLError, setGraphQLError] = useState<string | null>(null);
+  const [notificationId, setNotificationId] = useState<string>("login");
 
   const queryClient = useQueryClient();
 
@@ -25,27 +29,44 @@ const LoginPage: FC = () => {
     onSuccess: (data: LoginUserInputMutation) => {
       queryClient.invalidateQueries(["LoginUserInput"]);
       saveUserData(data);
+      UpdateNotification(
+        {
+          id: notificationId,
+          message: "Login Successful",
+          title: "Login",
+        },
+        100
+      );
       navigate("/home");
       return;
     },
     onError: (error: GraphQLError) => {
-      const errorMessage = Array.isArray(
-        error.response.errors[0].message.message
-      )
-        ? error.response.errors[0].message.message.join(", ")
-        : error.response.errors[0].message.message;
+      // const errorMessage = error.response.errors[0].message;
 
-      setGraphQLError(errorMessage);
+      const errorMessage = error.response.errors[0].message;
+      notifications.hide(notificationId);
+      Array.isArray(errorMessage)
+        ? showMessage("Invalid", errorMessage)
+        : showMessage("Invalid", [errorMessage]);
     },
   });
 
   const handleLogin = () => {
-    mutate({
-      input: {
-        username: email,
-        password: password,
-      },
-    });
+    if (email === "" || password === "") {
+      showMessage("Oops!", ["All fields are required"]);
+    } else {
+      LoadingNotification({
+        id: notificationId,
+        message: "Please wait while authenticating you",
+        title: "Login",
+      });
+      mutate({
+        input: {
+          username: email,
+          password: password,
+        },
+      });
+    }
   };
 
   const handleForgetPassword = () => {

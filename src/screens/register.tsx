@@ -2,9 +2,7 @@ import { FC, useState } from "react";
 import CustomButton from "../components/custom-button";
 import colors from "../lib/color/colors";
 import { BackgroundImage } from "@mantine/core";
-import CustomInputField from "../components/custom-input-field";
 import { useNavigate } from "react-router-dom";
-import RadioButton from "../components/radio-button";
 import { AccountType, Gender } from "../lib/enums/gender";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -14,6 +12,13 @@ import {
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
 import { GraphQLError } from "graphql";
 import SelectsComponent from "../global/components/select";
+import showMessage from "../global/components/notification";
+import LoadingNotification from "../global/components/load-notification";
+import { notifications } from "@mantine/notifications";
+import UpdateNotification from "../global/components/update-notification";
+import CustomInputField from "../global/components/input-text";
+import CustomPasswordInput from "../global/components/custom-password-input";
+import CustomizedNotification from "../global/components/customized-notification";
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();
@@ -27,39 +32,63 @@ const RegisterPage: FC = () => {
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [graphQLError, setGraphQLError] = useState<string | null>(null);
+  const [notificationId, setNotificationId] = useState<string>("register");
 
   const { mutate } = useCreateUserInputMutation(graphqlRequestClient, {
     onSuccess: (data: CreateUserInputMutation) => {
       queryClient.invalidateQueries(["createUserInput"]);
-      return console.log("mutation data", data);
+      UpdateNotification(
+        {
+          id: notificationId,
+          message: "Data was saved successfully.",
+          title: "Successfully",
+        },
+        3000
+      );
+      setTimeout(() => {
+        navigate("/auth");
+      }, 5000);
+
+      return;
     },
     onError: (error: GraphQLError) => {
-      const errorMessage = Array.isArray(
-        error.response.errors[0].message.message
-      )
-        ? error.response.errors[0].message.message.join(", ")
-        : error.response.errors[0].message.message;
+      const errorMessage =
+        error.response.errors[0].extensions.originalError.message;
+      const title = error.response.errors[0].message;
 
-      setGraphQLError(errorMessage);
+      notifications.hide(notificationId);
+      Array.isArray(errorMessage)
+        ? showMessage(title, errorMessage)
+        : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
     },
   });
 
   const handleRegister = async () => {
     if (
-      firstName.length === 0 &&
-      middleName.length === 0 &&
-      lastname.length === 0 &&
-      gender.length === 0 &&
-      phoneNumber.length === 0 &&
-      email.length === 0 &&
+      firstName.length === 0 ||
+      middleName.length === 0 ||
+      lastname.length === 0 ||
+      gender.length === 0 ||
+      phoneNumber.length === 0 ||
+      email.length === 0 ||
       password.length === 0
     ) {
-      alert("All fields are required");
+      CustomizedNotification({
+        title: "Empty Fields",
+        message: "All fields are required 😟🫣🥵🥵🥵🥵🥵",
+      });
     } else if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      CustomizedNotification({
+        title: "Invalid",
+        message: "Password do not match 🤣🤣🤣🤪🤪",
+      });
     } else {
-      await mutate({
+      LoadingNotification({
+        id: notificationId,
+        message: "Please wait while saving your data",
+        title: "Registration",
+      });
+      mutate({
         input: {
           username: email,
           firstName: firstName,
@@ -79,19 +108,15 @@ const RegisterPage: FC = () => {
   };
 
   return (
-    <div className="bg-slate-200 w-full h-screen items-center justify-center flex">
-      <div className="flex flex-col w-full h-5/6 bg-white mx-10 rounded-lg sm:flex-row sm:flex sm:w-full sm:h-4/6 sm:bg-white md:w-4/6 lg:w-4/6 xl:w-6/12 2xl:w-5/12">
-        <div className="rounded-t-lg overflow-auto  w-full h-1/4 flex flex-col justify-center items-center gap-2 sm:w-1/2 sm:h-full sm:flex sm:flex-col sm:gap-2 sm:justify-center sm:items-center sm:rounded-lg  2xl:h-full">
-          <p className="text-stone-700 font-semibold text-2xl">Welcome</p>
-          <div
-            className="rounded-full flex text-center"
-            style={{ borderRadius: "100%", width: "100px", height: "100px" }}
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/1441/1441333.png"
-              alt="logo"
-            />
-          </div>
+    <div className="bg-slate-200 w-full overflow-auto  h-screen items-center justify-center flex">
+      <div className="flex flex-col w-full h-full justify-center items-center bg-white mx-10 rounded-lg sm:flex-row sm:flex sm:w-full sm:h-4/6 sm:bg-white md:w-4/6 lg:w-4/6 xl:w-6/12 2xl:w-5/12">
+        <div className="rounded-t-lg w-full py-3 hidden flex-col justify-center items-center gap-2 sm:w-1/2 sm:h-full sm:flex sm:flex-col sm:gap-2 sm:justify-center sm:items-center sm:rounded-lg  2xl:h-full">
+          <p className="text-stone-700 font-semibold text-lg">Welcome</p>
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/1441/1441333.png"
+            alt="logo"
+            className="w-16 h-16"
+          />
           <div>
             <p className="text-stone-900 flex text-center font-normal text-xs">
               Get accessed by over 1 Lakh buyers
@@ -101,109 +126,69 @@ const RegisterPage: FC = () => {
         <BackgroundImage
           src={`${"https://us.123rf.com/450wm/altitudevisual/altitudevisual2303/altitudevisual230302636/200859262-house-with-exterior-lighting-and-security-system-providing-safety-and-comfort-created-with.jpg?ver=6"}`}
           radius="md"
-          className="w-full overflow-auto h-3/4 gap-5 rounded-b-lg flex flex-col justify-center items-center sm:w-1/2 sm:h-full sm:Right-to-left sm:flex sm:justify-center sm:items-center 2xl:h-full"
+          className="w-full h-auto py-5 gap-5 rounded-b-lg flex flex-col justify-center items-center sm:w-1/2 sm:h-full sm:Right-to-left sm:flex sm:justify-center sm:items-center 2xl:h-full"
         >
           <img
             src="https://cdn-icons-png.flaticon.com/128/3005/3005358.png"
             alt="logo"
             style={{ width: "50px", height: "50px" }}
           />
-          <div className="w-5/6 flex flex-col gap-3 sm:w-5/6 md:5/6 lg:w-5/6 xl:w-5/6 2xl:w-5/6">
+          <div className="w-5/6 flex flex-col gap-7 sm:w-5/6 md:5/6 lg:w-5/6 xl:w-5/6 2xl:w-5/6">
             <CustomInputField
-              type={"text"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"First nName"}
               onChange={setFirstName}
+              name={"First Name"}
+              id={"firstName"}
             />
             <CustomInputField
-              type={"text"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"Middle Name"}
               onChange={setMiddleNAme}
+              name={"Middle Name"}
+              id={"middleName"}
             />
             <CustomInputField
-              type={"text"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"last Name"}
               onChange={setLastName}
+              name={"last Name"}
+              id={"lastName"}
             />
             <CustomInputField
-              type={"email"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"Email"}
               onChange={setEmail}
+              name={"Email eg@example.com"}
+              id={"email"}
             />
             <CustomInputField
-              type={"text"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"Phone number"}
               onChange={setPhoneNumber}
+              name={"Contact eg. +255746561545"}
+              id={"contact"}
             />
-            <div className="flex place-content-between">
-              <SelectsComponent
-                label={"Gender"}
-                options={[
-                  { value: Gender.MALE, label: Gender.MALE },
-                  { value: Gender.FEMALE, label: Gender.FEMALE },
-                ]}
-                onChange={setGender}
-              />
-            </div>
-            <div className="flex place-content-between">
-              <SelectsComponent
-                label={"Account type"}
-                options={[
-                  { value: AccountType.OWNER, label: AccountType.OWNER },
-                  { value: AccountType.TENANT, label: AccountType.TENANT },
-                ]}
-                onChange={setGender}
-              />
-            </div>
-            <CustomInputField
-              type={"password"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"Password"}
+            <SelectsComponent
+              label={"Gender"}
+              onChange={setGender}
+              inputId={"gender"}
+              options={[
+                { name: Gender.MALE, value: Gender.MALE },
+                { name: Gender.FEMALE, value: Gender.FEMALE },
+              ]}
+            />
+            <SelectsComponent
+              label={"Account type"}
+              onChange={setAccountType}
+              inputId={"account-type"}
+              options={[
+                { name: AccountType.OWNER, value: AccountType.OWNER },
+                { name: AccountType.TENANT, value: AccountType.TENANT },
+              ]}
+            />
+
+            <CustomPasswordInput
+              name={"Create password"}
+              feedback={true}
+              inputId={"password"}
               onChange={setPassword}
             />
-            <CustomInputField
-              type={"password"}
-              backgroundColor={colors.white}
-              border={"none"}
-              borderRadius={6}
-              fontSize={"14px"}
-              padding={6}
-              width={"100%"}
-              placeholder={"Confirm password"}
+
+            <CustomPasswordInput
+              name={"Retype password"}
+              feedback={false}
+              inputId={"retype-password"}
               onChange={setConfirmPassword}
             />
             <div className="flex place-content-between w-full">

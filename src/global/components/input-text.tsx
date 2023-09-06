@@ -1,35 +1,29 @@
-import { TextInput } from "@mantine/core";
-import React, { FC, useState } from "react";
-import { InputTextProps } from "../interfaces/type";
+import { InputText } from "primereact/inputtext";
+import { FC, useState } from "react";
+import { CustomInputTextProps } from "../interfaces/type";
 
-const InputText: FC<InputTextProps> = ({ name, onChange }) => {
+const CustomInputField: FC<CustomInputTextProps> = ({ id, name, onChange }) => {
   const [value, setValue] = useState<string>("");
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
     onChange(event.target.value);
   };
 
   return (
-    <div className="relative">
-      <TextInput
-        id={name}
-        value={value}
-        onChange={handleInputChange}
-        className="w-full font-serif text-2xl px-4 pt-2 rounded-md transition-all duration-300 focus:ring focus:ring-blue-300"
-      />
-      <label
-        htmlFor="username"
-        className={`absolute left-4 transition-all duration-300 ${
-          value
-            ? "text-gray-700 text-xs top-2"
-            : "text-sm top-1/2 transform -translate-y-1/2"
-        }`}
-      >
-        {name}
-      </label>
+    <div className="card flex justify-content-center">
+      <span className="p-float-label flex w-full text-xs">
+        <InputText
+          id={id}
+          value={value}
+          onChange={handleOnChange}
+          className="flex h-8 w-full"
+          style={{ fontSize: "14px" }}
+        />
+        <label htmlFor={id}>{name}</label>
+      </span>
     </div>
   );
 };
 
-export default InputText;
+export default CustomInputField;

@@ -4,6 +4,7 @@ import LoginPage from "./auth/auth";
 import FrontPage from "./screens/front-page";
 import RegisterPage from "./screens/register";
 
+
 const App = () => {
   return (
     <BrowserRouter>
