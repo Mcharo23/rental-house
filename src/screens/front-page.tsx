@@ -19,22 +19,22 @@ const FrontPage: FC = () => {
     navigate("/register");
   };
 
-  const renderHouses = () => {
-    return (
-      <ul className="flex flex-row gap-3 overscroll-auto">
-        {houses.map((house, index) => (
-          <li key={index}>
-            <HouseUI
-              name={house.name}
-              price={house.price}
-              location={house.location}
-              img={house.img}
-            />
-          </li>
-        ))}
-      </ul>
-    );
-  };
+  // const renderHouses = () => {
+  //   return (
+  //     <ul className="flex flex-row gap-3 overscroll-auto">
+  //       {houses.map((house, index) => (
+  //         <li key={index}>
+  //           <HouseUI
+  //             name={house.name}
+  //             price={house.price}
+  //             location={house.location}
+  //             img={house.img}
+  //           />
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   );
+  // };
 
   return (
     <div className="flex flex-col w-full h-screen bg-slate-200">
@@ -102,7 +102,7 @@ const FrontPage: FC = () => {
           </div>
         </div>
         <div className="w-full h-full flex overflow-auto p-5">
-          {renderHouses()}
+          {/* {renderHouses()} */}
         </div>
       </div>
     </div>

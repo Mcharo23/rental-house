@@ -1,0 +1,12 @@
+query getMyHouse {
+  myHouse {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    status
+    imgUrl
+  }
+}

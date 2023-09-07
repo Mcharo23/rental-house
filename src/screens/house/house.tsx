@@ -1,7 +1,5 @@
 import { FC, useEffect, useState } from "react";
 import { Text } from "@mantine/core";
-import { HOUSE } from "../../house";
-import { HouseProps } from "../../lib/design-interface/house-type";
 import HouseUI from "../../components/houseUI";
 import { FiBell, FiMapPin } from "react-icons/fi";
 import ToggleButtonGroup from "../../global/components/toggle-button";
@@ -12,21 +10,38 @@ import colors from "../../lib/color/colors";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import {
   CreateHouseInputMutation,
+  GetHousesQuery,
+  GetMyHouseQuery,
   useCreateHouseInputMutation,
+  useGetHousesQuery,
+  useGetMyHouseQuery,
 } from "../../generated/graphql";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
 import { useQueryClient } from "@tanstack/react-query";
 import { GraphQLError } from "graphql";
-import { getUserAccessToken } from "../../utils/localStorageUtils";
+import {
+  clearUserData,
+  getUserAccessToken,
+} from "../../utils/localStorageUtils";
 import { notifications } from "@mantine/notifications";
+import { ProgressSpinner } from "primereact/progressspinner";
+import AllHousesUI from "../../global/components/houses";
+import ShowNotification from "../../global/components/show-notification";
+import { useNavigate } from "react-router-dom";
 
 const House: FC = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [shouldFetchData, setShouldFetchData] = useState(false);
 
   const [selectedButton, setSelectedButton] = useState<string>("Mine");
-  const [houses, setHouses] = useState<HouseProps[]>(HOUSE);
-  const [filteredHouse, setFilteredHouse] = useState<HouseProps[]>([]);
+  const [filteredHouse, setFilteredHouse] = useState<
+    GetMyHouseQuery["myHouse"][0][]
+  >([]);
+  const [filteredInAllHouse, setFilteredInAllHouse] = useState<
+    GetHousesQuery["houses"][0][]
+  >([]);
   const [searchLength, setSearchLength] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [region, setRegion] = useState<string>("");
@@ -39,21 +54,27 @@ const House: FC = () => {
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [hidePlus, setHidePlus] = useState<boolean>(false);
   const [hideMinus, setHideMinus] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const token = getUserAccessToken();
     if (token) {
       setAccessToken(token);
+      setShouldFetchData(true);
     }
   }, []);
 
   const { mutate } = useCreateHouseInputMutation(
     graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
     {
-      onSuccess: (data: CreateHouseInputMutation) => {
-        queryClient.invalidateQueries(["createUserInput"]);
-        alert("Successfull");
-        return console.log("mutation data", data);
+      onSuccess: () => {
+        queryClient.invalidateQueries(["getMyHouse"]);
+        ShowNotification({
+          title: "House Added Successfully 🏡",
+          message:
+            " The house has been added to the database successfully. Congratulations! 🎉",
+        });
+        return;
       },
       onError: (error: GraphQLError) => {
         Array.isArray(error.response.errors[0].extensions.originalError.message)
@@ -73,6 +94,62 @@ const House: FC = () => {
       },
     }
   );
+
+  const {
+    isLoading: isLoadingMyHouse,
+    error: errorMyHouse,
+    data: dataMyHouse,
+  } = useGetMyHouseQuery<GetMyHouseQuery, Error>(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {},
+    {
+      enabled: shouldFetchData,
+      onSuccess: () => {
+        setLoading(false);
+      },
+    }
+  );
+
+  const {
+    isLoading: isLoadingHouses,
+    error: errorHouses,
+    data: dataHouses,
+  } = useGetHousesQuery<GetHousesQuery, Error>(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {},
+    {
+      enabled: shouldFetchData,
+      onSuccess: () => {
+        setLoading(false);
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (dataMyHouse) {
+      // setShouldFetchData(false);
+    }
+  }, [dataMyHouse]);
+
+  if (errorMyHouse || errorHouses) {
+    setLoading(false);
+    const errorMessage =
+      errorMyHouse !== null
+        ? errorMyHouse.response.errors[0].message
+        : errorHouses !== null
+        ? errorHouses.response.errors[0].message
+        : "Unknow error occured";
+
+    if (errorMessage === "Unauthorized") {
+      ShowNotification({
+        title: "Session Expired ⚠️",
+        message:
+          " Your session has expired. Please log in again to continue. 🔐",
+      });
+      clearUserData();
+      navigate("/");
+    }
+  }
 
   const handleAddhouse = async () => {
     if (
@@ -106,12 +183,41 @@ const House: FC = () => {
 
   const handleSearch = (search: string) => {
     setSearchLength(search.length);
-    const filtered: HouseProps[] = houses.filter(
-      (house: HouseProps) =>
-        house.name.toLowerCase().includes(search.toLowerCase()) ||
-        house.location.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredHouse(filtered);
+
+    if (dataHouses) {
+      const filtered: GetHousesQuery["houses"][0][] = dataHouses.houses.filter(
+        (house: GetHousesQuery["houses"][0]) =>
+          house.name.toLowerCase().includes(search.toLowerCase()) ||
+          house.District.toLowerCase().includes(search.toLowerCase()) ||
+          house.Region.toLowerCase().includes(search.toLowerCase()) ||
+          house.Ward.toLowerCase().includes(search.toLowerCase()) ||
+          house.status.toLowerCase().includes(search.toLowerCase())
+      );
+
+      setFilteredInAllHouse(filtered);
+    } else {
+      setFilteredInAllHouse([]);
+    }
+  };
+
+  const handleSearchInMyHouse = (search: string) => {
+    setSearchLength(search.length);
+
+    if (dataMyHouse) {
+      const filtered: GetMyHouseQuery["myHouse"][0][] =
+        dataMyHouse.myHouse.filter(
+          (house: GetMyHouseQuery["myHouse"][0]) =>
+            house.name.toLowerCase().includes(search.toLowerCase()) ||
+            house.District.toLowerCase().includes(search.toLowerCase()) ||
+            house.Region.toLowerCase().includes(search.toLowerCase()) ||
+            house.Ward.toLowerCase().includes(search.toLowerCase()) ||
+            house.status.toLowerCase().includes(search.toLowerCase())
+        );
+
+      setFilteredHouse(filtered);
+    } else {
+      setFilteredHouse([]);
+    }
   };
 
   const handleAddImage = () => {
@@ -137,13 +243,13 @@ const House: FC = () => {
     }
   };
 
-  const renderHouses = () => {
+  const renderMyHouses = () => {
     return (
       <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
         {filteredHouse.length === 0 && searchLength !== 0 ? (
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
-          houses.map((house, index) => (
+          dataMyHouse?.myHouse.map((house, index) => (
             <li key={index}>
               <HouseUI {...house} />
             </li>
@@ -151,12 +257,29 @@ const House: FC = () => {
         ) : (
           filteredHouse.map((house, index) => (
             <li key={index}>
-              <HouseUI
-                name={house.name}
-                price={house.price}
-                location={house.location}
-                img={house.img}
-              />
+              <HouseUI {...house} />
+            </li>
+          ))
+        )}
+      </ul>
+    );
+  };
+
+  const renderHouses = () => {
+    return (
+      <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
+        {filteredInAllHouse.length === 0 && searchLength !== 0 ? (
+          <div className="font-sans text-2xl"></div>
+        ) : searchLength === 0 ? (
+          dataHouses?.houses.map((house, index) => (
+            <li key={index}>
+              <AllHousesUI {...house} />
+            </li>
+          ))
+        ) : (
+          filteredInAllHouse.map((house, index) => (
+            <li key={index}>
+              <AllHousesUI {...house} />
             </li>
           ))
         )}
@@ -168,7 +291,11 @@ const House: FC = () => {
     <div className="flex flex-col h-full overflow-hidden w-full text-gray-800 gap-5">
       <div className="w-full flex flex-row h-11 p-1 gap-5 items-center place-content-between ">
         <div className="w-1/2 sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full h-full sm:flex sm:justify-center  sm:items-center md:justify-center md:items-center lg:justify-center lg:items-center xl:justify-center xl:items-center 2xl:justify-center 2xl:items-center ">
-          <SearchBar onSearch={handleSearch} />
+          <SearchBar
+            onSearch={
+              selectedButton === "Mine" ? handleSearchInMyHouse : handleSearch
+            }
+          />
         </div>
         <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
           <div className="bg-white w-36 h-full flex flex-row rounded-lg p-1">
@@ -198,7 +325,21 @@ const House: FC = () => {
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
         <div className="w-full h-4/6 flex-row sm:h-3/6 md:h-3/6 lg:h-3/6">
-          {renderHouses()}
+          <div
+            className={`card justify-center items-center flex ${
+              isLoadingMyHouse === false ? "hidden" : ""
+            }`}
+          >
+            {isLoadingMyHouse && (
+              <ProgressSpinner
+                style={{ width: "50px", height: "50px" }}
+                strokeWidth="5"
+                fill="var(--surface-ground)"
+                animationDuration=".5s"
+              />
+            )}
+          </div>
+          {renderMyHouses()}
         </div>
         <div className="flex flex-row place-content-between gap-2">
           <Text className="font-semibold font-serif ">Add more house</Text>
@@ -287,7 +428,23 @@ const House: FC = () => {
           <Text className="font-semibold font-serif">All Houses</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
-        <div className="w-full h-2/6 flex-row">{renderHouses()}</div>
+        <div className="w-full h-2/6 flex-row">
+          <div
+            className={`card justify-center items-center flex ${
+              isLoadingHouses === false ? "hidden" : ""
+            }`}
+          >
+            {isLoadingHouses && (
+              <ProgressSpinner
+                style={{ width: "50px", height: "50px" }}
+                strokeWidth="5"
+                fill="var(--surface-ground)"
+                animationDuration=".5s"
+              />
+            )}
+          </div>
+          {renderHouses()}
+        </div>
         <div className="flex flex-row place-content-between gap-2">
           <Text className="font-semibold font-serif ">
             Find the nearest of you

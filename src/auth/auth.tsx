@@ -41,8 +41,6 @@ const LoginPage: FC = () => {
       return;
     },
     onError: (error: GraphQLError) => {
-      // const errorMessage = error.response.errors[0].message;
-
       const errorMessage = error.response.errors[0].message;
       notifications.hide(notificationId);
       Array.isArray(errorMessage)

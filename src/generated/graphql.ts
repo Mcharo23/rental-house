@@ -1,5 +1,6 @@
 import { GraphQLClient } from 'graphql-request';
-import { useMutation, UseMutationOptions } from '@tanstack/react-query';
+import { RequestInit } from 'graphql-request/dist/types.dom';
+import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -52,6 +53,7 @@ export type HouseType = {
   District: Scalars['String']['output'];
   Region: Scalars['String']['output'];
   Ward: Scalars['String']['output'];
+  _id: Scalars['ID']['output'];
   imgUrl: Array<Scalars['String']['output']>;
   name: Scalars['String']['output'];
   price: Scalars['Float']['output'];
@@ -77,7 +79,7 @@ export type Mutation = {
   login: LoginResponse;
   removeHouse: HouseType;
   removeUser: UserType;
-  updateHouse: HouseType;
+  updateHouse: Scalars['String']['output'];
   updateUser: UserType;
 };
 
@@ -136,15 +138,11 @@ export type QueryUserArgs = {
 };
 
 export type UpdateHouseInput = {
-  Description?: InputMaybe<Scalars['String']['input']>;
-  District?: InputMaybe<Scalars['String']['input']>;
-  Region?: InputMaybe<Scalars['String']['input']>;
-  Ward?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['Int']['input'];
-  imgUrl?: InputMaybe<Array<Scalars['String']['input']>>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  price?: InputMaybe<Scalars['Float']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
+  Description: Scalars['String']['input'];
+  _id: Scalars['ID']['input'];
+  name: Scalars['String']['input'];
+  price: Scalars['Float']['input'];
+  status: Scalars['String']['input'];
 };
 
 export type UpdateUserInput = {
@@ -190,6 +188,16 @@ export type LoginUserInputMutationVariables = Exact<{
 
 
 export type LoginUserInputMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string, user: { __typename?: 'UserType', accountType: string, firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } } };
+
+export type GetHousesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string } }> };
+
+export type GetMyHouseQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, status: string, imgUrl: Array<string> }> };
 
 
 export const CreateHouseInputDocument = `
@@ -276,5 +284,67 @@ export const useLoginUserInputMutation = <
     useMutation<LoginUserInputMutation, TError, LoginUserInputMutationVariables, TContext>(
       ['LoginUserInput'],
       (variables?: LoginUserInputMutationVariables) => fetcher<LoginUserInputMutation, LoginUserInputMutationVariables>(client, LoginUserInputDocument, variables, headers)(),
+      options
+    );
+export const GetHousesDocument = `
+    query getHouses {
+  houses {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    status
+    imgUrl
+    user {
+      firstName
+      middleName
+      lastname
+      phoneNumber
+    }
+  }
+}
+    `;
+export const useGetHousesQuery = <
+      TData = GetHousesQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetHousesQueryVariables,
+      options?: UseQueryOptions<GetHousesQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetHousesQuery, TError, TData>(
+      variables === undefined ? ['getHouses'] : ['getHouses', variables],
+      fetcher<GetHousesQuery, GetHousesQueryVariables>(client, GetHousesDocument, variables, headers),
+      options
+    );
+export const GetMyHouseDocument = `
+    query getMyHouse {
+  myHouse {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    status
+    imgUrl
+  }
+}
+    `;
+export const useGetMyHouseQuery = <
+      TData = GetMyHouseQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetMyHouseQueryVariables,
+      options?: UseQueryOptions<GetMyHouseQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetMyHouseQuery, TError, TData>(
+      variables === undefined ? ['getMyHouse'] : ['getMyHouse', variables],
+      fetcher<GetMyHouseQuery, GetMyHouseQueryVariables>(client, GetMyHouseDocument, variables, headers),
       options
     );

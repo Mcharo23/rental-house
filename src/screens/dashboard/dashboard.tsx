@@ -1,48 +1,93 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { Text } from "@mantine/core";
-import { HOUSE } from "../../house";
-import { HouseProps } from "../../lib/design-interface/house-type";
-import HouseUI from "../../components/houseUI";
 import { FiBell, FiMapPin } from "react-icons/fi";
 import ToggleButtonGroup from "../../global/components/toggle-button";
 import SearchBar from "../../global/components/search-bar";
+import AllHousesUI from "../../global/components/houses";
+import { GetHousesQuery, useGetHousesQuery } from "../../generated/graphql";
+import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
+import { getUserAccessToken } from "../../utils/localStorageUtils";
+import { ProgressSpinner } from "primereact/progressspinner";
 
 const Dashboard: FC = () => {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [shouldFetchData, setShouldFetchData] = useState(false);
   const [selectedButton, setSelectedButton] = useState<string>("Owner");
-  const [houses, setHouses] = useState<HouseProps[]>(HOUSE);
-  const [filteredHouse, setFilteredHouse] = useState<HouseProps[]>([]);
+  const [filteredInAllHouse, setFilteredInAllHouse] = useState<
+    GetHousesQuery["houses"][0][]
+  >([]);
   const [searchLength, setSearchLength] = useState<number>(0);
+
+  useEffect(() => {
+    const token = getUserAccessToken();
+    if (token) {
+      setAccessToken(token);
+      setShouldFetchData(true);
+    }
+  }, []);
+
+  const {
+    isLoading: isLoadingHouses,
+    error: errorHouses,
+    data: dataHouses,
+  } = useGetHousesQuery<GetHousesQuery, Error>(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {},
+    {
+      enabled: shouldFetchData,
+    }
+  );
+
+  useEffect(() => {
+    if (dataHouses) {
+      setShouldFetchData(false);
+    }
+  }, [dataHouses]);
+
+  if (errorHouses) {
+    const errorMessage =
+      error.response &&
+      error.response.errors &&
+      error.response.errors.length > 0
+        ? error.response.errors[0].message.message
+        : "An error occurred";
+    return <p>{errorMessage}</p>;
+  }
 
   const handleSearch = (search: string) => {
     setSearchLength(search.length);
-    const filtered: HouseProps[] = houses.filter(
-      (house: HouseProps) =>
-        house.name.toLowerCase().includes(search.toLowerCase()) ||
-        house.location.toLowerCase().includes(search.toLowerCase())
-    );
-    setFilteredHouse(filtered);
+
+    if (dataHouses) {
+      const filtered: GetHousesQuery["houses"][0][] = dataHouses.houses.filter(
+        (house: GetHousesQuery["houses"][0]) =>
+          house.name.toLowerCase().includes(search.toLowerCase()) ||
+          house.District.toLowerCase().includes(search.toLowerCase()) ||
+          house.Region.toLowerCase().includes(search.toLowerCase()) ||
+          house.Ward.toLowerCase().includes(search.toLowerCase()) ||
+          house.status.toLowerCase().includes(search.toLowerCase())
+      );
+
+      setFilteredInAllHouse(filtered);
+    } else {
+      setFilteredInAllHouse([]);
+    }
   };
 
   const renderHouses = () => {
     return (
       <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
-        {filteredHouse.length === 0 && searchLength !== 0 ? (
+        {filteredInAllHouse.length === 0 && searchLength !== 0 ? (
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
-          houses.map((house, index) => (
+          dataHouses?.houses.map((house, index) => (
             <li key={index}>
-              <HouseUI {...house} />
+              <AllHousesUI {...house} />
             </li>
           ))
         ) : (
-          filteredHouse.map((house, index) => (
+          filteredInAllHouse.map((house, index) => (
             <li key={index}>
-              <HouseUI
-                name={house.name}
-                price={house.price}
-                location={house.location}
-                img={house.img}
-              />
+              <AllHousesUI {...house} />
             </li>
           ))
         )}
@@ -79,7 +124,25 @@ const Dashboard: FC = () => {
           <Text className="font-semibold font-serif">Popular of the week</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
-        <div className="w-full h-2/6 flex-row">{renderHouses()}</div>
+        <div className="w-full h-2/6 flex-row">
+          <div
+            className={`card justify-center items-center flex ${
+              isLoadingHouses === false ? "hidden" : ""
+            }`}
+          >
+            {isLoadingHouses === false
+              ? "hidden"
+              : "" && (
+                  <ProgressSpinner
+                    style={{ width: "50px", height: "50px" }}
+                    strokeWidth="5"
+                    fill="var(--surface-ground)"
+                    animationDuration=".5s"
+                  />
+                )}
+          </div>
+          {renderHouses()}
+        </div>
         <div className="flex flex-row place-content-between mt-5 gap-2">
           <Text className="font-semibold font-serif ">
             Find the nearest of you

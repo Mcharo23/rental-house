@@ -1,47 +1,22 @@
 import { FC } from "react";
 import { BackgroundImage, Text } from "@mantine/core";
-import { GetMyHouseQuery } from "../generated/graphql";
+import { GetHousesQuery } from "../../generated/graphql";
 
-const HouseUI: FC<GetMyHouseQuery["myHouse"][0]> = ({
-  Ward,
-  _id,
+const AllHousesUI: FC<GetHousesQuery["houses"][0]> = ({
   District,
   Region,
+  Ward,
+  _id,
   imgUrl,
   name,
   price,
   status,
+  user,
 }) => {
-  const house: GetMyHouseQuery["myHouse"][0] = {
-    _id: _id,
-    Ward: Ward,
-    name: name,
-    Region: Region,
-    District: District,
-    price: price,
-    status: status,
-    imgUrl: imgUrl,
-  };
-
-  const handleSelectedHouse = () => {
-    localStorage.setItem("house", JSON.stringify(house));
-
-    const storedDataString = localStorage.getItem("house");
-
-    if (storedDataString !== null) {
-      const storedData = JSON.parse(storedDataString);
-
-      console.log(storedData);
-    } else {
-      console.log("Data not found in localStorage");
-    }
-  };
-
   return (
     <div
       className="flex w-64 h-full flex-col bg-white p-2"
       style={{ borderRadius: 10 }}
-      onClick={handleSelectedHouse}
     >
       <BackgroundImage
         src={imgUrl[0]}
@@ -65,4 +40,4 @@ const HouseUI: FC<GetMyHouseQuery["myHouse"][0]> = ({
   );
 };
 
-export default HouseUI;
+export default AllHousesUI;
