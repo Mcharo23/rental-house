@@ -13,7 +13,7 @@ import "primereact/resources/themes/lara-light-indigo/theme.css";
 //core
 import "primereact/resources/primereact.min.css";
 
-const queryclient = new QueryClient({
+export const queryclient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 20 * 1000,

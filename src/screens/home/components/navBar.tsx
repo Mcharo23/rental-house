@@ -12,7 +12,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
 
   const handleLogOut = () => {
     clearUserData();
-    navigate("/");
+    navigate("/", { replace: true });
   };
 
   const switchScreen = (value: string) => {
@@ -64,7 +64,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
         </li>
       </ul>
       <ul className="text-gray-800">
-        <li>
+        {/* <li>
           <div className="flex-row gap-3 items-center flex text-sm">
             <span>
               <FaUser className="bg-light-blue text-white-smoke rounded-full p-1 text-lg " />
@@ -75,7 +75,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
               </Text>
             </div>
           </div>
-        </li>
+        </li> */}
         <li
           className={`relative w-full ${
             activeScreen === "logout" ? "bg-gray-200 text-blue-600" : ""

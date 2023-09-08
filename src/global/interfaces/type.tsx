@@ -44,8 +44,13 @@ export interface LoadAndHideNotificationProps {
   message: string;
 }
 
-
 export type CustomizedNotificationProps = {
   title: string;
   message: string;
+};
+
+export type InputTextProps = {
+  id: string;
+  name: string;
+  onChange: (value: string) => void;
 };

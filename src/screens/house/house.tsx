@@ -28,6 +28,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import AllHousesUI from "../../global/components/houses";
 import ShowNotification from "../../global/components/show-notification";
 import { useNavigate } from "react-router-dom";
+import HouseCarousel from "../../global/components/house-carousel";
 
 const House: FC = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ const House: FC = () => {
     GetHousesQuery["houses"][0][]
   >([]);
   const [searchLength, setSearchLength] = useState<number>(0);
+  const [searchMineLength, setSearchMineLength] = useState<number>(0);
   const [name, setName] = useState<string>("");
   const [region, setRegion] = useState<string>("");
   const [district, setDistrict] = useState<string>("");
@@ -54,7 +56,8 @@ const House: FC = () => {
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [hidePlus, setHidePlus] = useState<boolean>(false);
   const [hideMinus, setHideMinus] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [mineView, setMineView] = useState<boolean>(false);
+  const [OthersView, setOthersView] = useState<boolean>(false);
 
   useEffect(() => {
     const token = getUserAccessToken();
@@ -104,9 +107,6 @@ const House: FC = () => {
     {},
     {
       enabled: shouldFetchData,
-      onSuccess: () => {
-        setLoading(false);
-      },
     }
   );
 
@@ -119,20 +119,16 @@ const House: FC = () => {
     {},
     {
       enabled: shouldFetchData,
-      onSuccess: () => {
-        setLoading(false);
-      },
     }
   );
 
   useEffect(() => {
     if (dataMyHouse) {
-      // setShouldFetchData(false);
+      setShouldFetchData(false);
     }
   }, [dataMyHouse]);
 
   if (errorMyHouse || errorHouses) {
-    setLoading(false);
     const errorMessage =
       errorMyHouse !== null
         ? errorMyHouse.response.errors[0].message
@@ -141,13 +137,7 @@ const House: FC = () => {
         : "Unknow error occured";
 
     if (errorMessage === "Unauthorized") {
-      ShowNotification({
-        title: "Session Expired ⚠️",
-        message:
-          " Your session has expired. Please log in again to continue. 🔐",
-      });
       clearUserData();
-      navigate("/");
     }
   }
 
@@ -201,7 +191,7 @@ const House: FC = () => {
   };
 
   const handleSearchInMyHouse = (search: string) => {
-    setSearchLength(search.length);
+    setSearchMineLength(search.length);
 
     if (dataMyHouse) {
       const filtered: GetMyHouseQuery["myHouse"][0][] =
@@ -243,21 +233,43 @@ const House: FC = () => {
     }
   };
 
+  const handleOnSelectedHouse = () => {
+    setMineView(true);
+  };
+
+  const renderSelectedHouse = () => {
+    const storedDataString = localStorage.getItem("house");
+
+    if (storedDataString !== null) {
+      const storedData: GetMyHouseQuery["myHouse"][0] =
+        JSON.parse(storedDataString);
+      console.log(storedData);
+
+      return (
+        <div className="flex w-full ">
+          <HouseCarousel {...storedData} />
+        </div>
+      );
+    } else {
+      console.log("Data not found in localStorage");
+    }
+  };
+
   const renderMyHouses = () => {
     return (
       <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
-        {filteredHouse.length === 0 && searchLength !== 0 ? (
+        {filteredHouse.length === 0 && searchMineLength !== 0 ? (
           <div className="font-sans text-2xl"></div>
-        ) : searchLength === 0 ? (
+        ) : searchMineLength === 0 ? (
           dataMyHouse?.myHouse.map((house, index) => (
             <li key={index}>
-              <HouseUI {...house} />
+              <HouseUI onClick={handleOnSelectedHouse} {...house} />
             </li>
           ))
         ) : (
           filteredHouse.map((house, index) => (
             <li key={index}>
-              <HouseUI {...house} />
+              <HouseUI onClick={handleOnSelectedHouse} {...house} />
             </li>
           ))
         )}
@@ -289,6 +301,7 @@ const House: FC = () => {
 
   return (
     <div className="flex flex-col h-full overflow-hidden w-full text-gray-800 gap-5">
+      {/*TOP SECTION*/}
       <div className="w-full flex flex-row h-11 p-1 gap-5 items-center place-content-between ">
         <div className="w-1/2 sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full h-full sm:flex sm:justify-center  sm:items-center md:justify-center md:items-center lg:justify-center lg:items-center xl:justify-center xl:items-center 2xl:justify-center 2xl:items-center ">
           <SearchBar
@@ -315,9 +328,10 @@ const House: FC = () => {
           </div>
         </div>
       </div>
+      {/*OWNER HOUSES SECTION*/}
       <div
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Mine" ? "" : "hidden"
+          selectedButton === "Mine" && !mineView ? "" : "hidden"
         }`}
       >
         <div className="flex flex-row place-content-between gap-2">
@@ -419,9 +433,10 @@ const House: FC = () => {
           </div>
         </div>
       </div>
+      {/*OTHHER HOUSES SECTION*/}
       <div
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Others" ? "" : "hidden"
+          selectedButton === "Others" && !OthersView ? "" : "hidden"
         }`}
       >
         <div className="flex flex-row place-content-between gap-2">
@@ -430,7 +445,7 @@ const House: FC = () => {
         </div>
         <div className="w-full h-2/6 flex-row">
           <div
-            className={`card justify-center items-center flex ${
+            className={`card justify-center items-center flex w-full ${
               isLoadingHouses === false ? "hidden" : ""
             }`}
           >
@@ -453,6 +468,110 @@ const House: FC = () => {
             <FiMapPin /> Kinondoni
           </Text>
         </div>
+      </div>
+      {/*EDITING PAG*/}
+      <div
+        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
+          selectedButton === "Mine" && mineView ? "" : "hidden"
+        }`}
+      >
+        <div className="flex flex-row place-content-between gap-2">
+          <CustomButton
+            backgroundColor={colors.lightBlue}
+            borderRadius={6}
+            name={"Go back"}
+            color={colors.white}
+            fontSize={14}
+            border={"none"}
+            paddingLeft={10}
+            paddingRight={10}
+            paddingTop={5}
+            paddingBottom={5}
+            onClick={() => setMineView(false)}
+          />
+        </div>
+
+        <div className="w-full h-4/6 sm:h-3/6 md:h-3/6 lg:h-3/6 xl:h-3/6 2xl:h-2/6 bg-light-blue">
+          {renderSelectedHouse()}
+        </div>
+        {/*
+        <div className="flex flex-row place-content-between gap-2">
+          <Text className="font-semibold font-serif ">Add more house</Text>
+          <Text className="font-sans text-blue-600 flex flex-row gap-3">
+            <FiMapPin /> Kinondoni
+          </Text>
+        </div>
+        <div className="bg-white w-full h-full flex-col flex rounded-lg p-3 overflow-auto ">
+          <div className="gap-6 pt-4 flex flex-col sm:grid sm:grid-cols-2 sm:gap-10 md:grid-cols-1 md:gap-6 lg:grid-cols-2 lg:gap-6 xl:grid-cols-2 xl:gap-6 2xl:grid-cols-3 2xl:gap-6 ">
+            <CustomInputField
+              onChange={setName}
+              name={"House Name"}
+              id={"name"}
+            />
+            <CustomInputField
+              onChange={setRegion}
+              name={"Region"}
+              id={"region"}
+            />
+            <CustomInputField
+              onChange={setDistrict}
+              name={"District"}
+              id={"district"}
+            />
+            <CustomInputField onChange={setWard} name={"Ward"} id={"ward"} />
+            <CustomInputField
+              onChange={setDescription}
+              name={"Desription"}
+              id={"description"}
+            />
+            <CustomInputField onChange={setPrice} name={"Price"} id={"price"} />
+            <CustomInputField
+              onChange={setStatus}
+              name={"Status"}
+              id={"status"}
+            />
+            <div className="flex relative w-full h-auto flex-row place-content-between">
+              <div className="w-full">
+                <CustomInputField
+                  onChange={setImage}
+                  name={`${imageUrl.length} image`}
+                  id={"image"}
+                />
+              </div>
+              <span className="inset-y-0 flex h-full pl-2 pr-2 items-center">
+                <div className="flex flex-col gap-1">
+                  <FaPlus
+                    className={`cursor-pointer text-light-blue ${
+                      hidePlus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
+                    }`}
+                    onClick={handleAddImage}
+                  />
+                  <FaMinus
+                    className={`cursor-pointer text-light-blue ${
+                      hideMinus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
+                    }`}
+                    onClick={handleMinusImage}
+                  />
+                </div>
+              </span>
+            </div>
+          </div>
+          <div className="justify-center items-center flex mt-5">
+            <CustomButton
+              backgroundColor={colors.lightBlue}
+              borderRadius={8}
+              name={"Add"}
+              color={"white"}
+              fontSize={14}
+              border={"none"}
+              paddingLeft={30}
+              paddingRight={30}
+              paddingTop={10}
+              paddingBottom={10}
+              onClick={handleAddhouse}
+            />
+          </div>
+        </div> */}
       </div>
     </div>
   );

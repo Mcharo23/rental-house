@@ -6,7 +6,10 @@ import SearchBar from "../../global/components/search-bar";
 import AllHousesUI from "../../global/components/houses";
 import { GetHousesQuery, useGetHousesQuery } from "../../generated/graphql";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
-import { getUserAccessToken } from "../../utils/localStorageUtils";
+import {
+  clearUserData,
+  getUserAccessToken,
+} from "../../utils/localStorageUtils";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 const Dashboard: FC = () => {
@@ -45,13 +48,11 @@ const Dashboard: FC = () => {
   }, [dataHouses]);
 
   if (errorHouses) {
-    const errorMessage =
-      error.response &&
-      error.response.errors &&
-      error.response.errors.length > 0
-        ? error.response.errors[0].message.message
-        : "An error occurred";
-    return <p>{errorMessage}</p>;
+    const errorMessage = errorHouses.response.errors[0].message;
+
+    if (errorMessage === "Unauthorized") {
+      clearUserData();
+    }
   }
 
   const handleSearch = (search: string) => {

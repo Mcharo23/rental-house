@@ -1,0 +1,18 @@
+query getDemoHouses {
+  demo {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    status
+    imgUrl
+    user {
+      firstName
+      middleName
+      lastname
+      phoneNumber
+    }
+  }
+}

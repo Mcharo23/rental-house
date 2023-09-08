@@ -2,7 +2,11 @@ import { FC } from "react";
 import { BackgroundImage, Text } from "@mantine/core";
 import { GetMyHouseQuery } from "../generated/graphql";
 
-const HouseUI: FC<GetMyHouseQuery["myHouse"][0]> = ({
+type HouseUiProps = {
+  onClick: () => void;
+};
+
+const HouseUI: FC<GetMyHouseQuery["myHouse"][0] & HouseUiProps> = ({
   Ward,
   _id,
   District,
@@ -11,6 +15,7 @@ const HouseUI: FC<GetMyHouseQuery["myHouse"][0]> = ({
   name,
   price,
   status,
+  onClick,
 }) => {
   const house: GetMyHouseQuery["myHouse"][0] = {
     _id: _id,
@@ -25,16 +30,7 @@ const HouseUI: FC<GetMyHouseQuery["myHouse"][0]> = ({
 
   const handleSelectedHouse = () => {
     localStorage.setItem("house", JSON.stringify(house));
-
-    const storedDataString = localStorage.getItem("house");
-
-    if (storedDataString !== null) {
-      const storedData = JSON.parse(storedDataString);
-
-      console.log(storedData);
-    } else {
-      console.log("Data not found in localStorage");
-    }
+    onClick();
   };
 
   return (

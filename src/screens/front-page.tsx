@@ -1,15 +1,34 @@
 import { FC, useState } from "react";
 import CustomButton from "../components/custom-button";
 import colors from "../lib/color/colors";
-import { HOUSE } from "../house";
-import { HouseProps } from "../lib/design-interface/house-type";
-import HouseUI from "../components/houseUI";
 import { useNavigate } from "react-router-dom";
+import {
+  GetDemoHousesQuery,
+  useGetDemoHousesQuery,
+} from "../generated/graphql";
+import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
+import AllHousesUI from "../global/components/houses";
+import { ProgressSpinner } from "primereact/progressspinner";
+import ShowNotification from "../global/components/show-notification";
 
 const FrontPage: FC = () => {
   const navigate = useNavigate();
 
-  const [houses, setHouses] = useState<HouseProps[]>(HOUSE);
+  const {
+    isLoading: isLoadingHouses,
+    error: errorHouses,
+    data: dataHouses,
+  } = useGetDemoHousesQuery<GetDemoHousesQuery, Error>(
+    graphqlRequestClient,
+    {}
+  );
+
+  if (errorHouses) {
+    ShowNotification({
+      title: "Error",
+      message: errorHouses.response.errors[0].message,
+    });
+  }
 
   const handleLoginButton = () => {
     navigate("/auth");
@@ -19,22 +38,17 @@ const FrontPage: FC = () => {
     navigate("/register");
   };
 
-  // const renderHouses = () => {
-  //   return (
-  //     <ul className="flex flex-row gap-3 overscroll-auto">
-  //       {houses.map((house, index) => (
-  //         <li key={index}>
-  //           <HouseUI
-  //             name={house.name}
-  //             price={house.price}
-  //             location={house.location}
-  //             img={house.img}
-  //           />
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   );
-  // };
+  const renderHouses = () => {
+    return (
+      <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
+        {dataHouses?.demo.map((house, index) => (
+          <li key={index}>
+            <AllHousesUI {...house} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <div className="flex flex-col w-full h-screen bg-slate-200">
@@ -102,7 +116,21 @@ const FrontPage: FC = () => {
           </div>
         </div>
         <div className="w-full h-full flex overflow-auto p-5">
-          {/* {renderHouses()} */}
+          <div
+            className={`card justify-center flex items-center w-full ${
+              isLoadingHouses === false ? "hidden" : ""
+            }`}
+          >
+            {isLoadingHouses && (
+              <ProgressSpinner
+                style={{ width: "50px", height: "50px" }}
+                strokeWidth="5"
+                fill="var(--surface-ground)"
+                animationDuration=".5s"
+              />
+            )}
+          </div>
+          {renderHouses()}
         </div>
       </div>
     </div>

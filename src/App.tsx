@@ -3,7 +3,7 @@ import HomePage from "./screens/home/home-page";
 import LoginPage from "./auth/auth";
 import FrontPage from "./screens/front-page";
 import RegisterPage from "./screens/register";
-
+import MyHouse from "./screens/house/components/my-house";
 
 const App = () => {
   return (

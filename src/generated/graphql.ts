@@ -120,6 +120,7 @@ export type MutationUpdateUserArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  demo: Array<HouseType>;
   house: HouseType;
   houses: Array<HouseType>;
   myHouse: Array<HouseType>;
@@ -188,6 +189,11 @@ export type LoginUserInputMutationVariables = Exact<{
 
 
 export type LoginUserInputMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string, user: { __typename?: 'UserType', accountType: string, firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } } };
+
+export type GetDemoHousesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDemoHousesQuery = { __typename?: 'Query', demo: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string } }> };
 
 export type GetHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -284,6 +290,40 @@ export const useLoginUserInputMutation = <
     useMutation<LoginUserInputMutation, TError, LoginUserInputMutationVariables, TContext>(
       ['LoginUserInput'],
       (variables?: LoginUserInputMutationVariables) => fetcher<LoginUserInputMutation, LoginUserInputMutationVariables>(client, LoginUserInputDocument, variables, headers)(),
+      options
+    );
+export const GetDemoHousesDocument = `
+    query getDemoHouses {
+  demo {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    status
+    imgUrl
+    user {
+      firstName
+      middleName
+      lastname
+      phoneNumber
+    }
+  }
+}
+    `;
+export const useGetDemoHousesQuery = <
+      TData = GetDemoHousesQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: GetDemoHousesQueryVariables,
+      options?: UseQueryOptions<GetDemoHousesQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<GetDemoHousesQuery, TError, TData>(
+      variables === undefined ? ['getDemoHouses'] : ['getDemoHouses', variables],
+      fetcher<GetDemoHousesQuery, GetDemoHousesQueryVariables>(client, GetDemoHousesDocument, variables, headers),
       options
     );
 export const GetHousesDocument = `
