@@ -138,26 +138,36 @@ const RegisterPage: FC = () => {
               onChange={setFirstName}
               name={"First Name"}
               id={"firstName"}
+              disabled={false}
+              value={""}
             />
             <CustomInputField
               onChange={setMiddleNAme}
               name={"Middle Name"}
               id={"middleName"}
+              disabled={false}
+              value={""}
             />
             <CustomInputField
               onChange={setLastName}
               name={"last Name"}
               id={"lastName"}
+              disabled={false}
+              value={""}
             />
             <CustomInputField
               onChange={setEmail}
               name={"Email eg@example.com"}
               id={"email"}
+              disabled={false}
+              value={""}
             />
             <CustomInputField
               onChange={setPhoneNumber}
               name={"Contact eg. +255746561545"}
               id={"contact"}
+              disabled={false}
+              value={""}
             />
             <SelectsComponent
               label={"Gender"}

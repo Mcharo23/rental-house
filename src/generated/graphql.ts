@@ -190,6 +190,13 @@ export type LoginUserInputMutationVariables = Exact<{
 
 export type LoginUserInputMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginResponse', accessToken: string, user: { __typename?: 'UserType', accountType: string, firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } } };
 
+export type UpdateHouseInputMutationVariables = Exact<{
+  input: UpdateHouseInput;
+}>;
+
+
+export type UpdateHouseInputMutation = { __typename?: 'Mutation', updateHouse: string };
+
 export type GetDemoHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -198,12 +205,12 @@ export type GetDemoHousesQuery = { __typename?: 'Query', demo: Array<{ __typenam
 export type GetHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string } }> };
+export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string, username: string } }> };
 
 export type GetMyHouseQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, status: string, imgUrl: Array<string> }> };
+export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string> }> };
 
 
 export const CreateHouseInputDocument = `
@@ -292,6 +299,24 @@ export const useLoginUserInputMutation = <
       (variables?: LoginUserInputMutationVariables) => fetcher<LoginUserInputMutation, LoginUserInputMutationVariables>(client, LoginUserInputDocument, variables, headers)(),
       options
     );
+export const UpdateHouseInputDocument = `
+    mutation UpdateHouseInput($input: UpdateHouseInput!) {
+  updateHouse(updateHouseInput: $input)
+}
+    `;
+export const useUpdateHouseInputMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateHouseInputMutation, TError, UpdateHouseInputMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateHouseInputMutation, TError, UpdateHouseInputMutationVariables, TContext>(
+      ['UpdateHouseInput'],
+      (variables?: UpdateHouseInputMutationVariables) => fetcher<UpdateHouseInputMutation, UpdateHouseInputMutationVariables>(client, UpdateHouseInputDocument, variables, headers)(),
+      options
+    );
 export const GetDemoHousesDocument = `
     query getDemoHouses {
   demo {
@@ -335,6 +360,7 @@ export const GetHousesDocument = `
     District
     Ward
     price
+    Description
     status
     imgUrl
     user {
@@ -342,6 +368,7 @@ export const GetHousesDocument = `
       middleName
       lastname
       phoneNumber
+      username
     }
   }
 }
@@ -369,6 +396,7 @@ export const GetMyHouseDocument = `
     District
     Ward
     price
+    Description
     status
     imgUrl
   }

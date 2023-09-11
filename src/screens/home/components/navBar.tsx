@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { clearUserData } from "../../../utils/localStorageUtils";
 import { NavBarprop } from "../interface/type";
 import { FaHouseUser, FaUser } from "react-icons/fa";
+import { Divider } from "primereact/divider";
 
 const NavBar: FC<NavBarprop> = ({ onClick }) => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
   };
 
   return (
-    <div className="flex flex-col w-full h-full place-content-between text-sm">
+    <div className="flex flex-col w-full h-full text-sm">
       <ul className="text-gray-800">
         <li
           className={`relative w-full  ${
@@ -63,29 +64,20 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
           </Text>
         </li>
       </ul>
+      <Divider />
       <ul className="text-gray-800">
-        {/* <li>
-          <div className="flex-row gap-3 items-center flex text-sm">
-            <span>
-              <FaUser className="bg-light-blue text-white-smoke rounded-full p-1 text-lg " />
-            </span>
-            <div className="flex flex-col w-full">
-              <Text className="flex font-semibold font-sans text-gray-800">
-                Mcharo
-              </Text>
-            </div>
-          </div>
-        </li> */}
         <li
-          className={`relative w-full ${
+          className={`relative w-full  ${
             activeScreen === "logout" ? "bg-gray-200 text-blue-600" : ""
           }`}
           onClick={() => handleLogOut()}
         >
-          <span className="absolute inset-y-0 flex items-center">
-            <FiLogOut className="text-light-blue" size={20} />
+          <span className="absolute inset-y-0 flex items-center pl-2">
+            <FiLogOut className="text-light-blue" />
           </span>
-          <Text className="h-full p-2 pl-6 w-full cursor-pointer">Log out</Text>
+          <Text className="h-full rounded-lg p-2 pl-8 w-full cursor-pointer">
+            Log out
+          </Text>
         </li>
       </ul>
     </div>

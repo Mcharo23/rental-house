@@ -1,8 +1,9 @@
 import { FC } from "react";
 import { BackgroundImage, Text } from "@mantine/core";
 import { GetHousesQuery } from "../../generated/graphql";
+import { AllHousesUIProps } from "../interfaces/type";
 
-const AllHousesUI: FC<GetHousesQuery["houses"][0]> = ({
+const AllHousesUI: FC<GetHousesQuery["houses"][0] & AllHousesUIProps> = ({
   District,
   Region,
   Ward,
@@ -12,11 +13,31 @@ const AllHousesUI: FC<GetHousesQuery["houses"][0]> = ({
   price,
   status,
   user,
+  Description,
+  onClick,
 }) => {
+  const handleSelectedHouse = () => {
+    const house: GetHousesQuery["houses"][0] = {
+      _id: _id,
+      Ward: Ward,
+      name: name,
+      Region: Region,
+      District: District,
+      Description: Description,
+      price: price,
+      status: status,
+      imgUrl: imgUrl,
+      user: user,
+    };
+
+    onClick(house, true);
+  };
+
   return (
     <div
       className="flex w-64 h-full flex-col bg-white p-2"
       style={{ borderRadius: 10 }}
+      onClick={handleSelectedHouse}
     >
       <BackgroundImage
         src={imgUrl[0]}

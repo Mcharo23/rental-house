@@ -1,0 +1,3 @@
+mutation UpdateHouseInput($input: UpdateHouseInput!) {
+  updateHouse(updateHouseInput: $input)
+}

@@ -6,6 +6,7 @@ query getMyHouse {
     District
     Ward
     price
+    Description
     status
     imgUrl
   }

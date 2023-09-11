@@ -9,12 +9,13 @@ import CustomButton from "../../components/custom-button";
 import colors from "../../lib/color/colors";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import {
-  CreateHouseInputMutation,
   GetHousesQuery,
   GetMyHouseQuery,
+  UpdateHouseInputMutation,
   useCreateHouseInputMutation,
   useGetHousesQuery,
   useGetMyHouseQuery,
+  useUpdateHouseInputMutation,
 } from "../../generated/graphql";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,11 +28,16 @@ import { notifications } from "@mantine/notifications";
 import { ProgressSpinner } from "primereact/progressspinner";
 import AllHousesUI from "../../global/components/houses";
 import ShowNotification from "../../global/components/show-notification";
-import { useNavigate } from "react-router-dom";
-import HouseCarousel from "../../global/components/house-carousel";
+import TextArea from "../../global/components/text-area";
+import MyHouseInfo from "./components/my-house-info";
+import { MyHouseInfoUpdatedProps } from "../../global/interfaces/type";
+import showMessage from "../../global/components/notification";
+import UpdateNotification from "../../global/components/update-notification";
+import LoadingNotification from "../../global/components/load-notification";
+import CustomizedNotification from "../../global/components/customized-notification";
+import OthersHouseInfo from "./components/othersHouseInfo";
 
 const House: FC = () => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
@@ -58,16 +64,54 @@ const House: FC = () => {
   const [hideMinus, setHideMinus] = useState<boolean>(true);
   const [mineView, setMineView] = useState<boolean>(false);
   const [OthersView, setOthersView] = useState<boolean>(false);
+  const [notificationId, setNotificationId] = useState<string>("update");
+
+  const [selectedHouse, setSelectedHouse] = useState<
+    GetMyHouseQuery["myHouse"][0]
+  >({
+    __typename: undefined,
+    _id: "",
+    name: "",
+    Region: "",
+    District: "",
+    Ward: "",
+    price: 0,
+    Description: "",
+    status: "",
+    imgUrl: [],
+  });
+
+  const [selectedOthersHouse, setSelectedOthersHouse] = useState<
+    GetHousesQuery["houses"][0]
+  >({
+    _id: "",
+    name: "",
+    Region: "",
+    District: "",
+    Ward: "",
+    Description: "",
+    imgUrl: [],
+    price: 0,
+    status: "",
+    user: {
+      firstName: "",
+      lastname: "",
+      middleName: "",
+      phoneNumber: "",
+      username: "",
+    },
+  });
 
   useEffect(() => {
     const token = getUserAccessToken();
+
     if (token) {
       setAccessToken(token);
       setShouldFetchData(true);
     }
   }, []);
 
-  const { mutate } = useCreateHouseInputMutation(
+  const { mutate: createHouseMutate } = useCreateHouseInputMutation(
     graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
     {
       onSuccess: () => {
@@ -94,6 +138,33 @@ const House: FC = () => {
                 }, 200 * index);
               })
           : alert("message");
+      },
+    }
+  );
+
+  const { mutate: updateHouseMutate } = useUpdateHouseInputMutation(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {
+      onSuccess: (data: UpdateHouseInputMutation) => {
+        queryClient.invalidateQueries(["getMyHouse"]);
+        UpdateNotification(
+          {
+            id: notificationId,
+            message: data.updateHouse,
+            title: "Successfully",
+          },
+          3000
+        );
+      },
+      onError: (error: GraphQLError) => {
+        const errorMessage =
+          error.response.errors[0].extensions.originalError.message;
+        const title = error.response.errors[0].message;
+
+        notifications.hide(notificationId);
+        Array.isArray(errorMessage)
+          ? showMessage(title, errorMessage)
+          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
       },
     }
   );
@@ -150,13 +221,16 @@ const House: FC = () => {
       status.length === 0 ||
       description.length === 0
     ) {
-      alert("All fields are required");
+      CustomizedNotification({
+        title: "Empty Fields",
+        message: "All fields are required 😟🫣🥵🥵🥵🥵🥵",
+      });
     } else if (price.length === 0) {
       alert("are you sure the price is 0?");
     } else if (imageUrl.length !== 5) {
       alert("Your are required to upload 5 images");
     } else {
-      await mutate({
+      await createHouseMutate({
         input: {
           name: name,
           Region: region,
@@ -233,26 +307,21 @@ const House: FC = () => {
     }
   };
 
-  const handleOnSelectedHouse = () => {
-    setMineView(true);
-  };
-
-  const renderSelectedHouse = () => {
-    const storedDataString = localStorage.getItem("house");
-
-    if (storedDataString !== null) {
-      const storedData: GetMyHouseQuery["myHouse"][0] =
-        JSON.parse(storedDataString);
-      console.log(storedData);
-
-      return (
-        <div className="flex w-full ">
-          <HouseCarousel {...storedData} />
-        </div>
-      );
-    } else {
-      console.log("Data not found in localStorage");
-    }
+  const HandleOnSave = async (value: MyHouseInfoUpdatedProps) => {
+    LoadingNotification({
+      id: notificationId,
+      message: "Please wait...",
+      title: "Updating",
+    });
+    await updateHouseMutate({
+      input: {
+        Description: value.description,
+        _id: value._id,
+        name: value.name,
+        price: Number(value.price),
+        status: value.status,
+      },
+    });
   };
 
   const renderMyHouses = () => {
@@ -263,13 +332,25 @@ const House: FC = () => {
         ) : searchMineLength === 0 ? (
           dataMyHouse?.myHouse.map((house, index) => (
             <li key={index}>
-              <HouseUI onClick={handleOnSelectedHouse} {...house} />
+              <HouseUI
+                onClick={(value, visible) => {
+                  setMineView(visible);
+                  setSelectedHouse(value);
+                }}
+                {...house}
+              />
             </li>
           ))
         ) : (
           filteredHouse.map((house, index) => (
             <li key={index}>
-              <HouseUI onClick={handleOnSelectedHouse} {...house} />
+              <HouseUI
+                onClick={(value, visible) => {
+                  setMineView(visible);
+                  setSelectedHouse(value);
+                }}
+                {...house}
+              />
             </li>
           ))
         )}
@@ -285,13 +366,25 @@ const House: FC = () => {
         ) : searchLength === 0 ? (
           dataHouses?.houses.map((house, index) => (
             <li key={index}>
-              <AllHousesUI {...house} />
+              <AllHousesUI
+                onClick={(value, visible) => {
+                  setOthersView(visible);
+                  setSelectedOthersHouse(value);
+                }}
+                {...house}
+              />
             </li>
           ))
         ) : (
           filteredInAllHouse.map((house, index) => (
             <li key={index}>
-              <AllHousesUI {...house} />
+              <AllHousesUI
+                onClick={(value, visible) => {
+                  setOthersView(visible);
+                  setSelectedOthersHouse(value);
+                }}
+                {...house}
+              />
             </li>
           ))
         )}
@@ -367,28 +460,52 @@ const House: FC = () => {
               onChange={setName}
               name={"House Name"}
               id={"name"}
+              disabled={false}
+              value={""}
             />
             <CustomInputField
               onChange={setRegion}
               name={"Region"}
               id={"region"}
+              disabled={false}
+              value={""}
             />
             <CustomInputField
               onChange={setDistrict}
               name={"District"}
               id={"district"}
+              disabled={false}
+              value={""}
             />
-            <CustomInputField onChange={setWard} name={"Ward"} id={"ward"} />
             <CustomInputField
-              onChange={setDescription}
-              name={"Desription"}
-              id={"description"}
+              onChange={setWard}
+              name={"Ward"}
+              id={"ward"}
+              disabled={false}
+              value={""}
             />
-            <CustomInputField onChange={setPrice} name={"Price"} id={"price"} />
+
+            <CustomInputField
+              onChange={setPrice}
+              name={"Price"}
+              id={"price"}
+              disabled={false}
+              value={""}
+            />
             <CustomInputField
               onChange={setStatus}
               name={"Status"}
               id={"status"}
+              disabled={false}
+              value={""}
+            />
+
+            <TextArea
+              onChange={setDescription}
+              name={"Desription"}
+              id={"description"}
+              disabled={false}
+              value={""}
             />
             <div className="flex relative w-full h-auto flex-row place-content-between">
               <div className="w-full">
@@ -396,6 +513,8 @@ const House: FC = () => {
                   onChange={setImage}
                   name={`${imageUrl.length} image`}
                   id={"image"}
+                  disabled={false}
+                  value={""}
                 />
               </div>
               <span className="inset-y-0 flex h-full pl-2 pr-2 items-center">
@@ -469,109 +588,29 @@ const House: FC = () => {
           </Text>
         </div>
       </div>
-      {/*EDITING PAG*/}
+      {/*EDITING PAGE*/}
       <div
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
           selectedButton === "Mine" && mineView ? "" : "hidden"
         }`}
       >
-        <div className="flex flex-row place-content-between gap-2">
-          <CustomButton
-            backgroundColor={colors.lightBlue}
-            borderRadius={6}
-            name={"Go back"}
-            color={colors.white}
-            fontSize={14}
-            border={"none"}
-            paddingLeft={10}
-            paddingRight={10}
-            paddingTop={5}
-            paddingBottom={5}
-            onClick={() => setMineView(false)}
-          />
-        </div>
-
-        <div className="w-full h-4/6 sm:h-3/6 md:h-3/6 lg:h-3/6 xl:h-3/6 2xl:h-2/6 bg-light-blue">
-          {renderSelectedHouse()}
-        </div>
-        {/*
-        <div className="flex flex-row place-content-between gap-2">
-          <Text className="font-semibold font-serif ">Add more house</Text>
-          <Text className="font-sans text-blue-600 flex flex-row gap-3">
-            <FiMapPin /> Kinondoni
-          </Text>
-        </div>
-        <div className="bg-white w-full h-full flex-col flex rounded-lg p-3 overflow-auto ">
-          <div className="gap-6 pt-4 flex flex-col sm:grid sm:grid-cols-2 sm:gap-10 md:grid-cols-1 md:gap-6 lg:grid-cols-2 lg:gap-6 xl:grid-cols-2 xl:gap-6 2xl:grid-cols-3 2xl:gap-6 ">
-            <CustomInputField
-              onChange={setName}
-              name={"House Name"}
-              id={"name"}
-            />
-            <CustomInputField
-              onChange={setRegion}
-              name={"Region"}
-              id={"region"}
-            />
-            <CustomInputField
-              onChange={setDistrict}
-              name={"District"}
-              id={"district"}
-            />
-            <CustomInputField onChange={setWard} name={"Ward"} id={"ward"} />
-            <CustomInputField
-              onChange={setDescription}
-              name={"Desription"}
-              id={"description"}
-            />
-            <CustomInputField onChange={setPrice} name={"Price"} id={"price"} />
-            <CustomInputField
-              onChange={setStatus}
-              name={"Status"}
-              id={"status"}
-            />
-            <div className="flex relative w-full h-auto flex-row place-content-between">
-              <div className="w-full">
-                <CustomInputField
-                  onChange={setImage}
-                  name={`${imageUrl.length} image`}
-                  id={"image"}
-                />
-              </div>
-              <span className="inset-y-0 flex h-full pl-2 pr-2 items-center">
-                <div className="flex flex-col gap-1">
-                  <FaPlus
-                    className={`cursor-pointer text-light-blue ${
-                      hidePlus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
-                    }`}
-                    onClick={handleAddImage}
-                  />
-                  <FaMinus
-                    className={`cursor-pointer text-light-blue ${
-                      hideMinus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
-                    }`}
-                    onClick={handleMinusImage}
-                  />
-                </div>
-              </span>
-            </div>
-          </div>
-          <div className="justify-center items-center flex mt-5">
-            <CustomButton
-              backgroundColor={colors.lightBlue}
-              borderRadius={8}
-              name={"Add"}
-              color={"white"}
-              fontSize={14}
-              border={"none"}
-              paddingLeft={30}
-              paddingRight={30}
-              paddingTop={10}
-              paddingBottom={10}
-              onClick={handleAddhouse}
-            />
-          </div>
-        </div> */}
+        <MyHouseInfo
+          onClickBack={setMineView}
+          house={selectedHouse}
+          onChange={HandleOnSave}
+        />
+      </div>
+      {/*VIEW OTHERS HOUSE PAGE*/}
+      <div
+        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
+          selectedButton === "Others" && OthersView ? "" : "hidden"
+        }`}
+      >
+        <OthersHouseInfo
+          onClickBack={setOthersView}
+          house={selectedOthersHouse}
+          onChange={() => {}}
+        />
       </div>
     </div>
   );

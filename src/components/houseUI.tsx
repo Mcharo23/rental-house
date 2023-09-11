@@ -1,10 +1,7 @@
 import { FC } from "react";
 import { BackgroundImage, Text } from "@mantine/core";
 import { GetMyHouseQuery } from "../generated/graphql";
-
-type HouseUiProps = {
-  onClick: () => void;
-};
+import { HouseUiProps } from "../global/interfaces/type";
 
 const HouseUI: FC<GetMyHouseQuery["myHouse"][0] & HouseUiProps> = ({
   Ward,
@@ -13,24 +10,25 @@ const HouseUI: FC<GetMyHouseQuery["myHouse"][0] & HouseUiProps> = ({
   Region,
   imgUrl,
   name,
+  Description,
   price,
   status,
   onClick,
 }) => {
-  const house: GetMyHouseQuery["myHouse"][0] = {
-    _id: _id,
-    Ward: Ward,
-    name: name,
-    Region: Region,
-    District: District,
-    price: price,
-    status: status,
-    imgUrl: imgUrl,
-  };
-
   const handleSelectedHouse = () => {
-    localStorage.setItem("house", JSON.stringify(house));
-    onClick();
+    const house: GetMyHouseQuery["myHouse"][0] = {
+      _id: _id,
+      Ward: Ward,
+      name: name,
+      Region: Region,
+      District: District,
+      Description: Description,
+      price: price,
+      status: status,
+      imgUrl: imgUrl,
+    };
+
+    onClick(house, true);
   };
 
   return (

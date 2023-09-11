@@ -11,14 +11,36 @@ import {
   getUserAccessToken,
 } from "../../utils/localStorageUtils";
 import { ProgressSpinner } from "primereact/progressspinner";
+import OthersHouseInfo from "../house/components/othersHouseInfo";
 
 const Dashboard: FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
   const [selectedButton, setSelectedButton] = useState<string>("Owner");
+  const [detailView, setDetailView] = useState<boolean>(false);
   const [filteredInAllHouse, setFilteredInAllHouse] = useState<
     GetHousesQuery["houses"][0][]
   >([]);
+  const [selectedOthersHouse, setSelectedOthersHouse] = useState<
+    GetHousesQuery["houses"][0]
+  >({
+    _id: "",
+    name: "",
+    Region: "",
+    District: "",
+    Ward: "",
+    Description: "",
+    imgUrl: [],
+    price: 0,
+    status: "",
+    user: {
+      firstName: "",
+      lastname: "",
+      middleName: "",
+      phoneNumber: "",
+      username: "",
+    },
+  });
   const [searchLength, setSearchLength] = useState<number>(0);
 
   useEffect(() => {
@@ -82,13 +104,25 @@ const Dashboard: FC = () => {
         ) : searchLength === 0 ? (
           dataHouses?.houses.map((house, index) => (
             <li key={index}>
-              <AllHousesUI {...house} />
+              <AllHousesUI
+                onClick={(value, visible) => {
+                  setDetailView(visible);
+                  setSelectedOthersHouse(value);
+                }}
+                {...house}
+              />
             </li>
           ))
         ) : (
           filteredInAllHouse.map((house, index) => (
             <li key={index}>
-              <AllHousesUI {...house} />
+              <AllHousesUI
+                onClick={(value, visible) => {
+                  setDetailView(visible);
+                  setSelectedOthersHouse(value);
+                }}
+                {...house}
+              />
             </li>
           ))
         )}
@@ -120,7 +154,11 @@ const Dashboard: FC = () => {
           </div>
         </div>
       </div>
-      <div className="w-full overflow-auto flex flex-col h-full text-lg">
+      <div
+        className={`w-full overflow-auto flex flex-col h-full text-lg ${
+          detailView === false ? "" : "hidden"
+        }`}
+      >
         <div className="flex flex-row place-content-between gap-2">
           <Text className="font-semibold font-serif">Popular of the week</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
@@ -152,6 +190,18 @@ const Dashboard: FC = () => {
             <FiMapPin /> Kinondoni
           </Text>
         </div>
+      </div>
+      {/*detail page*/}
+      <div
+        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
+          detailView === true ? "" : "hidden"
+        }`}
+      >
+        <OthersHouseInfo
+          onClickBack={setDetailView}
+          house={selectedOthersHouse}
+          onChange={() => {}}
+        />
       </div>
     </div>
   );

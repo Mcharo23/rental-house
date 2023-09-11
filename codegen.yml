@@ -8,3 +8,4 @@ generates:
       - typescript-react-query
     config:
       fetcher: graphql-request
+# 192.168.150.151:3333

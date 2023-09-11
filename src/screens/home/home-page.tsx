@@ -30,8 +30,6 @@ const HomePage: FC = () => {
   const token = getUserAccessToken();
 
   useEffect(() => {
-    console.log(`from home => ${token}`);
-
     if (!token) {
       ShowNotification({
         title: "Session Expired ⚠️",
@@ -70,11 +68,11 @@ const HomePage: FC = () => {
           </Aside>
         </MediaQuery>
       }
-      footer={
-        <Footer height={60} p="md">
-          Application footer
-        </Footer>
-      }
+      // footer={
+      //   <Footer height={60} p="md">
+      //     Application footer
+      //   </Footer>
+      // }
       header={
         <Header height={{ base: 50, md: 70 }} p="md">
           <div

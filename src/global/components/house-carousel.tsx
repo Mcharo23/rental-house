@@ -7,35 +7,21 @@ const HouseCarousel: React.FC<GetMyHouseQuery["myHouse"][0]> = ({
   imgUrl,
   _id,
 }) => {
-  const responsiveOptions = [
-    {
-      breakpoint: "1199px",
-      numVisible: 3,
-      numScroll: 1,
-    },
-    {
-      breakpoint: "991px",
-      numVisible: 1,
-      numScroll: 1,
-    },
-    {
-      breakpoint: "767px",
-      numVisible: 1,
-      numScroll: 1,
-    },
-  ];
-
   const productTemplate = (item: string) => {
     return (
-      <div className="border-1 surface-border border-round py-5 px-3  h-full flex ">
-        <div className="mb-3 h-full w-full rounded-lg">
-          {/* <img src={item} alt={_id} className="w-full h-full flex rounded-lg" /> */}
+      <div className="border-1 w-full surface-border px-3 py-3 border-round m-2 text-center h-full">
+        <div className="mb-3  h-full w-full rounded-lg">
           <Image
             src={item}
             alt={_id}
-            className="w-full h-full flex rounded-lg"
+            className="rounded-lg h-full"
             preview
-            imageStyle={{ width: "100%", height: "100%", borderRadius: "6px" }}
+            loading="lazy"
+            imageStyle={{
+              width: "100%",
+              height: "100%",
+              borderRadius: "6px",
+            }}
           />
         </div>
       </div>
@@ -43,15 +29,14 @@ const HouseCarousel: React.FC<GetMyHouseQuery["myHouse"][0]> = ({
   };
 
   return (
-    <div className="card w-full h-full border ">
+    <div className="card w-full bg-white rounded-lg h-full">
       <Carousel
-        value={imgUrl} // Make sure imgUrl is an array of image URLs
+        value={imgUrl}
         numVisible={3}
         numScroll={1}
-        responsiveOptions={responsiveOptions}
         className="custom-carousel"
         circular
-        autoplayInterval={3000}
+        autoplayInterval={5000}
         itemTemplate={productTemplate}
       />
     </div>
