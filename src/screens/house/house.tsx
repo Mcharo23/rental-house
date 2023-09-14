@@ -30,7 +30,10 @@ import AllHousesUI from "../../global/components/houses";
 import ShowNotification from "../../global/components/show-notification";
 import TextArea from "../../global/components/text-area";
 import MyHouseInfo from "./components/my-house-info";
-import { MyHouseInfoUpdatedProps } from "../../global/interfaces/type";
+import {
+  MyHouseInfoUpdatedProps,
+  OthersHouseInfoContractProps,
+} from "../../global/interfaces/type";
 import showMessage from "../../global/components/notification";
 import UpdateNotification from "../../global/components/update-notification";
 import LoadingNotification from "../../global/components/load-notification";
@@ -99,6 +102,7 @@ const House: FC = () => {
       middleName: "",
       phoneNumber: "",
       username: "",
+      gender: "",
     },
   });
 
@@ -322,6 +326,13 @@ const House: FC = () => {
         status: value.status,
       },
     });
+  };
+
+  const handleOnSubmitContract = async (
+    value: MyHouseInfoUpdatedProps,
+    contract: OthersHouseInfoContractProps
+  ) => {
+    console.log(`${value._id} => ${contract.Duration}`);
   };
 
   const renderMyHouses = () => {
@@ -609,7 +620,7 @@ const House: FC = () => {
         <OthersHouseInfo
           onClickBack={setOthersView}
           house={selectedOthersHouse}
-          onChange={() => {}}
+          onChange={handleOnSubmitContract}
         />
       </div>
     </div>

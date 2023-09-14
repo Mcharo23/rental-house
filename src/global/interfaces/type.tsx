@@ -18,6 +18,12 @@ export type CustomInputTextProps = {
   disabled: boolean;
 };
 
+export type CustomInputNumberProps = {
+  onChange: (value: number | null | undefined) => void;
+  name: string;
+  id: string;
+  disabled: boolean;
+};
 export type SelectProps = {
   label: string;
   options: { name: string; value: string }[];
@@ -91,8 +97,16 @@ export type CustomMessageProps = {
   content: string;
 };
 
+export type OthersHouseInfoContractProps = {
+  Duration: number;
+  totTotal_rent: number;
+};
+
 export type OthersHouseInfoProps = {
   onClickBack: (value: boolean) => void;
-  onChange: (value: MyHouseInfoUpdatedProps) => void;
+  onChange: (
+    value: MyHouseInfoUpdatedProps,
+    contract: OthersHouseInfoContractProps
+  ) => void;
   house: GetHousesQuery["houses"][0];
 };

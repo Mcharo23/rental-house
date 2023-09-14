@@ -12,6 +12,10 @@ import {
 } from "../../utils/localStorageUtils";
 import { ProgressSpinner } from "primereact/progressspinner";
 import OthersHouseInfo from "../house/components/othersHouseInfo";
+import {
+  MyHouseInfoUpdatedProps,
+  OthersHouseInfoContractProps,
+} from "../../global/interfaces/type";
 
 const Dashboard: FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -94,6 +98,13 @@ const Dashboard: FC = () => {
     } else {
       setFilteredInAllHouse([]);
     }
+  };
+
+  const handleOnSubmitContract = async (
+    value: MyHouseInfoUpdatedProps,
+    contract: OthersHouseInfoContractProps
+  ) => {
+    console.log(`${value._id} => ${contract.Duration}`);
   };
 
   const renderHouses = () => {
@@ -200,7 +211,7 @@ const Dashboard: FC = () => {
         <OthersHouseInfo
           onClickBack={setDetailView}
           house={selectedOthersHouse}
-          onChange={() => {}}
+          onChange={handleOnSubmitContract}
         />
       </div>
     </div>

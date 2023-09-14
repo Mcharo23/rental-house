@@ -25,6 +25,21 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type ContractType = {
+  __typename?: 'ContractType';
+  Duration: Scalars['String']['output'];
+  House: HouseType;
+  Tenant: UserType;
+  Total_rent: Scalars['String']['output'];
+  _id: Scalars['ID']['output'];
+};
+
+export type CreateContractInput = {
+  Duration: Scalars['Float']['input'];
+  House: Scalars['ID']['input'];
+  Total_rent: Scalars['String']['input'];
+};
+
 export type CreateHouseInput = {
   Description: Scalars['String']['input'];
   District: Scalars['String']['input'];
@@ -74,13 +89,23 @@ export type LoginUserInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createContract: ContractType;
   createHouse: HouseType;
   createUser: UserType;
   login: LoginResponse;
+  removeContract: Scalars['String']['output'];
   removeHouse: HouseType;
   removeUser: UserType;
+  signContract: Scalars['String']['output'];
+  update: ContractType;
   updateHouse: Scalars['String']['output'];
-  updateUser: UserType;
+  updatePassword: Scalars['String']['output'];
+  updateUser: Scalars['String']['output'];
+};
+
+
+export type MutationCreateContractArgs = {
+  createContractInput: CreateContractInput;
 };
 
 
@@ -99,6 +124,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationRemoveContractArgs = {
+  removeContractInput: UpdateContractInput;
+};
+
+
 export type MutationRemoveHouseArgs = {
   id: Scalars['Int']['input'];
 };
@@ -109,8 +139,23 @@ export type MutationRemoveUserArgs = {
 };
 
 
+export type MutationSignContractArgs = {
+  updateContractInput: UpdateContractInput;
+};
+
+
+export type MutationUpdateArgs = {
+  updateContractInput: UpdateContractInput;
+};
+
+
 export type MutationUpdateHouseArgs = {
   updateHouseInput: UpdateHouseInput;
+};
+
+
+export type MutationUpdatePasswordArgs = {
+  updatePasswordInput: UpdatePasswordInput;
 };
 
 
@@ -118,24 +163,44 @@ export type MutationUpdateUserArgs = {
   updateUserInput: UpdateUserInput;
 };
 
+export type MyHouseType = {
+  __typename?: 'MyHouseType';
+  Description: Scalars['String']['output'];
+  District: Scalars['String']['output'];
+  Region: Scalars['String']['output'];
+  Ward: Scalars['String']['output'];
+  _id: Scalars['ID']['output'];
+  contract: Array<ContractType>;
+  imgUrl: Array<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  status: Scalars['String']['output'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  contracts: Array<ContractType>;
   demo: Array<HouseType>;
   house: HouseType;
   houses: Array<HouseType>;
-  myHouse: Array<HouseType>;
+  myContract: Array<ContractType>;
+  myHouse: Array<MyHouseType>;
   user: UserType;
   users: Array<UserType>;
 };
 
 
 export type QueryHouseArgs = {
-  id: Scalars['Int']['input'];
+  HoiseID: Scalars['String']['input'];
 };
 
 
 export type QueryUserArgs = {
   username: Scalars['String']['input'];
+};
+
+export type UpdateContractInput = {
+  ContractID: Scalars['ID']['input'];
 };
 
 export type UpdateHouseInput = {
@@ -146,16 +211,14 @@ export type UpdateHouseInput = {
   status: Scalars['String']['input'];
 };
 
+export type UpdatePasswordInput = {
+  currentpassword: Scalars['String']['input'];
+  newPassword: Scalars['String']['input'];
+};
+
 export type UpdateUserInput = {
-  accountType?: InputMaybe<Scalars['String']['input']>;
-  firstName?: InputMaybe<Scalars['String']['input']>;
-  gender?: InputMaybe<Scalars['String']['input']>;
-  id: Scalars['Int']['input'];
-  lastname?: InputMaybe<Scalars['String']['input']>;
-  middleName?: InputMaybe<Scalars['String']['input']>;
-  password?: InputMaybe<Scalars['String']['input']>;
-  phoneNumber?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
+  phoneNumber: Scalars['String']['input'];
+  username: Scalars['String']['input'];
 };
 
 export type UserType = {
@@ -205,12 +268,12 @@ export type GetDemoHousesQuery = { __typename?: 'Query', demo: Array<{ __typenam
 export type GetHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string, username: string } }> };
+export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string, username: string, gender: string } }> };
 
 export type GetMyHouseQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string> }> };
+export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string> }> };
 
 
 export const CreateHouseInputDocument = `
@@ -369,6 +432,7 @@ export const GetHousesDocument = `
       lastname
       phoneNumber
       username
+      gender
     }
   }
 }

@@ -1,12 +1,13 @@
 import React from "react";
 import { Carousel } from "primereact/carousel";
-import { GetMyHouseQuery } from "../../generated/graphql";
 import { Image } from "primereact/image";
 
-const HouseCarousel: React.FC<GetMyHouseQuery["myHouse"][0]> = ({
-  imgUrl,
-  _id,
-}) => {
+type CarouselProps = {
+  _id: string;
+  imgUrl: Array<string>;
+};
+
+const HouseCarousel: React.FC<CarouselProps> = ({ imgUrl, _id }) => {
   const productTemplate = (item: string) => {
     return (
       <div className="border-1 w-full surface-border px-3 py-3 border-round m-2 text-center h-full">
