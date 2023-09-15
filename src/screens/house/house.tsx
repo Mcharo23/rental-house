@@ -9,9 +9,11 @@ import CustomButton from "../../components/custom-button";
 import colors from "../../lib/color/colors";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import {
+  CreateContractInputMutation,
   GetHousesQuery,
   GetMyHouseQuery,
   UpdateHouseInputMutation,
+  useCreateContractInputMutation,
   useCreateHouseInputMutation,
   useGetHousesQuery,
   useGetMyHouseQuery,
@@ -67,7 +69,6 @@ const House: FC = () => {
   const [hideMinus, setHideMinus] = useState<boolean>(true);
   const [mineView, setMineView] = useState<boolean>(false);
   const [OthersView, setOthersView] = useState<boolean>(false);
-  const [notificationId, setNotificationId] = useState<string>("update");
 
   const [selectedHouse, setSelectedHouse] = useState<
     GetMyHouseQuery["myHouse"][0]
@@ -153,7 +154,7 @@ const House: FC = () => {
         queryClient.invalidateQueries(["getMyHouse"]);
         UpdateNotification(
           {
-            id: notificationId,
+            id: "update",
             message: data.updateHouse,
             title: "Successfully",
           },
@@ -165,7 +166,33 @@ const House: FC = () => {
           error.response.errors[0].extensions.originalError.message;
         const title = error.response.errors[0].message;
 
-        notifications.hide(notificationId);
+        notifications.hide("update");
+        Array.isArray(errorMessage)
+          ? showMessage(title, errorMessage)
+          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
+      },
+    }
+  );
+
+  const { mutate: createContractMutate } = useCreateContractInputMutation(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {
+      onSuccess: (data: CreateContractInputMutation) => {
+        UpdateNotification(
+          {
+            id: "contract",
+            message: data.createContract._id,
+            title: "Successfully",
+          },
+          3000
+        );
+      },
+      onError: (error: GraphQLError) => {
+        const errorMessage =
+          error.response.errors[0].extensions.originalError.message;
+        const title = error.response.errors[0].message;
+
+        notifications.hide("contract");
         Array.isArray(errorMessage)
           ? showMessage(title, errorMessage)
           : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
@@ -332,7 +359,18 @@ const House: FC = () => {
     value: MyHouseInfoUpdatedProps,
     contract: OthersHouseInfoContractProps
   ) => {
-    console.log(`${value._id} => ${contract.Duration}`);
+    LoadingNotification({
+      id: "contract",
+      message: "Please wait...",
+      title: "Updating",
+    });
+    await createContractMutate({
+      input: {
+        Duration: contract.Duration,
+        House: value._id,
+        Total_rent: String(contract.totTotal_rent),
+      },
+    });
   };
 
   const renderMyHouses = () => {

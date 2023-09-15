@@ -1,0 +1,23 @@
+mutation CreateContractInput($input: CreateContractInput!) {
+  createContract(createContractInput: $input) {
+    _id
+    Total_rent
+    Duration
+    House {
+      _id
+      name
+      Region
+      District
+      Ward
+      price
+    }
+    Tenant {
+      firstName
+      middleName
+      lastname
+      gender
+      phoneNumber
+      username
+    }
+  }
+}

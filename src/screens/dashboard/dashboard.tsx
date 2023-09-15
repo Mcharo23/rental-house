@@ -4,7 +4,12 @@ import { FiBell, FiMapPin } from "react-icons/fi";
 import ToggleButtonGroup from "../../global/components/toggle-button";
 import SearchBar from "../../global/components/search-bar";
 import AllHousesUI from "../../global/components/houses";
-import { GetHousesQuery, useGetHousesQuery } from "../../generated/graphql";
+import {
+  CreateContractInputMutation,
+  GetHousesQuery,
+  useCreateContractInputMutation,
+  useGetHousesQuery,
+} from "../../generated/graphql";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
 import {
   clearUserData,
@@ -16,6 +21,11 @@ import {
   MyHouseInfoUpdatedProps,
   OthersHouseInfoContractProps,
 } from "../../global/interfaces/type";
+import { notifications } from "@mantine/notifications";
+import { GraphQLError } from "graphql";
+import LoadingNotification from "../../global/components/load-notification";
+import showMessage from "../../global/components/notification";
+import UpdateNotification from "../../global/components/update-notification";
 
 const Dashboard: FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -67,6 +77,32 @@ const Dashboard: FC = () => {
     }
   );
 
+  const { mutate: createContractMutate } = useCreateContractInputMutation(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {
+      onSuccess: (data: CreateContractInputMutation) => {
+        UpdateNotification(
+          {
+            id: "contract",
+            message: data.createContract._id,
+            title: "Successfully",
+          },
+          3000
+        );
+      },
+      onError: (error: GraphQLError) => {
+        const errorMessage =
+          error.response.errors[0].extensions.originalError.message;
+        const title = error.response.errors[0].message;
+
+        notifications.hide("contract");
+        Array.isArray(errorMessage)
+          ? showMessage(title, errorMessage)
+          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
+      },
+    }
+  );
+
   useEffect(() => {
     if (dataHouses) {
       setShouldFetchData(false);
@@ -104,7 +140,18 @@ const Dashboard: FC = () => {
     value: MyHouseInfoUpdatedProps,
     contract: OthersHouseInfoContractProps
   ) => {
-    console.log(`${value._id} => ${contract.Duration}`);
+    LoadingNotification({
+      id: "contract",
+      message: "Please wait...",
+      title: "Updating",
+    });
+    await createContractMutate({
+      input: {
+        Duration: contract.Duration,
+        House: value._id,
+        Total_rent: String(contract.totTotal_rent),
+      },
+    });
   };
 
   const renderHouses = () => {

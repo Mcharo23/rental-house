@@ -27,7 +27,7 @@ export type Scalars = {
 
 export type ContractType = {
   __typename?: 'ContractType';
-  Duration: Scalars['String']['output'];
+  Duration: Scalars['Float']['output'];
   House: HouseType;
   Tenant: UserType;
   Total_rent: Scalars['String']['output'];
@@ -232,6 +232,13 @@ export type UserType = {
   username: Scalars['String']['output'];
 };
 
+export type CreateContractInputMutationVariables = Exact<{
+  input: CreateContractInput;
+}>;
+
+
+export type CreateContractInputMutation = { __typename?: 'Mutation', createContract: { __typename?: 'ContractType', _id: string, Total_rent: string, Duration: number, House: { __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number }, Tenant: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, gender: string, phoneNumber: string, username: string } } };
+
 export type CreateHouseInputMutationVariables = Exact<{
   input: CreateHouseInput;
 }>;
@@ -273,9 +280,47 @@ export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?
 export type GetMyHouseQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string> }> };
+export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, contract: Array<{ __typename?: 'ContractType', _id: string, Duration: number, Total_rent: string, Tenant: { __typename?: 'UserType', firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } }> }> };
 
 
+export const CreateContractInputDocument = `
+    mutation CreateContractInput($input: CreateContractInput!) {
+  createContract(createContractInput: $input) {
+    _id
+    Total_rent
+    Duration
+    House {
+      _id
+      name
+      Region
+      District
+      Ward
+      price
+    }
+    Tenant {
+      firstName
+      middleName
+      lastname
+      gender
+      phoneNumber
+      username
+    }
+  }
+}
+    `;
+export const useCreateContractInputMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<CreateContractInputMutation, TError, CreateContractInputMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<CreateContractInputMutation, TError, CreateContractInputMutationVariables, TContext>(
+      ['CreateContractInput'],
+      (variables?: CreateContractInputMutationVariables) => fetcher<CreateContractInputMutation, CreateContractInputMutationVariables>(client, CreateContractInputDocument, variables, headers)(),
+      options
+    );
 export const CreateHouseInputDocument = `
     mutation CreateHouseInput($input: CreateHouseInput!) {
   createHouse(createHouseInput: $input) {
@@ -463,6 +508,19 @@ export const GetMyHouseDocument = `
     Description
     status
     imgUrl
+    contract {
+      _id
+      Duration
+      Total_rent
+      Tenant {
+        firstName
+        gender
+        lastname
+        middleName
+        phoneNumber
+        username
+      }
+    }
   }
 }
     `;
