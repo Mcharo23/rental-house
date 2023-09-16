@@ -1,0 +1,29 @@
+query bookedHouse {
+  myHouse {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    Description
+    status
+    imgUrl
+    contract {
+      _id
+      Duration
+      Total_rent
+      Date_of_signing
+      Date_of_contract
+      End_of_contract
+      Tenant {
+        firstName
+        gender
+        lastname
+        middleName
+        phoneNumber
+        username
+      }
+    }
+  }
+}

@@ -26,3 +26,5 @@ export const MESSAGES = [
 ];
 
 //sm:bg-blue-400 md:bg-green-400 lg:bg-yellow-400 xl:bg-violet-400 2xl:bg-pink-400
+//overflow-hidden overflow-ellipsis line-clamp-3
+//hover:bg-stone-200

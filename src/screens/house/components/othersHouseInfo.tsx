@@ -389,7 +389,7 @@ const OthersHouseInfo: FC<OthersHouseInfoProps> = ({
         </div>
 
         <div
-          className={`justify-center items-center rounded-lg flex mt-5 flex-col ${
+          className={`justify-center items-center rounded-lg flex mt-5 ${
             house.user.username === user?.login.user.username ? "hidden" : ""
           }`}
         >

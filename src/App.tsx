@@ -3,7 +3,7 @@ import HomePage from "./screens/home/home-page";
 import LoginPage from "./auth/auth";
 import FrontPage from "./screens/front-page";
 import RegisterPage from "./screens/register";
-import MyHouse from "./screens/house/components/my-house";
+import Rentals from "./screens/Rentals/Rentals";
 
 const App = () => {
   return (
@@ -13,7 +13,8 @@ const App = () => {
         <Route path="/auth" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/home" element={<HomePage />} />
-      </Routes>
+        <Route path="/rentals" element={<Rentals/>} />
+        </Routes>
     </BrowserRouter>
   );
 };

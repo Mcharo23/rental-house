@@ -23,11 +23,15 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  DateTime: { input: any; output: any; }
 };
 
 export type ContractType = {
   __typename?: 'ContractType';
+  Date_of_contract?: Maybe<Scalars['DateTime']['output']>;
+  Date_of_signing?: Maybe<Scalars['DateTime']['output']>;
   Duration: Scalars['Float']['output'];
+  End_of_contract?: Maybe<Scalars['DateTime']['output']>;
   House: HouseType;
   Tenant: UserType;
   Total_rent: Scalars['String']['output'];
@@ -267,6 +271,11 @@ export type UpdateHouseInputMutationVariables = Exact<{
 
 export type UpdateHouseInputMutation = { __typename?: 'Mutation', updateHouse: string };
 
+export type BookedHouseQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type BookedHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, contract: Array<{ __typename?: 'ContractType', _id: string, Duration: number, Total_rent: string, Date_of_signing?: any | null, Date_of_contract?: any | null, End_of_contract?: any | null, Tenant: { __typename?: 'UserType', firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } }> }> };
+
 export type GetDemoHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -423,6 +432,51 @@ export const useUpdateHouseInputMutation = <
     useMutation<UpdateHouseInputMutation, TError, UpdateHouseInputMutationVariables, TContext>(
       ['UpdateHouseInput'],
       (variables?: UpdateHouseInputMutationVariables) => fetcher<UpdateHouseInputMutation, UpdateHouseInputMutationVariables>(client, UpdateHouseInputDocument, variables, headers)(),
+      options
+    );
+export const BookedHouseDocument = `
+    query bookedHouse {
+  myHouse {
+    _id
+    name
+    Region
+    District
+    Ward
+    price
+    Description
+    status
+    imgUrl
+    contract {
+      _id
+      Duration
+      Total_rent
+      Date_of_signing
+      Date_of_contract
+      End_of_contract
+      Tenant {
+        firstName
+        gender
+        lastname
+        middleName
+        phoneNumber
+        username
+      }
+    }
+  }
+}
+    `;
+export const useBookedHouseQuery = <
+      TData = BookedHouseQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: BookedHouseQueryVariables,
+      options?: UseQueryOptions<BookedHouseQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<BookedHouseQuery, TError, TData>(
+      variables === undefined ? ['bookedHouse'] : ['bookedHouse', variables],
+      fetcher<BookedHouseQuery, BookedHouseQueryVariables>(client, BookedHouseDocument, variables, headers),
       options
     );
 export const GetDemoHousesDocument = `

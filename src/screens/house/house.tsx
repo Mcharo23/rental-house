@@ -12,6 +12,7 @@ import {
   CreateContractInputMutation,
   GetHousesQuery,
   GetMyHouseQuery,
+  MyHouseType,
   UpdateHouseInputMutation,
   useCreateContractInputMutation,
   useCreateHouseInputMutation,
@@ -70,10 +71,7 @@ const House: FC = () => {
   const [mineView, setMineView] = useState<boolean>(false);
   const [OthersView, setOthersView] = useState<boolean>(false);
 
-  const [selectedHouse, setSelectedHouse] = useState<
-    GetMyHouseQuery["myHouse"][0]
-  >({
-    __typename: undefined,
+  const [selectedHouse, setSelectedHouse] = useState<GetMyHouseQuery['myHouse'][0]>({
     _id: "",
     name: "",
     Region: "",
@@ -83,6 +81,22 @@ const House: FC = () => {
     Description: "",
     status: "",
     imgUrl: [],
+    contract: [
+      {
+        _id: "",
+        Duration: 0,
+        Total_rent: "",
+        Tenant: {
+          __typename: "UserType",
+          firstName: "",
+          gender: "",
+          lastname: "",
+          middleName: "",
+          phoneNumber: "",
+          username: "",
+        }
+      },
+    ],
   });
 
   const [selectedOthersHouse, setSelectedOthersHouse] = useState<
