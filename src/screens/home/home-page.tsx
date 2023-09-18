@@ -54,7 +54,12 @@ const HomePage: FC = () => {
           width={{ sm: 200, lg: 300 }}
           className="w-40 sm:w-52"
         >
-          <NavBar onClick={setActiveScreen} />
+          <NavBar
+            onClick={(value: string) => {
+              setActiveScreen(value);
+              setOpened(!opened);
+            }}
+          />
         </Navbar>
       }
       aside={

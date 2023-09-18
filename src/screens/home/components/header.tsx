@@ -4,8 +4,10 @@ import { FaHome, FaUser } from "react-icons/fa";
 // import { clearUserData } from "../../../utils/localStorageUtils";
 // import { useNavigate } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
+import { getUserData } from "../../../utils/localStorageUtils";
 
 const Headers: FC = () => {
+  const user = getUserData();
   // const navigate = useNavigate();
   // const [isOpen, setIsOpen] = useState(false);
 
@@ -35,7 +37,7 @@ const Headers: FC = () => {
           </span>
           <div className="flex flex-col w-full pl-3">
             <Text className="flex font-semibold text-gray-800 font-sans h-full rounded-lg p-2 w-full cursor-pointer">
-              Mcharo
+              {user?.login.user.lastname}
             </Text>
           </div>
         </div>
