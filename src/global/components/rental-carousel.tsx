@@ -25,39 +25,39 @@ const CarouselScroll: FC<RentalCarouselProps> = ({
 
   const naturalSlideWidth =
     window.innerWidth >= 640
-      ? 50
+      ? 70
       : window.innerWidth >= 768
-      ? 2
+      ? 60
       : window.innerWidth >= 2024
-      ? 2
+      ? 50
       : window.innerWidth >= 1280
-      ? 2
+      ? 80
       : window.innerWidth >= 1536
-      ? 2
+      ? 80
       : 50;
 
   const naturalSlideHeight =
     window.innerWidth >= 640
-      ? 50
+      ? 40
       : window.innerWidth >= 768
-      ? 2
+      ? 30
       : window.innerWidth >= 2024
-      ? 2
+      ? 20
       : window.innerWidth >= 1280
-      ? 2
+      ? 40
       : window.innerWidth >= 1536
-      ? 2
-      : 30;
+      ? 40
+      : 20;
 
   const namberOfViible =
     window.innerWidth >= 640
-      ? 1
+      ? 2
       : window.innerWidth >= 768
-      ? 2
+      ? 1
       : window.innerWidth >= 2024
-      ? 2
+      ? 1
       : window.innerWidth >= 1280
-      ? 2
+      ? 1
       : window.innerWidth >= 1536
       ? 2
       : 1;

@@ -37,6 +37,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
             Dashboard
           </Text>
         </li>
+
         <li
           className={`relative w-full  ${
             activeScreen === "house" ? "bg-gray-200 text-blue-600" : ""
@@ -50,6 +51,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
             House
           </Text>
         </li>
+
         <li
           className={`relative w-full  ${
             activeScreen === "rentals" ? "bg-gray-200 text-blue-600" : ""
@@ -63,6 +65,21 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
             Rentals
           </Text>
         </li>
+
+        <li
+          className={`relative w-full  ${
+            activeScreen === "tenants" ? "bg-gray-200 text-blue-600" : ""
+          }`}
+          onClick={() => switchScreen("tenants")}
+        >
+          <span className="absolute inset-y-0 flex items-center pl-2">
+            <FaHouseUser className="text-light-blue" />
+          </span>
+          <Text className="h-full rounded-lg p-2 pl-8 w-full cursor-pointer">
+            Tenants
+          </Text>
+        </li>
+
         <li
           className={`relative w-full  ${
             activeScreen === "account" ? "bg-gray-200 text-blue-600" : ""

@@ -24,13 +24,13 @@ export const queryclient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <MantineProvider withGlobalStyles withNormalizeCSS>
-      <QueryClientProvider client={queryclient}>
+    <QueryClientProvider client={queryclient}>
+      <MantineProvider withGlobalStyles withNormalizeCSS>
         <Notifications limit={3} position="top-right" />
         <PrimeReactProvider>
           <App />
         </PrimeReactProvider>
-      </QueryClientProvider>
-    </MantineProvider>
+      </MantineProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );

@@ -1,0 +1,3 @@
+mutation rejectContract($input: UpdateContractInput!) {
+  rejectContract(removeContractInput: $input)
+}

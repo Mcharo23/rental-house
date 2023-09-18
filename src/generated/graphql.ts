@@ -30,12 +30,14 @@ export type ContractType = {
   __typename?: 'ContractType';
   Date_of_contract?: Maybe<Scalars['DateTime']['output']>;
   Date_of_signing?: Maybe<Scalars['DateTime']['output']>;
-  Duration: Scalars['Float']['output'];
+  Duration: Scalars['Int']['output'];
   End_of_contract?: Maybe<Scalars['DateTime']['output']>;
   House: HouseType;
   Tenant: UserType;
   Total_rent: Scalars['String']['output'];
   _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTime']['output'];
+  isCurrent: Scalars['Boolean']['output'];
 };
 
 export type CreateContractInput = {
@@ -97,11 +99,12 @@ export type Mutation = {
   createHouse: HouseType;
   createUser: UserType;
   login: LoginResponse;
-  removeContract: Scalars['String']['output'];
+  rejectContract: Scalars['String']['output'];
   removeHouse: HouseType;
   removeUser: UserType;
-  signContract: Scalars['String']['output'];
-  update: ContractType;
+  signContract: ContractType;
+  tenantIn: Scalars['String']['output'];
+  tenantOut: Scalars['String']['output'];
   updateHouse: Scalars['String']['output'];
   updatePassword: Scalars['String']['output'];
   updateUser: Scalars['String']['output'];
@@ -128,7 +131,7 @@ export type MutationLoginArgs = {
 };
 
 
-export type MutationRemoveContractArgs = {
+export type MutationRejectContractArgs = {
   removeContractInput: UpdateContractInput;
 };
 
@@ -148,7 +151,12 @@ export type MutationSignContractArgs = {
 };
 
 
-export type MutationUpdateArgs = {
+export type MutationTenantInArgs = {
+  updateContractInput: UpdateContractInput;
+};
+
+
+export type MutationTenantOutArgs = {
   updateContractInput: UpdateContractInput;
 };
 
@@ -191,6 +199,7 @@ export type Query = {
   myHouse: Array<MyHouseType>;
   user: UserType;
   users: Array<UserType>;
+  watchContract: Array<ContractType>;
 };
 
 
@@ -274,7 +283,7 @@ export type UpdateHouseInputMutation = { __typename?: 'Mutation', updateHouse: s
 export type BookedHouseQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type BookedHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, contract: Array<{ __typename?: 'ContractType', _id: string, Duration: number, Total_rent: string, Date_of_signing?: any | null, Date_of_contract?: any | null, End_of_contract?: any | null, Tenant: { __typename?: 'UserType', firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } }> }> };
+export type BookedHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, contract: Array<{ __typename?: 'ContractType', _id: string, isCurrent: boolean, Duration: number, Total_rent: string, createdAt: any, Date_of_signing?: any | null, Date_of_contract?: any | null, End_of_contract?: any | null, Tenant: { __typename?: 'UserType', firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } }> }> };
 
 export type GetDemoHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -290,6 +299,34 @@ export type GetMyHouseQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMyHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typename?: 'MyHouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, contract: Array<{ __typename?: 'ContractType', _id: string, Duration: number, Total_rent: string, Tenant: { __typename?: 'UserType', firstName: string, gender: string, lastname: string, middleName: string, phoneNumber: string, username: string } }> }> };
+
+export type RejectContractMutationVariables = Exact<{
+  input: UpdateContractInput;
+}>;
+
+
+export type RejectContractMutation = { __typename?: 'Mutation', rejectContract: string };
+
+export type SignContractMutationVariables = Exact<{
+  input: UpdateContractInput;
+}>;
+
+
+export type SignContractMutation = { __typename?: 'Mutation', signContract: { __typename?: 'ContractType', Date_of_signing?: any | null, Duration: number, Total_rent: string, House: { __typename?: 'HouseType', name: string, Region: string, District: string, Ward: string, price: number }, Tenant: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string, gender: string, username: string } } };
+
+export type TenantInMutationVariables = Exact<{
+  input: UpdateContractInput;
+}>;
+
+
+export type TenantInMutation = { __typename?: 'Mutation', tenantIn: string };
+
+export type TenantOutMutationVariables = Exact<{
+  input: UpdateContractInput;
+}>;
+
+
+export type TenantOutMutation = { __typename?: 'Mutation', tenantOut: string };
 
 
 export const CreateContractInputDocument = `
@@ -448,8 +485,10 @@ export const BookedHouseDocument = `
     imgUrl
     contract {
       _id
+      isCurrent
       Duration
       Total_rent
+      createdAt
       Date_of_signing
       Date_of_contract
       End_of_contract
@@ -590,5 +629,96 @@ export const useGetMyHouseQuery = <
     useQuery<GetMyHouseQuery, TError, TData>(
       variables === undefined ? ['getMyHouse'] : ['getMyHouse', variables],
       fetcher<GetMyHouseQuery, GetMyHouseQueryVariables>(client, GetMyHouseDocument, variables, headers),
+      options
+    );
+export const RejectContractDocument = `
+    mutation rejectContract($input: UpdateContractInput!) {
+  rejectContract(removeContractInput: $input)
+}
+    `;
+export const useRejectContractMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<RejectContractMutation, TError, RejectContractMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<RejectContractMutation, TError, RejectContractMutationVariables, TContext>(
+      ['rejectContract'],
+      (variables?: RejectContractMutationVariables) => fetcher<RejectContractMutation, RejectContractMutationVariables>(client, RejectContractDocument, variables, headers)(),
+      options
+    );
+export const SignContractDocument = `
+    mutation signContract($input: UpdateContractInput!) {
+  signContract(updateContractInput: $input) {
+    Date_of_signing
+    Duration
+    Total_rent
+    House {
+      name
+      Region
+      District
+      Ward
+      price
+    }
+    Tenant {
+      firstName
+      middleName
+      lastname
+      phoneNumber
+      gender
+      username
+    }
+  }
+}
+    `;
+export const useSignContractMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<SignContractMutation, TError, SignContractMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<SignContractMutation, TError, SignContractMutationVariables, TContext>(
+      ['signContract'],
+      (variables?: SignContractMutationVariables) => fetcher<SignContractMutation, SignContractMutationVariables>(client, SignContractDocument, variables, headers)(),
+      options
+    );
+export const TenantInDocument = `
+    mutation tenantIn($input: UpdateContractInput!) {
+  tenantIn(updateContractInput: $input)
+}
+    `;
+export const useTenantInMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<TenantInMutation, TError, TenantInMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<TenantInMutation, TError, TenantInMutationVariables, TContext>(
+      ['tenantIn'],
+      (variables?: TenantInMutationVariables) => fetcher<TenantInMutation, TenantInMutationVariables>(client, TenantInDocument, variables, headers)(),
+      options
+    );
+export const TenantOutDocument = `
+    mutation tenantOut($input: UpdateContractInput!) {
+  tenantOut(updateContractInput: $input)
+}
+    `;
+export const useTenantOutMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<TenantOutMutation, TError, TenantOutMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<TenantOutMutation, TError, TenantOutMutationVariables, TContext>(
+      ['tenantOut'],
+      (variables?: TenantOutMutationVariables) => fetcher<TenantOutMutation, TenantOutMutationVariables>(client, TenantOutDocument, variables, headers)(),
       options
     );

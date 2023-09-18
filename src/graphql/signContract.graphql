@@ -1,0 +1,22 @@
+mutation signContract($input: UpdateContractInput!) {
+  signContract(updateContractInput: $input) {
+    Date_of_signing
+    Duration
+    Total_rent
+    House {
+      name
+      Region
+      District
+      Ward
+      price
+    }
+    Tenant {
+      firstName
+      middleName
+      lastname
+      phoneNumber
+      gender
+      username
+    }
+  }
+}

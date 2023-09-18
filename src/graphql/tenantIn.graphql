@@ -1,0 +1,3 @@
+mutation tenantIn($input: UpdateContractInput!) {
+  tenantIn(updateContractInput: $input)
+}

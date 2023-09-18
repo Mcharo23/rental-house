@@ -1,6 +1,6 @@
 query getMyHouse {
   myHouse {
-     _id
+    _id
     name
     Region
     District
@@ -15,11 +15,11 @@ query getMyHouse {
       Total_rent
       Tenant {
         firstName
-      	gender
-      	lastname
-      	middleName
-      	phoneNumber
-      	username
+        gender
+        lastname
+        middleName
+        phoneNumber
+        username
       }
     }
   }

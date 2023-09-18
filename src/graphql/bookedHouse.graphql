@@ -11,8 +11,10 @@ query bookedHouse {
     imgUrl
     contract {
       _id
+      isCurrent
       Duration
       Total_rent
+      createdAt
       Date_of_signing
       Date_of_contract
       End_of_contract
