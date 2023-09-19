@@ -1,0 +1,29 @@
+query myContract {
+  myContract {
+    Date_of_signing
+    Date_of_contract
+    End_of_contract
+    Duration
+    Total_rent
+    _id
+    isCurrent
+    createdAt
+    House {
+      _id
+      name
+      Region
+      District
+      Ward
+      price
+      imgUrl
+      user {
+        firstName
+        middleName
+        lastname
+        gender
+        phoneNumber
+        username
+      }
+    }
+  }
+}

@@ -2,13 +2,14 @@ import { FC, useState } from "react";
 import { Text } from "@mantine/core";
 import { FiGrid, FiUser, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { clearUserData } from "../../../utils/localStorageUtils";
+import { clearUserData, getUserData } from "../../../utils/localStorageUtils";
 import { NavBarprop } from "../interface/type";
 import { FaHouseUser } from "react-icons/fa";
 import { Divider } from "primereact/divider";
 
 const NavBar: FC<NavBarprop> = ({ onClick }) => {
   const navigate = useNavigate();
+  const user = getUserData();
   const [activeScreen, setActiveScreen] = useState<string>("dashboard");
 
   const handleLogOut = () => {
@@ -54,7 +55,11 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
 
         <li
           className={`relative w-full  ${
-            activeScreen === "rentals" ? "bg-gray-200 text-blue-600" : ""
+            activeScreen === "rentals"
+              ? "bg-gray-200 text-blue-600"
+              : user?.login.user.accountType === "tenant"
+              ? "hidden"
+              : ""
           }`}
           onClick={() => switchScreen("rentals")}
         >
@@ -68,7 +73,11 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
 
         <li
           className={`relative w-full  ${
-            activeScreen === "tenants" ? "bg-gray-200 text-blue-600" : ""
+            activeScreen === "tenants"
+              ? "bg-gray-200 text-blue-600"
+              : user?.login.user.accountType === "tenant"
+              ? "hidden"
+              : ""
           }`}
           onClick={() => switchScreen("tenants")}
         >
@@ -77,6 +86,24 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
           </span>
           <Text className="h-full rounded-lg p-2 pl-8 w-full cursor-pointer">
             Tenants
+          </Text>
+        </li>
+
+        <li
+          className={`relative w-full  ${
+            activeScreen === "contracts"
+              ? "bg-gray-200 text-blue-600"
+              : user?.login.user.accountType !== "tenant"
+              ? "hidden"
+              : ""
+          }`}
+          onClick={() => switchScreen("contracts")}
+        >
+          <span className="absolute inset-y-0 flex items-center pl-2">
+            <FaHouseUser className="text-light-blue" />
+          </span>
+          <Text className="h-full rounded-lg p-2 pl-8 w-full cursor-pointer">
+            Contracts
           </Text>
         </li>
 

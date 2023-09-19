@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { BackgroundImage, Text } from "@mantine/core";
-import { GetHousesQuery } from "../../generated/graphql";
-import { AllHousesUIProps } from "../interfaces/type";
+import { GetHousesQuery } from "../../../generated/graphql";
+import { AllHousesUIProps } from "../../../global/interfaces/type";
 
-const AllHousesUI: FC<GetHousesQuery["houses"][0] & AllHousesUIProps> = ({
+const TenantHouseUI: FC<GetHousesQuery["houses"][0] & AllHousesUIProps> = ({
   District,
   Region,
   Ward,
@@ -35,7 +35,7 @@ const AllHousesUI: FC<GetHousesQuery["houses"][0] & AllHousesUIProps> = ({
 
   return (
     <div
-      className="flex w-64 h-full flex-col bg-white p-2"
+      className="flex w-full h-72 flex-col bg-white p-2"
       style={{ borderRadius: 10 }}
       onClick={handleSelectedHouse}
     >
@@ -61,4 +61,4 @@ const AllHousesUI: FC<GetHousesQuery["houses"][0] & AllHousesUIProps> = ({
   );
 };
 
-export default AllHousesUI;
+export default TenantHouseUI;

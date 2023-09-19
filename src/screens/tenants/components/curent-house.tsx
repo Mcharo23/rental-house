@@ -195,6 +195,71 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
 
         <Divider my="xs" label="Current Tenant" labelPosition="center" />
 
+        <div>
+          <Modal
+            opened={opened}
+            onClose={close}
+            title="Tenant details"
+            centered
+          >
+            <div className="flex gap-2 flex-col">
+              <CustomPaper
+                title={"First Name"}
+                content={currentTenant?.Tenant.firstName ?? ""}
+              />
+              <CustomPaper
+                title={"Middle Name"}
+                content={currentTenant?.Tenant.middleName ?? ""}
+              />
+              <CustomPaper
+                title={"Last Name"}
+                content={currentTenant?.Tenant.lastname ?? ""}
+              />
+
+              <div className="border border-slate-200 hover:bg-stone-200 flex flex-row rounded-lg px-2 py-1">
+                <div className="text-stone-800 w-32 flex gap-2  items-center">
+                  <FaPhoneAlt className="text-light-blue" />
+                  <Text>Contact</Text>
+                </div>
+                <Divider orientation="vertical" />
+
+                <a
+                  href={`tel:${currentTenant?.Tenant.phoneNumber}`}
+                  className="w-full flex items-center pl-3"
+                  onClick={() =>
+                    (window.location.href = `tel:${currentTenant?.Tenant.username}`)
+                  }
+                >
+                  <Text className="text-light-blue">
+                    {currentTenant?.Tenant.phoneNumber}
+                  </Text>
+                </a>
+              </div>
+              <div className="border border-slate-200 hover:bg-stone-200 flex flex-row rounded-lg px-2 py-1">
+                <div className="text-stone-800 w-32 gap-2 flex items-center">
+                  <FaEnvelope className="text-light-blue" />
+                  <Text>Email</Text>
+                </div>
+                <Divider orientation="vertical" />
+                <a
+                  href={`mailto:${currentTenant?.Tenant.username}`}
+                  className="w-full flex items-center pl-3"
+                >
+                  <Text className="text-light-blue">
+                    {currentTenant?.Tenant.username}
+                  </Text>
+                </a>
+              </div>
+            </div>
+          </Modal>
+
+          <div className="flex justify-end text-light-blue ">
+            <Text className="cursor-pointer" onClick={() => refetchTenant()}>
+              See more...
+            </Text>
+          </div>
+        </div>
+
         <div className="relative w-full hover:bg-stone-200 rounded-lg border border-slate-200">
           <span className="absolute inset-y-0 flex items-center pl-2 text-text-light-blue">
             <FaUser className="text-light-blue" />

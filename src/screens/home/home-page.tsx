@@ -20,7 +20,8 @@ import { getUserAccessToken } from "../../utils/localStorageUtils";
 import { useNavigate } from "react-router-dom";
 import ShowNotification from "../../global/components/show-notification";
 import Rentals from "../Rental/Rentals";
-import Tenants from "../tenants/tenant-in";
+import Tenants from "../tenants/tenant";
+import Contracts from "../tenants/contract";
 
 const HomePage: FC = () => {
   const theme = useMantineTheme();
@@ -107,6 +108,8 @@ const HomePage: FC = () => {
         <Rentals />
       ) : activeScreen === "tenants" ? (
         <Tenants />
+      ) : activeScreen === "contracts" ? (
+        <Contracts />
       ) : (
         <Account />
       )}
