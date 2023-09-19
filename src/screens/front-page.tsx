@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import CustomButton from "../components/custom-button";
 import colors from "../lib/color/colors";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +10,11 @@ import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
 import AllHousesUI from "../global/components/houses";
 import { ProgressSpinner } from "primereact/progressspinner";
 import ShowNotification from "../global/components/show-notification";
+import { clearUserData } from "../utils/localStorageUtils";
 
 const FrontPage: FC = () => {
   const navigate = useNavigate();
+  clearUserData();
 
   const {
     isLoading: isLoadingHouses,
@@ -43,7 +45,7 @@ const FrontPage: FC = () => {
       <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
         {dataHouses?.demo.map((house, index) => (
           <li key={index}>
-            <AllHousesUI {...house} />
+            <AllHousesUI onClick={(value, visible) => {}} {...house} />
           </li>
         ))}
       </ul>

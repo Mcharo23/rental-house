@@ -54,7 +54,6 @@ export type CreateHouseInput = {
   imgUrl: Array<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   price: Scalars['Float']['input'];
-  status: Scalars['String']['input'];
 };
 
 export type CreateUserInput = {
@@ -221,7 +220,6 @@ export type UpdateHouseInput = {
   _id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
   price: Scalars['Float']['input'];
-  status: Scalars['String']['input'];
 };
 
 export type UpdatePasswordInput = {
@@ -288,7 +286,7 @@ export type BookedHouseQuery = { __typename?: 'Query', myHouse: Array<{ __typena
 export type GetDemoHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetDemoHousesQuery = { __typename?: 'Query', demo: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string } }> };
+export type GetDemoHousesQuery = { __typename?: 'Query', demo: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string, username: string, gender: string } }> };
 
 export type GetHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -527,6 +525,7 @@ export const GetDemoHousesDocument = `
     District
     Ward
     price
+    Description
     status
     imgUrl
     user {
@@ -534,6 +533,8 @@ export const GetDemoHousesDocument = `
       middleName
       lastname
       phoneNumber
+      username
+      gender
     }
   }
 }

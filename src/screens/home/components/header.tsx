@@ -37,7 +37,7 @@ const Headers: FC = () => {
           </span>
           <div className="flex flex-col w-full pl-3">
             <Text className="flex font-semibold text-gray-800 font-sans h-full rounded-lg p-2 w-full cursor-pointer">
-              {user?.login.user.lastname}
+              {user?.login.user.accountType}
             </Text>
           </div>
         </div>

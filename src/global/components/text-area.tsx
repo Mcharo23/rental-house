@@ -1,10 +1,17 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { InputTextProps } from "../interfaces/type";
 import { InputTextarea } from "primereact/inputtextarea";
 
-const TextArea: FC<InputTextProps> = ({ id,value, name, disabled, onChange }) => {
-
+const TextArea: FC<InputTextProps> = ({
+  id,
+  value,
+  name,
+  disabled,
+  onChange,
+}) => {
+  const [text, setText] = useState<string>("");
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setText(event.target.value);
     onChange(event.target.value);
   };
 
@@ -13,7 +20,7 @@ const TextArea: FC<InputTextProps> = ({ id,value, name, disabled, onChange }) =>
       <span className="p-float-label flex w-full text-xs">
         <InputTextarea
           id={id}
-          value={value}
+          value={value === "" ? text : value}
           onChange={handleInputChange}
           rows={5}
           cols={30}

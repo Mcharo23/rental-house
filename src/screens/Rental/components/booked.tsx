@@ -28,6 +28,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import LoadingNotification from "../../../global/components/load-notification";
 import UpdateNotification from "../../../global/components/update-notification";
 import showMessage from "../../../global/components/notification";
+import FormatDate from "../../../global/components/date-format";
 
 type BookedProps = {
   props: BookedHouseQuery["myHouse"][0];
@@ -47,35 +48,31 @@ const Booked: FC<BookedProps> = ({ props }) => {
   const toast = useRef<Toast>(null);
   const icon = "pi pi-exclamation-triangle";
 
+  const { mutate } = useTenantInMutation(graphqlRequestClient, {
+    onSuccess: (data: TenantInMutation) => {
+      queryClient.invalidateQueries(["bookedHouse"]);
+      UpdateNotification(
+        {
+          id: "tenantIn",
+          message: data.tenantIn,
+          title: "Successfully",
+        },
+        3000
+      );
 
-  const { mutate } = useTenantInMutation(
-    graphqlRequestClient,
-    {
-      onSuccess: (data: TenantInMutation) => {
-        queryClient.invalidateQueries(["bookedHouse"]);
-        UpdateNotification(
-          {
-            id: "tenantIn",
-            message: data.tenantIn,
-            title: "Successfully",
-          },
-          3000
-        );
+      return;
+    },
+    onError: (error: GraphQLError) => {
+      const errorMessage =
+        error.response.errors[0].extensions.originalError.message;
+      const title = error.response.errors[0].message;
 
-        return;
-      },
-      onError: (error: GraphQLError) => {
-        const errorMessage =
-          error.response.errors[0].extensions.originalError.message;
-        const title = error.response.errors[0].message;
-
-        notifications.hide("tenantIn");
-        Array.isArray(errorMessage)
-          ? showMessage(title, errorMessage)
-          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
-      },
-    }
-  );
+      notifications.hide("tenantIn");
+      Array.isArray(errorMessage)
+        ? showMessage(title, errorMessage)
+        : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
+    },
+  });
 
   useEffect(() => {
     const currentContract = props.contract.find(
@@ -215,7 +212,12 @@ const Booked: FC<BookedProps> = ({ props }) => {
           </span>
           <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
             <Divider orientation="vertical" />
-            <Text>{currentTenant?.createdAt}</Text>
+            <Text>
+              Signed on:{" "}
+              {currentTenant?.Date_of_signing
+                ? FormatDate(new Date(currentTenant.Date_of_signing))
+                : "N/A"}
+            </Text>
           </div>
         </div>
 

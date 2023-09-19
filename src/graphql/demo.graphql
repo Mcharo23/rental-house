@@ -6,6 +6,7 @@ query getDemoHouses {
     District
     Ward
     price
+    Description
     status
     imgUrl
     user {
@@ -13,6 +14,8 @@ query getDemoHouses {
       middleName
       lastname
       phoneNumber
+      username
+      gender
     }
   }
 }

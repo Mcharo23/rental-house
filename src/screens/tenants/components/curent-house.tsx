@@ -4,13 +4,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import CarouselScroll from "../../../global/components/rental-carousel";
 import { Divider, Indicator, Modal } from "@mantine/core";
 import { FiCalendar, FiMapPin } from "react-icons/fi";
-import {
-  FaEnvelope,
-  FaFileContract,
-  FaMoneyBill,
-  FaPhoneAlt,
-  FaUser,
-} from "react-icons/fa";
+import { FaEnvelope, FaPhoneAlt, FaUser } from "react-icons/fa";
 import { Text } from "@mantine/core";
 import {
   BookedHouseQuery,
@@ -20,8 +14,6 @@ import {
 import CustomPaper from "../../../global/components/paper";
 import CustomButtons from "../../../global/components/custom-button";
 import colors from "../../../lib/color/colors";
-import header from "../../home/components/header";
-import tenantIn from "../tenant-in";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import LoadingNotification from "../../../global/components/load-notification";
@@ -30,6 +22,7 @@ import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
 import showMessage from "../../../global/components/notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
+import FormatDate from "../../../global/components/date-format";
 
 type BookedProps = {
   props: BookedHouseQuery["myHouse"][0];
@@ -80,10 +73,11 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
       (contract) => contract.isCurrent === true
     );
 
-    const createdAt = new Date(currentContract?.createdAt);
-    const currentDate = new Date();
+    const Date_of_contract = new Date(currentContract?.Date_of_contract);
+    const End_of_contract = new Date(currentContract?.End_of_contract);
 
-    const timeDifference = currentDate.getTime() - createdAt.getTime();
+    const timeDifference =
+      End_of_contract.getTime() - Date_of_contract.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
 
     setCurrentTenant(currentContract);
@@ -100,10 +94,11 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
       (contract) => contract.isCurrent === true
     );
 
-    const createdAt = new Date(currentContract?.createdAt);
-    const currentDate = new Date();
+    const Date_of_contract = new Date(currentContract?.Date_of_contract);
+    const End_of_contract = new Date(currentContract?.End_of_contract);
 
-    const timeDifference = currentDate.getTime() - createdAt.getTime();
+    const timeDifference =
+      End_of_contract.getTime() - Date_of_contract.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
 
     setCurrentTenant(currentContract);
@@ -161,15 +156,27 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
         />
       </div>
       <Indicator
-        className={`absolute w-5 top-2 rounded-full left-3 bg-slate-200 items-center justify-center flex ${
-          dayDifference > 10 ? "" : "hidden"
+        className={`absolute w-7 p-1 top-2 rounded-full left-3 bg-red-700 items-center justify-center flex animate-pulse ${
+          dayDifference > -1 ? "" : "hidden"
         }`}
         processing
-        color="red"
+        color="cyan"
         withBorder
         size={18}
       >
-        <Text className="">{dayDifference}</Text>
+        <Text className="text-white">{dayDifference}</Text>
+      </Indicator>
+
+      <Indicator
+        className={`absolute w-7 p-1 top-2 rounded-full left-3 bg-red-700 items-center justify-center flex animate-ping ${
+          dayDifference < 0 ? "" : "hidden"
+        }`}
+        processing
+        color="indigo"
+        withBorder
+        size={18}
+      >
+        <Text className="text-white">{dayDifference}</Text>
       </Indicator>
 
       <div className="flex w-full h-auto flex-col mt-2 p-2 gap-2">
@@ -185,39 +192,8 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
             <Text>{props.Ward}</Text>
           </div>
         </div>
-        <div className="flex w-full place-content-between gap-2">
-          <div className="relative w-full hover:bg-stone-200 rounded-lg border border-slate-200">
-            <span className="absolute inset-y-0 flex items-center pl-2 text-text-light-blue">
-              <FaMoneyBill className="text-light-blue" />
-            </span>
-            <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
-              <Divider orientation="vertical" />
-              <Text>{props.price}$</Text>
-            </div>
-          </div>
-          <div className="relative w-full hover:bg-stone-200 rounded-lg border border-slate-200">
-            <span className="absolute inset-y-0 flex items-center pl-2 text-text-light-blue">
-              <FaFileContract className="text-light-blue" />
-            </span>
-            <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
-              <Divider orientation="vertical" />
-              <Text>Contracts {props.contract.length}</Text>
-            </div>
-          </div>
-        </div>
+
         <Divider my="xs" label="Current Tenant" labelPosition="center" />
-        <div className="relative w-full hover:bg-stone-200 rounded-lg border border-slate-200">
-          <span className="absolute inset-y-0 flex items-center pl-2 text-text-light-blue">
-            <FiCalendar className="text-light-blue" />
-          </span>
-          <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
-            <Divider orientation="vertical" />
-            <div className="flex flex-col">
-              <Text>Statrs: {currentTenant?.Date_of_contract}</Text>
-              <Text>Ends: {currentTenant?.End_of_contract}</Text>
-            </div>
-          </div>
-        </div>
 
         <div className="relative w-full hover:bg-stone-200 rounded-lg border border-slate-200">
           <span className="absolute inset-y-0 flex items-center pl-2 text-text-light-blue">
@@ -226,6 +202,29 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
           <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
             <Divider orientation="vertical" />
             <Text>{`${currentTenant?.Tenant.firstName} ${currentTenant?.Tenant.middleName} ${currentTenant?.Tenant.lastname}`}</Text>
+          </div>
+        </div>
+
+        <div className="relative w-full hover:bg-stone-200 rounded-lg border border-slate-200">
+          <span className="absolute inset-y-0 flex items-center pl-2 text-text-light-blue">
+            <FiCalendar className="text-light-blue" />
+          </span>
+          <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
+            <Divider orientation="vertical" />
+            <div className="flex flex-col">
+              <Text>
+                Statrs:{" "}
+                {currentTenant?.Date_of_contract
+                  ? FormatDate(new Date(currentTenant.Date_of_contract))
+                  : "N/A"}
+              </Text>
+              <Text>
+                Statrs:{" "}
+                {currentTenant?.End_of_contract
+                  ? FormatDate(new Date(currentTenant.End_of_contract))
+                  : "N/A"}
+              </Text>
+            </div>
           </div>
         </div>
 

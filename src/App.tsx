@@ -6,6 +6,7 @@ import RegisterPage from "./screens/register";
 import Rentals from "./screens/Rental/Rentals";
 import Account from "./screens/account/account";
 import Tenants from "./screens/tenants/tenant-in";
+import House from "./screens/house/house";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
         <Route path="/tenants" element={<Tenants />} />
         <Route path="/rentals" element={<Rentals />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/house" element={<House />} />
       </Routes>
     </BrowserRouter>
   );

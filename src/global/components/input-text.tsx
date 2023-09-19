@@ -1,5 +1,5 @@
 import { InputText } from "primereact/inputtext";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { CustomInputTextProps } from "../interfaces/type";
 
 const CustomInputField: FC<CustomInputTextProps> = ({
@@ -9,7 +9,9 @@ const CustomInputField: FC<CustomInputTextProps> = ({
   disabled,
   onChange,
 }) => {
+  const [text, setText] = useState<string>(value);
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setText(event.target.value);
     onChange(event.target.value);
   };
 
@@ -18,7 +20,7 @@ const CustomInputField: FC<CustomInputTextProps> = ({
       <span className="p-float-label flex w-full text-xs">
         <InputText
           id={id}
-          value={value}
+          value={value === "" ? text : value}
           onChange={handleOnChange}
           className="flex h-8 w-full"
           style={{ fontSize: "14px" }}

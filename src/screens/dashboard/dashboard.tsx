@@ -30,7 +30,6 @@ import UpdateNotification from "../../global/components/update-notification";
 const Dashboard: FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
-  const [selectedButton, setSelectedButton] = useState<string>("Owner");
   const [detailView, setDetailView] = useState<boolean>(false);
   const [filteredInAllHouse, setFilteredInAllHouse] = useState<
     GetHousesQuery["houses"][0][]
@@ -161,7 +160,7 @@ const Dashboard: FC = () => {
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
           dataHouses?.houses.map((house, index) => (
-            <li key={index}>
+            <li key={index} className="bg-red-400 w-96 flex">
               <AllHousesUI
                 onClick={(value, visible) => {
                   setDetailView(visible);
@@ -195,18 +194,6 @@ const Dashboard: FC = () => {
           <SearchBar onSearch={handleSearch} />
         </div>
         <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
-          <div className="bg-white w-36 h-full flex flex-row rounded-lg p-1">
-            <ToggleButtonGroup
-              onClick={setSelectedButton}
-              name={"Owner"}
-              selectedButton={selectedButton}
-            />
-            <ToggleButtonGroup
-              onClick={setSelectedButton}
-              name={"Tenant"}
-              selectedButton={selectedButton}
-            />
-          </div>
           <div className="bg-white h-full justify-center items-center flex w-10 rounded-lg">
             <FiBell style={{ height: "100%", fontSize: 30 }} />
           </div>
@@ -221,7 +208,7 @@ const Dashboard: FC = () => {
           <Text className="font-semibold font-serif">Popular of the week</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
-        <div className="w-full h-2/6 flex-row">
+        <div className="w-full h-2/6 flex-row  bg-green-400">
           <div
             className={`card justify-center items-center flex ${
               isLoadingHouses === false ? "hidden" : ""

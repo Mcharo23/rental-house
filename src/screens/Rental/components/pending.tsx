@@ -29,6 +29,7 @@ import UpdateNotification from "../../../global/components/update-notification";
 import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
 import showMessage from "../../../global/components/notification";
+import FormatDate from "../../../global/components/date-format";
 
 type PendingProps = {
   props: BookedHouseQuery["myHouse"][0];
@@ -271,7 +272,12 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
           </span>
           <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer ">
             <Divider orientation="vertical" />
-            <Text>{currentTenant?.createdAt}</Text>
+            <Text>
+              Requested on:{" "}
+              {currentTenant?.createdAt
+                ? FormatDate(new Date(currentTenant.createdAt))
+                : "N/A"}
+            </Text>{" "}
           </div>
         </div>
 

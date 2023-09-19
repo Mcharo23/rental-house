@@ -12,7 +12,6 @@ import {
   CreateContractInputMutation,
   GetHousesQuery,
   GetMyHouseQuery,
-  MyHouseType,
   UpdateHouseInputMutation,
   useCreateContractInputMutation,
   useCreateHouseInputMutation,
@@ -26,6 +25,7 @@ import { GraphQLError } from "graphql";
 import {
   clearUserData,
   getUserAccessToken,
+  getUserData,
 } from "../../utils/localStorageUtils";
 import { notifications } from "@mantine/notifications";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -45,10 +45,13 @@ import OthersHouseInfo from "./components/othersHouseInfo";
 
 const House: FC = () => {
   const queryClient = useQueryClient();
+  const user = getUserData();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
 
-  const [selectedButton, setSelectedButton] = useState<string>("Mine");
+  const [selectedButton, setSelectedButton] = useState<string>(
+    `${user?.login.user.accountType === "tenant" ? "Others" : "Mine"}`
+  );
   const [filteredHouse, setFilteredHouse] = useState<
     GetMyHouseQuery["myHouse"][0][]
   >([]);
@@ -71,7 +74,9 @@ const House: FC = () => {
   const [mineView, setMineView] = useState<boolean>(false);
   const [OthersView, setOthersView] = useState<boolean>(false);
 
-  const [selectedHouse, setSelectedHouse] = useState<GetMyHouseQuery['myHouse'][0]>({
+  const [selectedHouse, setSelectedHouse] = useState<
+    GetMyHouseQuery["myHouse"][0]
+  >({
     _id: "",
     name: "",
     Region: "",
@@ -94,7 +99,7 @@ const House: FC = () => {
           middleName: "",
           phoneNumber: "",
           username: "",
-        }
+        },
       },
     ],
   });
@@ -168,7 +173,7 @@ const House: FC = () => {
         queryClient.invalidateQueries(["getMyHouse"]);
         UpdateNotification(
           {
-            id: "update",
+            id: "update-house",
             message: data.updateHouse,
             title: "Successfully",
           },
@@ -180,7 +185,7 @@ const House: FC = () => {
           error.response.errors[0].extensions.originalError.message;
         const title = error.response.errors[0].message;
 
-        notifications.hide("update");
+        notifications.hide("update-house");
         Array.isArray(errorMessage)
           ? showMessage(title, errorMessage)
           : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
@@ -282,7 +287,6 @@ const House: FC = () => {
           District: district,
           Ward: ward,
           Description: description,
-          status: status,
           price: Number(price),
           imgUrl: imageUrl,
         },
@@ -354,7 +358,7 @@ const House: FC = () => {
 
   const HandleOnSave = async (value: MyHouseInfoUpdatedProps) => {
     LoadingNotification({
-      id: notificationId,
+      id: "update-house",
       message: "Please wait...",
       title: "Updating",
     });
@@ -364,7 +368,6 @@ const House: FC = () => {
         _id: value._id,
         name: value.name,
         price: Number(value.price),
-        status: value.status,
       },
     });
   };
@@ -423,12 +426,18 @@ const House: FC = () => {
 
   const renderHouses = () => {
     return (
-      <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
+      <ul
+        className={`flex bg-green-400 gap-3 h-full overscroll-auto overflow-auto ${
+          user?.login.user.accountType === "tenant"
+            ? "flex-col w-full sm:grid sm:grid-cols-2"
+            : "flex-row "
+        }`}
+      >
         {filteredInAllHouse.length === 0 && searchLength !== 0 ? (
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
           dataHouses?.houses.map((house, index) => (
-            <li key={index}>
+            <li key={index} className="flex w-full bg-red-400">
               <AllHousesUI
                 onClick={(value, visible) => {
                   setOthersView(visible);
@@ -456,9 +465,9 @@ const House: FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden w-full text-gray-800 gap-5">
+    <div className="flex flex-col h-screen overflow-hidden w-full text-gray-800 gap-5">
       {/*TOP SECTION*/}
-      <div className="w-full flex flex-row h-11 p-1 gap-5 items-center place-content-between ">
+      <div className="w-full flex flex-row  p-1 gap-5 items-center place-content-between ">
         <div className="w-1/2 sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full h-full sm:flex sm:justify-center  sm:items-center md:justify-center md:items-center lg:justify-center lg:items-center xl:justify-center xl:items-center 2xl:justify-center 2xl:items-center ">
           <SearchBar
             onSearch={
@@ -467,7 +476,11 @@ const House: FC = () => {
           />
         </div>
         <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
-          <div className="bg-white w-36 h-full flex flex-row rounded-lg p-1">
+          <div
+            className={`bg-white w-36 h-full flex flex-row rounded-lg p-1 ${
+              user?.login.user.accountType === "tenant" ? "hidden" : ""
+            }`}
+          >
             <ToggleButtonGroup
               onClick={setSelectedButton}
               name={"Mine"}
@@ -487,7 +500,11 @@ const House: FC = () => {
       {/*OWNER HOUSES SECTION*/}
       <div
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Mine" && !mineView ? "" : "hidden"
+          selectedButton === "Mine" &&
+          !mineView &&
+          user?.login.user.accountType !== "tenant"
+            ? ""
+            : "hidden"
         }`}
       >
         <div className="flex flex-row place-content-between gap-2">
@@ -617,15 +634,23 @@ const House: FC = () => {
       </div>
       {/*OTHHER HOUSES SECTION*/}
       <div
-        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Others" && !OthersView ? "" : "hidden"
+        className={`w-full overflow-auto text-sm gap-2 flex flex-col  ${
+          selectedButton === "Others" && !OthersView
+            ? "h-full"
+            : "hidden h-auto"
         }`}
       >
         <div className="flex flex-row place-content-between gap-2">
           <Text className="font-semibold font-serif">All Houses</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
-        <div className="w-full h-2/6 flex-row">
+        <div
+          className={`w-full bg-red-400 ${
+            user?.login.user.accountType === "tenant"
+              ? "flex-col h-full mb-4 overflow-auto"
+              : "flex-row h-2/6"
+          }`}
+        >
           <div
             className={`card justify-center items-center flex w-full ${
               isLoadingHouses === false ? "hidden" : ""
@@ -642,7 +667,11 @@ const House: FC = () => {
           </div>
           {renderHouses()}
         </div>
-        <div className="flex flex-row place-content-between gap-2">
+        <div
+          className={`flex flex-row place-content-between gap-2 ${
+            user?.login.user.accountType === "tenant" ? "hidden" : ""
+          }`}
+        >
           <Text className="font-semibold font-serif ">
             Find the nearest of you
           </Text>
@@ -654,7 +683,11 @@ const House: FC = () => {
       {/*EDITING PAGE*/}
       <div
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Mine" && mineView ? "" : "hidden"
+          selectedButton === "Mine" &&
+          mineView &&
+          user?.login.user.accountType !== "tenant"
+            ? ""
+            : "hidden"
         }`}
       >
         <MyHouseInfo

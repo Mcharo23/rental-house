@@ -10,7 +10,7 @@ import {
   useLoginUserInputMutation,
 } from "../generated/graphql";
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
-import { saveUserData } from "../utils/localStorageUtils";
+import { clearUserData, saveUserData } from "../utils/localStorageUtils";
 import { GraphQLError } from "graphql";
 import showMessage from "../global/components/notification";
 import { notifications } from "@mantine/notifications";
@@ -19,9 +19,9 @@ import UpdateNotification from "../global/components/update-notification";
 
 const LoginPage: FC = () => {
   const navigate = useNavigate();
+  clearUserData();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [notificationId, setNotificationId] = useState<string>("login");
 
   const queryClient = useQueryClient();
 
@@ -31,7 +31,7 @@ const LoginPage: FC = () => {
       saveUserData(data);
       UpdateNotification(
         {
-          id: notificationId,
+          id: "login",
           message: "Login Successful",
           title: "Login",
         },
@@ -42,7 +42,7 @@ const LoginPage: FC = () => {
     },
     onError: (error: GraphQLError) => {
       const errorMessage = error.response.errors[0].message;
-      notifications.hide(notificationId);
+      notifications.hide("login");
       Array.isArray(errorMessage)
         ? showMessage("Invalid", errorMessage)
         : showMessage("Invalid", [errorMessage]);
@@ -54,7 +54,7 @@ const LoginPage: FC = () => {
       showMessage("Oops!", ["All fields are required"]);
     } else {
       LoadingNotification({
-        id: notificationId,
+        id: "login",
         message: "Please wait while authenticating you",
         title: "Login",
       });
