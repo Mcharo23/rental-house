@@ -1,20 +1,26 @@
 import { Indicator } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { BookedHouseQuery } from "../../../generated/graphql";
 import {
-  clearUserData,
   getUserAccessToken,
 } from "../../../utils/localStorageUtils";
 import useFetchBookedHouses from "../../Rental/components/fetchBookedHouses";
-
-const RightBar = () => {
+import { differenceInDays } from "date-fns";
+import { useNavigate } from "react-router-dom";
+type rightBar = {
+  onClick: (value: string) => void;
+};
+const RightBar: FC<rightBar> = ({ onClick }) => {
   const [currentTenant, setCurrentTenant] =
     useState<BookedHouseQuery["myHouse"][0]["contract"][0]>();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [pendingHouse, setPendingHouse] = useState<
     BookedHouseQuery["myHouse"][0][]
   >([]);
-
+  const [houseWithExpiredContracts, setHouseWithExpiredContracts] = useState<
+    BookedHouseQuery["myHouse"][0][]
+  >([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const token = getUserAccessToken();
 
@@ -25,13 +31,33 @@ const RightBar = () => {
 
   const { isLoading, error, data } = useFetchBookedHouses(accessToken ?? "");
 
+  const today = new Date();
+
   useEffect(() => {
     if (data) {
       const housesWithPendingStatus = data.myHouse.filter(
-        (house: BookedHouseQuery["myHouse"][0]) => house.status === "Pending"
+        (house: BookedHouseQuery["myHouse"][0]) =>
+          house.status === "Pending" &&
+          house.contract.find((contract) => contract.isCurrent === true)
+      );
+
+      const filtered = data.myHouse.filter(
+        (house: BookedHouseQuery["myHouse"][0]) =>
+          house.status === "Booked" &&
+          house.contract.find((contract) => {
+            if (contract.End_of_contract) {
+              const endOfContract = new Date(contract.End_of_contract);
+              const daysDifference = differenceInDays(endOfContract, today);
+              return daysDifference < 1;
+            }
+            return false;
+          }) &&
+          house.contract.find((contract) => contract.isCurrent === true)
       );
 
       setPendingHouse(housesWithPendingStatus);
+      setHouseWithExpiredContracts(filtered);
+      console.log("auu", filtered);
     }
   }, [data]);
 
@@ -65,7 +91,7 @@ const RightBar = () => {
     const currentContract = item.contract.find(
       (contract) => contract.isCurrent === true
     );
-    return currentContract?.Tenant.firstName ?? '';
+    return currentContract?.Tenant.firstName ?? "";
   };
 
   return (
@@ -74,64 +100,89 @@ const RightBar = () => {
         <div className="flex h-52 w-full bg-white shadow-xl border border-slate-200 rounded-lg  mt-3 flex-col p-1">
           <span className="flex w-full  justify-center">
             <Indicator inline color="green" processing size={13}>
-              <text className="font-semibold underline">PENDING CONTRACTS</text>
+              <p
+                className="font-semibold underline hover:cursor-pointer"
+                onClick={() => onClick("rentals")}
+              >
+                PENDING CONTRACTS({pendingHouse.length})
+              </p>
             </Indicator>
           </span>
 
           <div className="flex flex-col overflow-auto">
-            {pendingHouse.map((item, index) => (
-              <span
-                className="flex w-full  h-16 mt-3 hover:cursor-pointer "
-                key={index}
-              >
-                <span className="w-20 h-12  flex justify-center rounded-full">
-                  <img
-                    className="flex rounded-lg"
-                    src={item.imgUrl[0]}
-                    alt="pc"
-                  />
-                </span>
-                <span className="w-full h-full ml-2 flex flex-col">
-                  <span className="font-semibold flex justify-between">
-                    <text className="font-semibold ">
-                      {getCurrentTenant(item)}
-                    </text>
+            {pendingHouse.length === 0 ? (
+              <span>No Pending Contracts</span>
+            ) : (
+              pendingHouse.map((item, index) => (
+                <span
+                  className="flex w-full  h-16 mt-3 hover:cursor-pointer "
+                  key={index}
+                  onClick={() => onClick("rentals")}
+                >
+                  <span className="w-20 h-12  flex justify-center rounded-full">
+                    <img
+                      className="flex rounded-lg"
+                      src={item.imgUrl[0]}
+                      alt="pc"
+                    />
                   </span>
-                  <span className="relative  w-full inline-block text-sm overflow-hidden">
-                    <span className="w-full block overflow-hidden whitespace-nowrap text-ellipsis">
-                      {item.name}
+                  <span className="w-full h-full ml-2 flex flex-col">
+                    <span className="font-semibold flex justify-between">
+                      <p className="font-semibold ">{getCurrentTenant(item)}</p>
+                    </span>
+                    <span className="relative  w-full inline-block text-sm overflow-hidden">
+                      <span className="w-full block overflow-hidden whitespace-nowrap text-ellipsis">
+                        {item.name}
+                      </span>
                     </span>
                   </span>
                 </span>
-              </span>
-            ))}
+              ))
+            )}
           </div>
         </div>
         <div className="flex h-52 w-full bg-white shadow-xl border border-slate-200 rounded-lg  mt-3 flex-col p-1">
           <span className="flex w-full  justify-center">
             <Indicator inline color="red" processing size={13}>
-              <text className="font-semibold underline">EXPIRED CONTRACTS</text>
+              <p
+                className="font-semibold underline hover:cursor-pointer"
+                onClick={() => onClick("tenants")}
+              >
+                EXPIRED CONTRACTS({houseWithExpiredContracts.length})
+              </p>
             </Indicator>
           </span>
 
           <div className="flex flex-col overflow-auto">
-            {/* {data?.map(() => (
-              <span className="flex w-full  h-16 mt-3 hover:cursor-pointer ">
-                <span className="w-20 h-12  flex justify-center rounded-full">
-                  <img className="flex rounded-lg" src={"Avatered"} alt="pc" />
-                </span>
-                <span className="w-full h-full ml-2 flex flex-col">
-                  <span className="font-semibold flex justify-between">
-                    <text className="font-semibold ">TenantName</text>
+            {houseWithExpiredContracts.length === 0 ? (
+              <span>No Expired Contracts</span>
+            ) : (
+              houseWithExpiredContracts.map((item, index) => (
+                <span
+                  className="flex w-full  h-16 mt-3 hover:cursor-pointer "
+                  key={index}
+                  onClick={() => onClick("tenants")}
+                >
+                  <span className="w-20 h-12  flex justify-center rounded-full">
+                    <img
+                      className="flex rounded-lg"
+                      src={item.imgUrl[0]}
+                      alt="pc"
+                    />
                   </span>
-                  <span className="relative  w-full inline-block text-sm overflow-hidden">
-                    <span className="w-full block overflow-hidden whitespace-nowrap text-ellipsis">
-                      House name goes here
+                  <span className="w-full h-full ml-2 flex flex-col">
+                    <span className="font-semibold flex justify-between">
+                      <p className="font-semibold ">{getCurrentTenant(item)}</p>
+                    </span>
+                    <span className="relative  w-full inline-block text-sm overflow-hidden">
+                      <span className="w-full block overflow-hidden whitespace-nowrap text-ellipsis">
+                        {item.name}
+                      </span>
                     </span>
                   </span>
                 </span>
-              </span>
-            ))} */}
+              ))
+            )}
           </div>
         </div>
       </div>

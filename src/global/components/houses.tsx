@@ -35,7 +35,7 @@ const AllHousesUI: FC<GetHousesQuery["houses"][0] & AllHousesUIProps> = ({
 
   return (
     <div
-      className="flex w-64 h-auto flex-col bg-white p-2"
+      className="flex w-64 h-full flex-col bg-white p-2"
       style={{ borderRadius: 10 }}
       onClick={handleSelectedHouse}
     >

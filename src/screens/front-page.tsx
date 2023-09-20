@@ -45,7 +45,7 @@ const FrontPage: FC = () => {
       <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
         {dataHouses?.demo.map((house, index) => (
           <li key={index}>
-            <AllHousesUI onClick={(value, visible) => {}} {...house} />
+            <AllHousesUI onClick={() => {}} {...house} />
           </li>
         ))}
       </ul>

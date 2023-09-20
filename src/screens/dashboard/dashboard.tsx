@@ -1,7 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Text } from "@mantine/core";
 import { FiBell, FiMapPin } from "react-icons/fi";
-import ToggleButtonGroup from "../../global/components/toggle-button";
 import SearchBar from "../../global/components/search-bar";
 import AllHousesUI from "../../global/components/houses";
 import {
@@ -52,6 +51,7 @@ const Dashboard: FC = () => {
       middleName: "",
       phoneNumber: "",
       username: "",
+      gender: ""
     },
   });
   const [searchLength, setSearchLength] = useState<number>(0);

@@ -65,12 +65,11 @@ const HomePage: FC = () => {
       aside={
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
           <Aside
-            
             hiddenBreakpoint="sm"
             width={{ sm: 250, lg: 350 }}
             className="flex justify-center items-center"
           >
-            <RightBar/>
+            <RightBar onClick={(value) => setActiveScreen(value)} />
           </Aside>
         </MediaQuery>
       }
