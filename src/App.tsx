@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./screens/home/home-page";
 import LoginPage from "./auth/auth";
 import FrontPage from "./screens/front-page";
-import RegisterPage from "./screens/register";
+import RegisterPage from "./registration/register";
 import Rentals from "./screens/Rental/Rentals";
 import Account from "./screens/account/account";
 import Tenants from "./screens/tenants/tenant";

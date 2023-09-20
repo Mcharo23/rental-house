@@ -2,13 +2,11 @@ import { FC, useEffect, useState } from "react";
 import { FiBell } from "react-icons/fi";
 import SearchBar from "../../global/components/search-bar";
 import ToggleButtonGroup from "../../global/components/toggle-button";
-import { BookedHouseQuery, useBookedHouseQuery } from "../../generated/graphql";
-import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
+import { BookedHouseQuery } from "../../generated/graphql";
 import {
   clearUserData,
   getUserAccessToken,
 } from "../../utils/localStorageUtils";
-import { useQueryClient } from "@tanstack/react-query";
 import { Text } from "@mantine/core";
 import PendingHouse from "./components/pending";
 import Booked from "./components/booked";
@@ -16,7 +14,6 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import useFetchBookedHouses from "./components/fetchBookedHouses";
 
 const Rentals: FC = () => {
-  const queryClient = useQueryClient();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [searchPendingLength, setSearchPendingLength] = useState<number>(0);
   const [searchBookedLength, setSearchBookedLength] = useState<number>(0);

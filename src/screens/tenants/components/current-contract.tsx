@@ -19,7 +19,6 @@ const CurrentContractUI: FC<ContractProps> = ({ props }) => {
 
   useEffect(() => {
     const Date_of_signing = new Date(props.Date_of_signing);
-    const Date_of_contract = new Date(props.Date_of_contract);
     const End_of_contract = new Date(props.End_of_contract);
     const Current_date = new Date();
     const Created_At = new Date(props.createdAt);
@@ -38,8 +37,7 @@ const CurrentContractUI: FC<ContractProps> = ({ props }) => {
 
       setDaysDifference(Math.floor(daysDifference));
     } else {
-      const timeDifference =
-        End_of_contract.getTime() - Date_of_contract.getTime();
+      const timeDifference = End_of_contract.getTime() - Current_date.getTime();
       const daysDifference = timeDifference / (1000 * 3600 * 24);
 
       setDaysDifference(Math.floor(daysDifference));
@@ -93,10 +91,10 @@ const CurrentContractUI: FC<ContractProps> = ({ props }) => {
           <span className="absolute inset-y-0 flex items-center pl-2">
             <FiMapPin className="text-light-blue" />
           </span>
-          <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer">
-            <Text>{props.House.Region},</Text>
-            <Text>{props.House.District},</Text>
-            <Text>{props.House.Ward}</Text>
+          <div className="h-full flex p-2 pl-8 w-full cursor-pointer">
+            <Text>
+              {props.House.Region},{props.House.District},{props.House.Ward}
+            </Text>
           </div>
         </div>
 

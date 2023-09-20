@@ -2,7 +2,6 @@ import { FC, useEffect, useRef, useState } from "react";
 import {
   BookedHouseQuery,
   RejectContractMutation,
-  SignContractMutation,
   useRejectContractMutation,
   useSignContractMutation,
 } from "../../../generated/graphql";
@@ -81,7 +80,7 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
   const { mutate: SignContract } = useSignContractMutation(
     graphqlRequestClient,
     {
-      onSuccess: (data: SignContractMutation) => {
+      onSuccess: () => {
         queryClient.invalidateQueries(["bookedHouse"]);
         UpdateNotification(
           {

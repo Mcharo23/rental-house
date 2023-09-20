@@ -186,10 +186,10 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
           <span className="absolute inset-y-0 flex items-center pl-2">
             <FiMapPin className="text-light-blue" />
           </span>
-          <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer">
-            <Text>{props.Region},</Text>
-            <Text>{props.District},</Text>
-            <Text>{props.Ward}</Text>
+          <div className="h-full flex p-2 pl-8 w-full cursor-pointer">
+            <Text>
+              {props.Region}, {props.District}, {props.Ward}
+            </Text>
           </div>
         </div>
 

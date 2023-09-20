@@ -43,6 +43,7 @@ import LoadingNotification from "../../global/components/load-notification";
 import CustomizedNotification from "../../global/components/customized-notification";
 import OthersHouseInfo from "./components/othersHouseInfo";
 import TenantHouseUI from "./components/houses";
+import { AccountType } from "../../lib/enums/gender";
 
 const House: FC = () => {
   const queryClient = useQueryClient();
@@ -51,7 +52,7 @@ const House: FC = () => {
   const [shouldFetchData, setShouldFetchData] = useState(false);
 
   const [selectedButton, setSelectedButton] = useState<string>(
-    `${user?.login.user.accountType === "tenant" ? "Others" : "Mine"}`
+    `${user?.login.user.accountType === AccountType.TENANT ? "Others" : "Mine"}`
   );
   const [filteredHouse, setFilteredHouse] = useState<
     GetMyHouseQuery["myHouse"][0][]
@@ -429,7 +430,7 @@ const House: FC = () => {
     return (
       <ul
         className={`flex gap-3 h-full overscroll-auto overflow-auto ${
-          user?.login.user.accountType === "tenant"
+          user?.login.user.accountType === AccountType.TENANT
             ? "flex-col w-full sm:grid sm:grid-cols-2 2xl:grid-cols-3"
             : "flex-row "
         }`}
@@ -438,7 +439,7 @@ const House: FC = () => {
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
           dataHouses?.houses.map((house, index) =>
-            user?.login.user.accountType === "tenant" ? (
+            user?.login.user.accountType === AccountType.TENANT ? (
               <li key={index} className="">
                 <TenantHouseUI
                   onClick={(value, visible) => {
@@ -462,7 +463,7 @@ const House: FC = () => {
           )
         ) : (
           filteredInAllHouse.map((house, index) =>
-            user?.login.user.accountType === "tenant" ? (
+            user?.login.user.accountType === AccountType.TENANT ? (
               <li key={index}>
                 <TenantHouseUI
                   onClick={(value, visible) => {
@@ -503,7 +504,7 @@ const House: FC = () => {
         <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
           <div
             className={`bg-white w-36 h-full flex flex-row rounded-lg p-1 ${
-              user?.login.user.accountType === "tenant" ? "hidden" : ""
+              user?.login.user.accountType === AccountType.TENANT ? "hidden" : ""
             }`}
           >
             <ToggleButtonGroup
@@ -527,7 +528,7 @@ const House: FC = () => {
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
           selectedButton === "Mine" &&
           !mineView &&
-          user?.login.user.accountType !== "tenant"
+          user?.login.user.accountType !== AccountType.TENANT
             ? ""
             : "hidden"
         }`}
@@ -671,7 +672,7 @@ const House: FC = () => {
         </div>
         <div
           className={`w-full ${
-            user?.login.user.accountType === "tenant"
+            user?.login.user.accountType === AccountType.TENANT
               ? "flex-col h-full mb-4 overflow-auto"
               : "flex-row h-2/6"
           }`}
@@ -694,7 +695,7 @@ const House: FC = () => {
         </div>
         <div
           className={`flex flex-row place-content-between gap-2 ${
-            user?.login.user.accountType === "tenant" ? "hidden" : ""
+            user?.login.user.accountType === AccountType.TENANT ? "hidden" : ""
           }`}
         >
           <Text className="font-semibold font-serif ">
@@ -710,7 +711,7 @@ const House: FC = () => {
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
           selectedButton === "Mine" &&
           mineView &&
-          user?.login.user.accountType !== "tenant"
+          user?.login.user.accountType !== AccountType.TENANT
             ? ""
             : "hidden"
         }`}

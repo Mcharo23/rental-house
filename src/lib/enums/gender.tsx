@@ -4,6 +4,6 @@ export const Gender = {
 };
 
 export const AccountType = {
-  TENANT: "ternant",
+  TENANT: "tenant",
   OWNER: "Owner",
 };

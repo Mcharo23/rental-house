@@ -16,6 +16,7 @@ import { getUserData } from "../../../utils/localStorageUtils";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import CustomInputField from "../../../global/components/input-text";
+import { AccountType } from "../../../lib/enums/gender";
 
 const OthersHouseInfo: FC<OthersHouseInfoProps> = ({
   onClickBack,
@@ -390,7 +391,10 @@ const OthersHouseInfo: FC<OthersHouseInfoProps> = ({
 
         <div
           className={`justify-center items-center rounded-lg flex mt-5 ${
-            house.user.username === user?.login.user.username ? "hidden" : ""
+            house.user.username === user?.login.user.username ||
+            user?.login.user.accountType !== AccountType.TENANT
+              ? "hidden"
+              : ""
           }`}
         >
           <div className="w-full sm:w-72 md:w-60 lg:w-72 xl:w-96 2xl:w-96">

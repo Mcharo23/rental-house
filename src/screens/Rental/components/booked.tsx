@@ -19,7 +19,6 @@ import CustomPaper from "../../../global/components/paper";
 import CarouselScroll from "../../../global/components/rental-carousel";
 import colors from "../../../lib/color/colors";
 import { useQueryClient } from "@tanstack/react-query";
-import { getUserAccessToken } from "../../../utils/localStorageUtils";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
@@ -79,10 +78,10 @@ const Booked: FC<BookedProps> = ({ props }) => {
       (contract) => contract.isCurrent === true
     );
 
-    const createdAt = new Date(currentContract?.createdAt);
+    const Date_of_signing = new Date(currentContract?.Date_of_signing);
     const currentDate = new Date();
 
-    const timeDifference = currentDate.getTime() - createdAt.getTime();
+    const timeDifference = currentDate.getTime() - Date_of_signing.getTime();
     const daysDifference = timeDifference / (1000 * 3600 * 24);
 
     setCurrentTenant(currentContract);
@@ -179,10 +178,10 @@ const Booked: FC<BookedProps> = ({ props }) => {
           <span className="absolute inset-y-0 flex items-center pl-2">
             <FiMapPin className="text-light-blue" />
           </span>
-          <div className="h-full flex flex-row gap-2 rounded-lg p-2 pl-8 w-full cursor-pointer">
-            <Text>{props.Region},</Text>
-            <Text>{props.District},</Text>
-            <Text>{props.Ward}</Text>
+          <div className="h-full flex p-2 pl-8 w-full cursor-pointer">
+            <Text>
+              {props.Region},{props.District}, {props.Ward}
+            </Text>
           </div>
         </div>
         <div className="flex w-full place-content-between gap-2">

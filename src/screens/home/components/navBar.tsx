@@ -6,6 +6,7 @@ import { clearUserData, getUserData } from "../../../utils/localStorageUtils";
 import { NavBarprop } from "../interface/type";
 import { FaHouseUser } from "react-icons/fa";
 import { Divider } from "primereact/divider";
+import { AccountType } from "../../../lib/enums/gender";
 
 const NavBar: FC<NavBarprop> = ({ onClick }) => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
           className={`relative w-full  ${
             activeScreen === "rentals"
               ? "bg-gray-200 text-blue-600"
-              : user?.login.user.accountType === "tenant"
+              : user?.login.user.accountType === AccountType.TENANT
               ? "hidden"
               : ""
           }`}
@@ -75,7 +76,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
           className={`relative w-full  ${
             activeScreen === "tenants"
               ? "bg-gray-200 text-blue-600"
-              : user?.login.user.accountType === "tenant"
+              : user?.login.user.accountType === AccountType.TENANT
               ? "hidden"
               : ""
           }`}
@@ -93,7 +94,7 @@ const NavBar: FC<NavBarprop> = ({ onClick }) => {
           className={`relative w-full  ${
             activeScreen === "contracts"
               ? "bg-gray-200 text-blue-600"
-              : user?.login.user.accountType !== "tenant"
+              : user?.login.user.accountType !== AccountType.TENANT
               ? "hidden"
               : ""
           }`}
