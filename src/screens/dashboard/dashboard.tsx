@@ -160,11 +160,7 @@ const Dashboard: FC = () => {
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
           dataHouses?.houses.map((house, index) => (
-<<<<<<< HEAD
-            <li key={index} className=" w-96 flex">
-=======
             <li key={index}>
->>>>>>> 83a554c7d22fdde900e07873f55a1fe2e3fd5d83
               <AllHousesUI
                 onClick={(value, visible) => {
                   setDetailView(visible);
@@ -212,11 +208,7 @@ const Dashboard: FC = () => {
           <Text className="font-semibold font-serif">Popular of the week</Text>
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
-<<<<<<< HEAD
-        <div className="w-full h-2/6 flex-row  ">
-=======
         <div className="w-full h-2/6 flex-row">
->>>>>>> 83a554c7d22fdde900e07873f55a1fe2e3fd5d83
           <div
             className={`card justify-center items-center flex ${
               isLoadingHouses === false ? "hidden" : ""
