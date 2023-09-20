@@ -47,7 +47,7 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
       queryClient.invalidateQueries(["bookedHouse"]);
       UpdateNotification(
         {
-          id: "tenantIn",
+          id: "tenantOut",
           message: data.tenantOut,
           title: "Successfully",
         },

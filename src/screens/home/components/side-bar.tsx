@@ -11,7 +11,7 @@ import MessagesUI from "../../../global/components/messageUI";
 import { FaLightbulb } from "react-icons/fa";
 
 const Sidebar: FC = () => {
-  const [messages, setMessages] = useState<MessagesProps[]>(MESSAGES);
+  const [messages] = useState<MessagesProps[]>(MESSAGES);
 
   const renderMessages = () => {
     return (

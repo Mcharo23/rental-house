@@ -37,7 +37,10 @@ const Tenants: FC = () => {
       const current = data.myHouse.filter(
         (house: BookedHouseQuery["myHouse"][0]) =>
           house.status === "Booked" &&
-          house.contract.some((contract) => contract.Date_of_contract !== null)
+          house.contract.find(
+            (contract) =>
+              contract.isCurrent === true && contract.Date_of_contract !== null
+          )
       );
 
       setCurrentHouses(current);

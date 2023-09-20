@@ -110,8 +110,10 @@ const Rentals: FC = () => {
   const renderPendingHouses = () => {
     return (
       <ul className="flex flex-col sm:flex-col gap-3 sm:grid xl:grid-cols-2 2xl:grid-cols-4">
-        {filteredPending.length === 0 && searchPendingLength == 0 ? (
-          <div className="font-sans text-md flex h-full w-full  ">No House With Pending Contract Yet</div>
+        {filteredPending.length === 0 && searchPendingLength !== 0 ? (
+          <div className="font-sans text-md flex h-full w-full  ">
+            No House With Pending Contract Yet
+          </div>
         ) : searchPendingLength === 0 ? (
           pendingHouse.map((house, index) => (
             <li key={index}>
@@ -132,8 +134,8 @@ const Rentals: FC = () => {
   const renderBookedHouses = () => {
     return (
       <ul className="flex flex-col sm:flex-col gap-3 sm:grid xl:grid-cols-2 2xl:grid-cols-4">
-        {filteredPending.length === 0 && searchBookedLength == 0 ? (
-          <div className="font-sans text-md">No Booked House Yet</div>
+        {filteredPending.length === 0 && searchBookedLength !== 0 ? (
+          <div className="font-sans text-md"></div>
         ) : searchBookedLength === 0 ? (
           bookedHouse.map((house, index) => (
             <li key={index}>

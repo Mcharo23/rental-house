@@ -52,10 +52,7 @@ const CurrentContractUI: FC<ContractProps> = ({ props }) => {
   return (
     <div className="flex full h-full flex-col w-full bg-white rounded-lg p-1 relative">
       <div>
-        <CarouselScroll
-          imgUrl={props.House.imgUrl}
-          scrollStep={1}
-        />
+        <CarouselScroll imgUrl={props.House.imgUrl} scrollStep={1} />
       </div>
       <Indicator
         className={`absolute w-7 p-1 top-2 rounded-full left-3 bg-red-700 items-center justify-center flex animate-pulse ${
@@ -70,8 +67,8 @@ const CurrentContractUI: FC<ContractProps> = ({ props }) => {
       </Indicator>
 
       <Indicator
-        className={`absolute w-7 p-1 top-2 rounded-full left-5 bg-red-700 items-center justify-center flex animate-bounce ${
-          props.Date_of_signing === null && props.Date_of_contract === null
+        className={`absolute p-1 top-2 rounded-lg left-5 bg-red-700 items-center justify-center flex animate-bounce ${
+          props.Date_of_signing === null || props.Date_of_contract === null
             ? ""
             : "hidden"
         }`}
