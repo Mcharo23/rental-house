@@ -110,9 +110,7 @@ const Tenants: FC = () => {
         className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full`}
       >
         <div className="flex flex-row place-content-between gap-2">
-          <Text className="font-semibold font-serif">
-            Current occupied houses
-          </Text>
+          <Text className="font-semibold font-serif">Current Booked House</Text>
         </div>
         <div
           className={`card justify-center items-center flex ${

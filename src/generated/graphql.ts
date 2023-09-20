@@ -293,6 +293,11 @@ export type GetHousesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetHousesQuery = { __typename?: 'Query', houses: Array<{ __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, Description: string, status: string, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, phoneNumber: string, username: string, gender: string } }> };
 
+export type MyContractQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyContractQuery = { __typename?: 'Query', myContract: Array<{ __typename?: 'ContractType', Date_of_signing?: any | null, Date_of_contract?: any | null, End_of_contract?: any | null, Duration: number, Total_rent: string, _id: string, isCurrent: boolean, createdAt: any, House: { __typename?: 'HouseType', _id: string, name: string, Region: string, District: string, Ward: string, price: number, imgUrl: Array<string>, user: { __typename?: 'UserType', firstName: string, middleName: string, lastname: string, gender: string, phoneNumber: string, username: string } } }> };
+
 export type GetMyHouseQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -602,6 +607,51 @@ export const useGetHousesQuery = <
     useQuery<GetHousesQuery, TError, TData>(
       variables === undefined ? ['getHouses'] : ['getHouses', variables],
       fetcher<GetHousesQuery, GetHousesQueryVariables>(client, GetHousesDocument, variables, headers),
+      options
+    );
+export const MyContractDocument = `
+    query myContract {
+  myContract {
+    Date_of_signing
+    Date_of_contract
+    End_of_contract
+    Duration
+    Total_rent
+    _id
+    isCurrent
+    createdAt
+    House {
+      _id
+      name
+      Region
+      District
+      Ward
+      price
+      imgUrl
+      user {
+        firstName
+        middleName
+        lastname
+        gender
+        phoneNumber
+        username
+      }
+    }
+  }
+}
+    `;
+export const useMyContractQuery = <
+      TData = MyContractQuery,
+      TError = unknown
+    >(
+      client: GraphQLClient,
+      variables?: MyContractQueryVariables,
+      options?: UseQueryOptions<MyContractQuery, TError, TData>,
+      headers?: RequestInit['headers']
+    ) =>
+    useQuery<MyContractQuery, TError, TData>(
+      variables === undefined ? ['myContract'] : ['myContract', variables],
+      fetcher<MyContractQuery, MyContractQueryVariables>(client, MyContractDocument, variables, headers),
       options
     );
 export const GetMyHouseDocument = `

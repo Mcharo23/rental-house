@@ -42,6 +42,7 @@ import UpdateNotification from "../../global/components/update-notification";
 import LoadingNotification from "../../global/components/load-notification";
 import CustomizedNotification from "../../global/components/customized-notification";
 import OthersHouseInfo from "./components/othersHouseInfo";
+import TenantHouseUI from "./components/houses";
 
 const House: FC = () => {
   const queryClient = useQueryClient();
@@ -427,38 +428,62 @@ const House: FC = () => {
   const renderHouses = () => {
     return (
       <ul
-        className={`flex bg-green-400 gap-3 h-full overscroll-auto overflow-auto ${
+        className={`flex gap-3 h-full overscroll-auto overflow-auto ${
           user?.login.user.accountType === "tenant"
-            ? "flex-col w-full sm:grid sm:grid-cols-2"
+            ? "flex-col w-full sm:grid sm:grid-cols-2 2xl:grid-cols-3"
             : "flex-row "
         }`}
       >
         {filteredInAllHouse.length === 0 && searchLength !== 0 ? (
           <div className="font-sans text-2xl"></div>
         ) : searchLength === 0 ? (
-          dataHouses?.houses.map((house, index) => (
-            <li key={index} className="flex w-full bg-red-400">
-              <AllHousesUI
-                onClick={(value, visible) => {
-                  setOthersView(visible);
-                  setSelectedOthersHouse(value);
-                }}
-                {...house}
-              />
-            </li>
-          ))
+          dataHouses?.houses.map((house, index) =>
+            user?.login.user.accountType === "tenant" ? (
+              <li key={index} className="">
+                <TenantHouseUI
+                  onClick={(value, visible) => {
+                    setOthersView(visible);
+                    setSelectedOthersHouse(value);
+                  }}
+                  {...house}
+                />
+              </li>
+            ) : (
+              <li key={index} className="">
+                <AllHousesUI
+                  onClick={(value, visible) => {
+                    setOthersView(visible);
+                    setSelectedOthersHouse(value);
+                  }}
+                  {...house}
+                />
+              </li>
+            )
+          )
         ) : (
-          filteredInAllHouse.map((house, index) => (
-            <li key={index}>
-              <AllHousesUI
-                onClick={(value, visible) => {
-                  setOthersView(visible);
-                  setSelectedOthersHouse(value);
-                }}
-                {...house}
-              />
-            </li>
-          ))
+          filteredInAllHouse.map((house, index) =>
+            user?.login.user.accountType === "tenant" ? (
+              <li key={index}>
+                <TenantHouseUI
+                  onClick={(value, visible) => {
+                    setOthersView(visible);
+                    setSelectedOthersHouse(value);
+                  }}
+                  {...house}
+                />
+              </li>
+            ) : (
+              <li key={index}>
+                <AllHousesUI
+                  onClick={(value, visible) => {
+                    setOthersView(visible);
+                    setSelectedOthersHouse(value);
+                  }}
+                  {...house}
+                />
+              </li>
+            )
+          )
         )}
       </ul>
     );
@@ -645,7 +670,7 @@ const House: FC = () => {
           <Text className="font-sans text-blue-600">Seen More</Text>
         </div>
         <div
-          className={`w-full bg-red-400 ${
+          className={`w-full ${
             user?.login.user.accountType === "tenant"
               ? "flex-col h-full mb-4 overflow-auto"
               : "flex-row h-2/6"
