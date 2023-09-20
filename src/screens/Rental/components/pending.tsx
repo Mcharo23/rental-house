@@ -195,7 +195,7 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
       detail: "You have rejected",
       life: 3000,
     });
-  };
+  };console.log(props)
 
   return (
     <div className="flex full h-full flex-col w-full bg-white rounded-lg p-1 relative">

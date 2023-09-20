@@ -6,6 +6,7 @@ import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Notifications } from "@mantine/notifications";
 import { PrimeReactProvider } from "primereact/api";
+import { ChakraProvider } from "@chakra-ui/react";
 
 //theme
 import "primereact/resources/themes/lara-light-indigo/theme.css";
@@ -28,7 +29,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       <MantineProvider withGlobalStyles withNormalizeCSS>
         <Notifications limit={3} position="top-right" />
         <PrimeReactProvider>
-          <App />
+          <ChakraProvider>
+            <App />
+          </ChakraProvider>
         </PrimeReactProvider>
       </MantineProvider>
     </QueryClientProvider>

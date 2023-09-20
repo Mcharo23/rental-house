@@ -198,7 +198,7 @@ export type Query = {
   myHouse: Array<MyHouseType>;
   user: UserType;
   users: Array<UserType>;
-  watchContract: Array<ContractType>;
+  watchTenantContract: Array<ContractType>;
 };
 
 
@@ -325,6 +325,20 @@ export type TenantOutMutationVariables = Exact<{
 
 
 export type TenantOutMutation = { __typename?: 'Mutation', tenantOut: string };
+
+export type UpdatePasswordInputMutationVariables = Exact<{
+  input: UpdatePasswordInput;
+}>;
+
+
+export type UpdatePasswordInputMutation = { __typename?: 'Mutation', updatePassword: string };
+
+export type UpdateUserInputMutationVariables = Exact<{
+  input: UpdateUserInput;
+}>;
+
+
+export type UpdateUserInputMutation = { __typename?: 'Mutation', updateUser: string };
 
 
 export const CreateContractInputDocument = `
@@ -721,5 +735,41 @@ export const useTenantOutMutation = <
     useMutation<TenantOutMutation, TError, TenantOutMutationVariables, TContext>(
       ['tenantOut'],
       (variables?: TenantOutMutationVariables) => fetcher<TenantOutMutation, TenantOutMutationVariables>(client, TenantOutDocument, variables, headers)(),
+      options
+    );
+export const UpdatePasswordInputDocument = `
+    mutation UpdatePasswordInput($input: UpdatePasswordInput!) {
+  updatePassword(updatePasswordInput: $input)
+}
+    `;
+export const useUpdatePasswordInputMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdatePasswordInputMutation, TError, UpdatePasswordInputMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdatePasswordInputMutation, TError, UpdatePasswordInputMutationVariables, TContext>(
+      ['UpdatePasswordInput'],
+      (variables?: UpdatePasswordInputMutationVariables) => fetcher<UpdatePasswordInputMutation, UpdatePasswordInputMutationVariables>(client, UpdatePasswordInputDocument, variables, headers)(),
+      options
+    );
+export const UpdateUserInputDocument = `
+    mutation UpdateUserInput($input: UpdateUserInput!) {
+  updateUser(updateUserInput: $input)
+}
+    `;
+export const useUpdateUserInputMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(
+      client: GraphQLClient,
+      options?: UseMutationOptions<UpdateUserInputMutation, TError, UpdateUserInputMutationVariables, TContext>,
+      headers?: RequestInit['headers']
+    ) =>
+    useMutation<UpdateUserInputMutation, TError, UpdateUserInputMutationVariables, TContext>(
+      ['UpdateUserInput'],
+      (variables?: UpdateUserInputMutationVariables) => fetcher<UpdateUserInputMutation, UpdateUserInputMutationVariables>(client, UpdateUserInputDocument, variables, headers)(),
       options
     );

@@ -22,17 +22,16 @@ const Rentals: FC = () => {
   const [searchBookedLength, setSearchBookedLength] = useState<number>(0);
 
   const [selectedButton, setSelectedButton] = useState<string>("Pending");
-  const [bookedHouse, setBookedHouse] = useState<
-    BookedHouseQuery["myHouse"][0][]
-  >([]);
-  const [pendingHouse, setPendingHouse] = useState<
-    BookedHouseQuery["myHouse"][0][]
-  >([]);
-
   const [filteredPending, setFilteredPending] = useState<
     BookedHouseQuery["myHouse"][0][]
   >([]);
   const [filteredBooked, setFilteredBooked] = useState<
+    BookedHouseQuery["myHouse"][0][]
+  >([]);
+  const [bookedHouse, setBookedHouse] = useState<
+    BookedHouseQuery["myHouse"][0][]
+  >([]);
+  const [pendingHouse, setPendingHouse] = useState<
     BookedHouseQuery["myHouse"][0][]
   >([]);
 

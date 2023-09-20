@@ -10,7 +10,6 @@ import {
 } from "@mantine/core";
 
 import Account from "../account/account";
-import Sidebar from "./components/side-bar";
 
 import Headers from "./components/header";
 import NavBar from "./components/navBar";
@@ -21,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import ShowNotification from "../../global/components/show-notification";
 import Rentals from "../Rental/Rentals";
 import Tenants from "../tenants/tenant-in";
+import RightBar from "./components/RightBar";
 
 const HomePage: FC = () => {
   const theme = useMantineTheme();
@@ -65,12 +65,12 @@ const HomePage: FC = () => {
       aside={
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
           <Aside
-            p="md"
+            
             hiddenBreakpoint="sm"
             width={{ sm: 250, lg: 350 }}
-            className=""
+            className="flex justify-center items-center"
           >
-            <Sidebar />
+            <RightBar/>
           </Aside>
         </MediaQuery>
       }

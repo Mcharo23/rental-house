@@ -35,10 +35,11 @@ const Headers: FC = () => {
           <span className="absolute inset-y-0 flex items-center">
             <FaUser className="bg-light-blue text-white-smoke rounded-full text-lg p-1" />
           </span>
-          <div className="flex flex-col w-full pl-3">
-            <Text className="flex font-semibold text-gray-800 font-sans h-full rounded-lg p-2 w-full cursor-pointer">
+          <div className="flex flex-row w-full pl-3">
+            <Text className="flex font-semibold text-gray-800 pr-1 font-sans h-full rounded-lg p-2 w-full cursor-pointer">
               {user?.login.user.accountType}
             </Text>
+            <Text className="flex font-semibold text-gray-800  font-sans h-full rounded-lg p-2 w-full cursor-pointer">{user?.login.user.firstName}</Text>
           </div>
         </div>
       </div>
