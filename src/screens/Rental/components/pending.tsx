@@ -194,7 +194,8 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
       detail: "You have rejected",
       life: 3000,
     });
-  };console.log(props)
+  };
+  console.log(props);
 
   return (
     <div className="flex full h-full flex-col w-full bg-white rounded-lg p-1 relative">
@@ -213,11 +214,7 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
         reject={reject}
       />
       <div>
-        <CarouselScroll
-          imgUrl={props.imgUrl}
-          visibleSlides={1}
-          scrollStep={1}
-        />
+        <CarouselScroll imgUrl={props.imgUrl} scrollStep={1} />
       </div>
       <Indicator
         className={`absolute w-5 top-2 rounded-full left-3 bg-slate-200 items-center justify-center flex ${

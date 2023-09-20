@@ -2,10 +2,8 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Button, Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/react";
 import React, { FC, useState } from "react";
 import AllCountries from "./AllCountries";
-type CustomDropdownprops = {
-  country: string;
-};
-const DropdownMenu: FC<CustomDropdownprops> = ({ country }) => {
+
+const DropdownMenu: FC = () => {
   const [selectedItem, setSelectedItem] = useState("Tanzania");
 
   const handleMenuItemClick = (item: React.SetStateAction<string>) => {

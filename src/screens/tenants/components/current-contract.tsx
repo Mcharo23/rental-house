@@ -54,7 +54,6 @@ const CurrentContractUI: FC<ContractProps> = ({ props }) => {
       <div>
         <CarouselScroll
           imgUrl={props.House.imgUrl}
-          visibleSlides={1}
           scrollStep={1}
         />
       </div>

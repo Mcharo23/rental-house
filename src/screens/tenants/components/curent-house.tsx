@@ -149,11 +149,7 @@ const CurrentHouseUI: FC<BookedProps> = ({ props }) => {
         reject={reject}
       />
       <div>
-        <CarouselScroll
-          imgUrl={props.imgUrl}
-          visibleSlides={1}
-          scrollStep={1}
-        />
+        <CarouselScroll imgUrl={props.imgUrl} scrollStep={1} />
       </div>
       <Indicator
         className={`absolute w-7 p-1 top-2 rounded-full left-3 bg-red-700 items-center justify-center flex animate-pulse ${

@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { AccountType, Gender } from "../lib/enums/gender";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  CreateUserInputMutation,
   useCreateUserInputMutation,
 } from "../generated/graphql";
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
@@ -32,10 +31,10 @@ const RegisterPage: FC = () => {
   const [password, setPassword] = useState("");
   const [accountType, setAccountType] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [notificationId, setNotificationId] = useState<string>("register");
+  const [notificationId] = useState<string>("register");
 
   const { mutate } = useCreateUserInputMutation(graphqlRequestClient, {
-    onSuccess: (data: CreateUserInputMutation) => {
+    onSuccess: () => {
       queryClient.invalidateQueries(["createUserInput"]);
       UpdateNotification(
         {

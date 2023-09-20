@@ -2,18 +2,16 @@ import { useEffect, useState } from "react";
 import { LoginUserInputMutation } from "../../generated/graphql";
 import { getUserData } from "../../utils/localStorageUtils";
 import spanHook from "./UseSpanhook";
-import AllCountries from "./AllCountries";
-import Avatar from './images/Avatared.jpeg'
+import Avatar from "./images/Avatared.jpeg";
 import Avatarwoman from "./images/Avatarwoman.png";
 import CustomSpandiv from "./CustomSpandiv";
 import ChangeEmail from "./ChangeEmailPhoneNumber";
 import ChangePassword from "./ChangePassword";
-import DropdownMenu from "./DropdownMenu";
+import DropdownMenu from "./drop-down-menu";
 import DeleteAccount from "./DeleteAccount";
 
 const Account = () => {
   const [data] = spanHook();
-  const [countryname] = AllCountries();
 
   const [user, setUser] = useState<LoginUserInputMutation | null>(
     getUserData() ?? null
@@ -28,7 +26,7 @@ const Account = () => {
     if (userData !== null) {
       setUser(userData);
     }
-  }, []);
+  }, [user?.login.user.gender]);
 
   return (
     <div className="flex flex-col justify-center bg-stone-200 h-screen overflow-auto w-full items-center">
@@ -61,10 +59,10 @@ const Account = () => {
                   />
                 );
               })}
-              <div className='flex justify-between'>
+              <div className="flex justify-between">
                 {" "}
-                <ChangeEmail/>
-                <ChangePassword/>
+                <ChangeEmail />
+                <ChangePassword />
               </div>
             </div>
           </div>
@@ -86,13 +84,13 @@ const Account = () => {
         <div className="flex flex-col h-1/3   pl-4">
           <span className="mt-10 font-bold ">Account Settings</span>
           <div className="flex h-1/6 rounded-lg flex-col">
-            <DropdownMenu country={countryname.country} />
+            <DropdownMenu />
             <span className="mt-2 font-bold">Terminate Account</span>
 
             <div className="flex    rounded-lg">
               <span>
-                <DeleteAccount/>
-               {/* add here the toast */}
+                <DeleteAccount />
+                {/* add here the toast */}
               </span>
             </div>
           </div>

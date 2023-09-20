@@ -8,11 +8,11 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { FC } from "react";
+import { FC, useRef } from "react";
 
 const DeleteAccount: FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
+  const cancelRef = useRef<HTMLButtonElement | null>(null);
 
   return (
     <>
@@ -22,7 +22,6 @@ const DeleteAccount: FC = () => {
 
       <AlertDialog
         isOpen={isOpen}
-        // leastDestructiveRef={cancelRef}
         onClose={onClose}
         leastDestructiveRef={cancelRef}
       >
@@ -39,7 +38,9 @@ const DeleteAccount: FC = () => {
             </AlertDialogBody>
 
             <AlertDialogFooter>
-              <Button onClick={onClose}>Cancel</Button>
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
               <Button colorScheme="red" onClick={onClose} ml={3}>
                 Delete
               </Button>
@@ -50,4 +51,5 @@ const DeleteAccount: FC = () => {
     </>
   );
 };
+
 export default DeleteAccount;

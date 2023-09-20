@@ -6,13 +6,10 @@ import {
 } from "../../../utils/localStorageUtils";
 import useFetchBookedHouses from "../../Rental/components/fetchBookedHouses";
 import { differenceInDays } from "date-fns";
-import { useNavigate } from "react-router-dom";
 type rightBar = {
   onClick: (value: string) => void;
 };
 const RightBar: FC<rightBar> = ({ onClick }) => {
-  const [currentTenant, setCurrentTenant] =
-    useState<BookedHouseQuery["myHouse"][0]["contract"][0]>();
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [pendingHouse, setPendingHouse] = useState<
     BookedHouseQuery["myHouse"][0][]
@@ -20,7 +17,6 @@ const RightBar: FC<rightBar> = ({ onClick }) => {
   const [houseWithExpiredContracts, setHouseWithExpiredContracts] = useState<
     BookedHouseQuery["myHouse"][0][]
   >([]);
-  const navigate = useNavigate();
   useEffect(() => {
     const token = getUserAccessToken();
 
@@ -29,11 +25,12 @@ const RightBar: FC<rightBar> = ({ onClick }) => {
     }
   }, []);
 
-  const { isLoading, error, data } = useFetchBookedHouses(accessToken ?? "");
+  const { error, data } = useFetchBookedHouses(accessToken ?? "");
 
-  const today = new Date();
 
   useEffect(() => {
+    const today = new Date();
+
     if (data) {
       const housesWithPendingStatus = data.myHouse.filter(
         (house: BookedHouseQuery["myHouse"][0]) =>
@@ -62,24 +59,12 @@ const RightBar: FC<rightBar> = ({ onClick }) => {
   }, [data]);
 
   if (error) {
-    const errorMessage =
-      error !== null
-        ? error.response.errors[0].message
-        : error !== null
-        ? error.response.errors[0].message
-        : "Unknow error occured";
 
     // if (errorMessage === "Unauthorized") {
     //   clearUserData();
     // }
   }
 
-  const filterCurrentTenant = () => {
-    const currentContract = pendingHouse.filter((contract) =>
-      contract.contract.find((current) => current.isCurrent === true)
-    );
-    console.log(currentContract);
-  };
 
   const dataWithFilteredContracts = pendingHouse.map((house) =>
     house.contract.find((contract) => contract.isCurrent)

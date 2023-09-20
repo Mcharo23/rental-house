@@ -1,10 +1,10 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getUserData } from "../../utils/localStorageUtils";
 import { LoginUserInputMutation } from "../../generated/graphql";
-import CustomSpandiv from "./CustomSpandiv";
+import { Custominputprops } from "../../lib/design-interface/custom-input-props";
 
-const spanHook = () => {
-  const [data, setData] = useState<Array<CustomSpandiv>>();
+const SpanHook = () => {
+  const [data, setData] = useState<Custominputprops[]>([]);
   const [user, setUser] = useState<LoginUserInputMutation | null>(
     getUserData() ?? null
   );
@@ -21,36 +21,37 @@ const spanHook = () => {
       {
         labeled: "First Name",
         inputType: "text",
-        placeholder: user?.login.user.firstName,
+        placeholder: user?.login.user.firstName ?? "",
       },
       {
         labeled: "Middle Name",
         inputType: "text",
-        placeholder: user?.login.user.middleName,
+        placeholder: user?.login.user.middleName ?? "",
       },
       {
         labeled: "Last Name",
         inputType: "text",
-        placeholder: user?.login.user.lastname,
+        placeholder: user?.login.user.lastname ?? "",
       },
       {
         labeled: "Email",
         inputType: "email",
-        placeholder: user?.login.user.username,
+        placeholder: user?.login.user.username ?? "",
       },
       {
-        labeled: (
-          <span>
-            {/* <i className="pi pi-phone" /> */}
-            Phone
-          </span>
-        ),
+        labeled: "Phone",
         inputType: "number",
-        placeholder: user?.login.user.phoneNumber,
+        placeholder: user?.login.user.phoneNumber ?? "",
       },
     ]);
-  });
+  }, [
+    user?.login.user.firstName,
+    user?.login.user.middleName,
+    user?.login.user.lastname,
+    user?.login.user.username,
+    user?.login.user.phoneNumber,
+  ]);
   return [data];
 };
 
-export default spanHook;
+export default SpanHook;

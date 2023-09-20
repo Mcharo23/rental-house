@@ -12,14 +12,12 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 type RentalCarouselProps = {
   imgUrl: string[];
-  visibleSlides: number;
   scrollStep: number;
 };
 
 const CarouselScroll: FC<RentalCarouselProps> = ({
   imgUrl,
   scrollStep,
-  visibleSlides,
 }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 

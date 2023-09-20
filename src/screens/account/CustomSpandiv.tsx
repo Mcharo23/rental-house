@@ -6,7 +6,7 @@ type Custominputprops = {
 };
 
 
-const CustomSpandiv :FC<Custominputprops> = ({labeled,inputType,placeholder}) => {
+const CustomSpandiv :FC<Custominputprops> = ({labeled,placeholder}) => {
   return (
     <div style={{marginTop:'5%'}} className="bg-white border border-slate-200 rounded-lg p-2"><span className="font-bold p-3">{labeled}:</span><span>{placeholder}</span></div>
   )

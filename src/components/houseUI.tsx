@@ -26,6 +26,7 @@ const HouseUI: FC<GetMyHouseQuery["myHouse"][0] & HouseUiProps> = ({
       price: price,
       status: status,
       imgUrl: imgUrl,
+      contract: [],
     };
 
     onClick(house, true);

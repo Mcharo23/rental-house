@@ -53,7 +53,7 @@ const HomePage: FC = () => {
           hiddenBreakpoint="sm"
           hidden={!opened}
           width={{ sm: 200, lg: 300 }}
-          className="w-40 sm:w-52"
+          className="w-40 sm:w-52 "
         >
           <NavBar
             onClick={(value: string) => {
@@ -66,9 +66,10 @@ const HomePage: FC = () => {
       aside={
         <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
           <Aside
+            p="md"
             hiddenBreakpoint="sm"
             width={{ sm: 250, lg: 350 }}
-            className="flex justify-center items-center"
+            className=""
           >
             <RightBar onClick={(value) => setActiveScreen(value)} />
           </Aside>

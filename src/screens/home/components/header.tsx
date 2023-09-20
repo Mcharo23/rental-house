@@ -1,24 +1,10 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Text } from "@mantine/core";
 import { FaHome, FaUser } from "react-icons/fa";
-// import { clearUserData } from "../../../utils/localStorageUtils";
-// import { useNavigate } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
 import { getUserData } from "../../../utils/localStorageUtils";
 
 const Headers: FC = () => {
   const user = getUserData();
-  // const navigate = useNavigate();
-  // const [isOpen, setIsOpen] = useState(false);
-
-  // const handleDropdown = () => {
-  //   setIsOpen(!isOpen);
-  // };
-
-  // const handleLogOut = () => {
-  //   clearUserData();
-  //   navigate("/");
-  // };
 
   return (
     <div className="flex items-center flex-row w-full h-full place-content-between">
@@ -39,27 +25,12 @@ const Headers: FC = () => {
             <Text className="flex font-semibold text-gray-800 pr-1 font-sans h-full rounded-lg p-2 w-full cursor-pointer">
               {user?.login.user.accountType}
             </Text>
-            <Text className="flex font-semibold text-gray-800  font-sans h-full rounded-lg p-2 w-full cursor-pointer">{user?.login.user.firstName}</Text>
+            <Text className="flex font-semibold text-gray-800  font-sans h-full rounded-lg p-2 w-full cursor-pointer">
+              {user?.login.user.firstName}
+            </Text>
           </div>
         </div>
       </div>
-      {/* <div
-        className={`flex ${isOpen ? "block flex-row" : ""}`}
-        onClick={handleDropdown}
-      >
-        
-        <div
-          className={`relative ${isOpen ? "block" : "hidden"}`}
-          onClick={handleLogOut}
-        >
-          <span className="absolute inset-y-0 flex items-center pl-2">
-            <FiLogOut className="text-light-blue" />
-          </span>
-          <Text className="pl-8 w-full text-red-800 cursor-pointer">
-            Log out
-          </Text>
-        </div>
-      </div> */}
     </div>
   );
 };

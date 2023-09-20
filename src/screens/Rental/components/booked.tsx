@@ -155,7 +155,6 @@ const Booked: FC<BookedProps> = ({ props }) => {
       <div>
         <CarouselScroll
           imgUrl={props.imgUrl}
-          visibleSlides={1}
           scrollStep={1}
         />
       </div>
