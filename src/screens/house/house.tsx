@@ -142,7 +142,7 @@ const House: FC = () => {
         ShowNotification({
           title: "House Added Successfully 🏡",
           message:
-            " The house has been added to the database successfully. Congratulations! 🎉",
+            "The house has been added to the database successfully. Congratulations! 🎉",
         });
         return;
       },
