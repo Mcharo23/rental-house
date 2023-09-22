@@ -2,6 +2,7 @@ import { Indicator } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
 import { BookedHouseQuery } from "../../../generated/graphql";
 import {
+  clearUserData,
   getUserAccessToken,
 } from "../../../utils/localStorageUtils";
 import useFetchBookedHouses from "../../Rental/components/fetchBookedHouses";
@@ -26,7 +27,6 @@ const RightBar: FC<rightBar> = ({ onClick }) => {
   }, []);
 
   const { error, data } = useFetchBookedHouses(accessToken ?? "");
-
 
   useEffect(() => {
     const today = new Date();
@@ -54,23 +54,14 @@ const RightBar: FC<rightBar> = ({ onClick }) => {
 
       setPendingHouse(housesWithPendingStatus);
       setHouseWithExpiredContracts(filtered);
-      console.log("auu", filtered);
     }
   }, [data]);
 
   if (error) {
-
-    // if (errorMessage === "Unauthorized") {
-    //   clearUserData();
-    // }
+    if (error.response.errors[0].message === "Unauthorized") {
+      clearUserData();
+    }
   }
-
-
-  const dataWithFilteredContracts = pendingHouse.map((house) =>
-    house.contract.find((contract) => contract.isCurrent)
-  );
-
-  console.log(dataWithFilteredContracts);
 
   const getCurrentTenant = (item: BookedHouseQuery["myHouse"][0]): string => {
     const currentContract = item.contract.find(

@@ -167,7 +167,7 @@ const Rentals: FC = () => {
           />
         </div>
         <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
-          <div className="bg-white w-36 h-full flex flex-row rounded-lg p-1">
+          <div className="bg-white w-40 h-full flex flex-row rounded-lg p-1">
             <ToggleButtonGroup
               onClick={setSelectedButton}
               name={"Booked"}

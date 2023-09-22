@@ -2,6 +2,7 @@ import { FC } from "react";
 import { BackgroundImage, Text } from "@mantine/core";
 import { GetMyHouseQuery } from "../generated/graphql";
 import { HouseUiProps } from "../global/interfaces/type";
+import { IMAGE_BASE } from "../lib/api-base";
 
 const HouseUI: FC<GetMyHouseQuery["myHouse"][0] & HouseUiProps> = ({
   Ward,
@@ -39,7 +40,7 @@ const HouseUI: FC<GetMyHouseQuery["myHouse"][0] & HouseUiProps> = ({
       onClick={handleSelectedHouse}
     >
       <BackgroundImage
-        src={imgUrl[0]}
+        src={`${IMAGE_BASE.BASE}${imgUrl[0]}`}
         radius="md"
         className="w-full h-3/4 flex flex-col justify-end items-end p-2"
       >

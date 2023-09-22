@@ -9,16 +9,14 @@ import {
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { IMAGE_BASE } from "../../lib/api-base";
 
 type RentalCarouselProps = {
   imgUrl: string[];
   scrollStep: number;
 };
 
-const CarouselScroll: FC<RentalCarouselProps> = ({
-  imgUrl,
-  scrollStep,
-}) => {
+const CarouselScroll: FC<RentalCarouselProps> = ({ imgUrl, scrollStep }) => {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   const naturalSlideWidth =
@@ -90,7 +88,11 @@ const CarouselScroll: FC<RentalCarouselProps> = ({
             <div
               className={`w-full h-full ${namberOfViible > 1 ? "px-1" : ""}`}
             >
-              <img src={img} alt="image" className="w-full h-full rounded-lg" />
+              <img
+                src={`${IMAGE_BASE.BASE}${img}`}
+                alt="image"
+                className="w-full h-full rounded-lg"
+              />
             </div>
           </Slide>
         ))}

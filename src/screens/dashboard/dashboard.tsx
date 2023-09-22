@@ -25,10 +25,12 @@ import { GraphQLError } from "graphql";
 import LoadingNotification from "../../global/components/load-notification";
 import showMessage from "../../global/components/notification";
 import UpdateNotification from "../../global/components/update-notification";
+import useFetchBookedHouses from "../Rental/components/fetchBookedHouses";
+import useFetchHouses from "./components/fetchHouses";
+import ShowNotification from "../../global/components/show-notification";
 
 const Dashboard: FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [shouldFetchData, setShouldFetchData] = useState(false);
   const [detailView, setDetailView] = useState<boolean>(false);
   const [filteredInAllHouse, setFilteredInAllHouse] = useState<
     GetHousesQuery["houses"][0][]
@@ -51,7 +53,7 @@ const Dashboard: FC = () => {
       middleName: "",
       phoneNumber: "",
       username: "",
-      gender: ""
+      gender: "",
     },
   });
   const [searchLength, setSearchLength] = useState<number>(0);
@@ -60,7 +62,6 @@ const Dashboard: FC = () => {
     const token = getUserAccessToken();
     if (token) {
       setAccessToken(token);
-      setShouldFetchData(true);
     }
   }, []);
 
@@ -68,13 +69,7 @@ const Dashboard: FC = () => {
     isLoading: isLoadingHouses,
     error: errorHouses,
     data: dataHouses,
-  } = useGetHousesQuery<GetHousesQuery, Error>(
-    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
-    {},
-    {
-      enabled: shouldFetchData,
-    }
-  );
+  } = useFetchHouses(accessToken ?? "");
 
   const { mutate: createContractMutate } = useCreateContractInputMutation(
     graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
@@ -102,17 +97,14 @@ const Dashboard: FC = () => {
     }
   );
 
-  useEffect(() => {
-    if (dataHouses) {
-      setShouldFetchData(false);
-    }
-  }, [dataHouses]);
-
   if (errorHouses) {
     const errorMessage = errorHouses.response.errors[0].message;
+    console.log(errorMessage);
 
     if (errorMessage === "Unauthorized") {
       clearUserData();
+    } else {
+      ShowNotification({ title: "Oops!", message: errorMessage });
     }
   }
 
@@ -201,7 +193,7 @@ const Dashboard: FC = () => {
       </div>
       <div
         className={`w-full overflow-auto flex flex-col h-full text-lg ${
-          detailView === false ? "" : "hidden"
+          detailView === false && !!dataHouses ? "" : "hidden"
         }`}
       >
         <div className="flex flex-row place-content-between gap-2">

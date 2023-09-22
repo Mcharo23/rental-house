@@ -22,6 +22,7 @@ import Rentals from "../Rental/Rentals";
 import Tenants from "../tenants/tenant";
 import Contracts from "../tenants/contract";
 import RightBar from "./components/RightBar";
+import Sidebar from "./components/side-bar";
 
 const HomePage: FC = () => {
   const theme = useMantineTheme();
@@ -71,7 +72,7 @@ const HomePage: FC = () => {
             width={{ sm: 250, lg: 350 }}
             className=""
           >
-            <RightBar onClick={(value) => setActiveScreen(value)} />
+            <Sidebar onClick={(value) => setActiveScreen(value)} />
           </Aside>
         </MediaQuery>
       }

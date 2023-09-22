@@ -7,7 +7,6 @@ import SearchBar from "../../global/components/search-bar";
 import CustomInputField from "../../global/components/input-text";
 import CustomButton from "../../components/custom-button";
 import colors from "../../lib/color/colors";
-import { FaMinus, FaPlus } from "react-icons/fa";
 import {
   CreateContractInputMutation,
   GetHousesQuery,
@@ -44,6 +43,8 @@ import CustomizedNotification from "../../global/components/customized-notificat
 import OthersHouseInfo from "./components/othersHouseInfo";
 import TenantHouseUI from "./components/houses";
 import { AccountType } from "../../lib/enums/gender";
+import FileUploading from "../../global/components/file-uploading";
+import uploadImages from "./components/postHouseImages";
 
 const House: FC = () => {
   const queryClient = useQueryClient();
@@ -67,12 +68,8 @@ const House: FC = () => {
   const [district, setDistrict] = useState<string>("");
   const [ward, setWard] = useState<string>("");
   const [price, setPrice] = useState<string>("");
-  const [status, setStatus] = useState<string>("");
-  const [image, setImage] = useState<string>("");
   const [description, setDescription] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string[]>([]);
-  const [hidePlus, setHidePlus] = useState<boolean>(false);
-  const [hideMinus, setHideMinus] = useState<boolean>(true);
+  const [imageUrl, setImageUrl] = useState<File[] | null>(null);
   const [mineView, setMineView] = useState<boolean>(false);
   const [OthersView, setOthersView] = useState<boolean>(false);
 
@@ -199,6 +196,8 @@ const House: FC = () => {
     graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
     {
       onSuccess: (data: CreateContractInputMutation) => {
+        queryClient.invalidateQueries(["houses, demo, myContract"]);
+
         UpdateNotification(
           {
             id: "contract",
@@ -270,7 +269,6 @@ const House: FC = () => {
       region.length === 0 ||
       ward.length === 0 ||
       district.length === 0 ||
-      status.length === 0 ||
       description.length === 0
     ) {
       CustomizedNotification({
@@ -279,20 +277,29 @@ const House: FC = () => {
       });
     } else if (price.length === 0) {
       alert("are you sure the price is 0?");
-    } else if (imageUrl.length !== 5) {
+    } else if (
+      (imageUrl?.length ?? 0) < 5 ||
+      imageUrl === null ||
+      imageUrl === undefined
+    ) {
       alert("Your are required to upload 5 images");
     } else {
-      await createHouseMutate({
-        input: {
-          name: name,
-          Region: region,
-          District: district,
-          Ward: ward,
-          Description: description,
-          price: Number(price),
-          imgUrl: imageUrl,
-        },
-      });
+      try {
+        const response = await uploadImages(imageUrl, accessToken);
+        await createHouseMutate({
+          input: {
+            name: name,
+            Region: region,
+            District: district,
+            Ward: ward,
+            Description: description,
+            price: Number(price),
+            imgUrl: response,
+          },
+        });
+      } catch (error) {
+        console.error("Error uploading files:", error);
+      }
     }
   };
 
@@ -332,29 +339,6 @@ const House: FC = () => {
       setFilteredHouse(filtered);
     } else {
       setFilteredHouse([]);
-    }
-  };
-
-  const handleAddImage = () => {
-    if (image === "") {
-      alert("Please enter image url");
-    } else {
-      setImageUrl([...imageUrl, image]);
-      setHideMinus(false);
-      if (imageUrl.length === 4) {
-        setHidePlus(true);
-      }
-    }
-  };
-
-  const handleMinusImage = () => {
-    const updatedImageUrl = [...imageUrl];
-    updatedImageUrl.pop();
-    setHidePlus(false);
-
-    setImageUrl(updatedImageUrl);
-    if (imageUrl.length === 1) {
-      setHideMinus(true);
     }
   };
 
@@ -504,7 +488,9 @@ const House: FC = () => {
         <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
           <div
             className={`bg-white w-36 h-full flex flex-row rounded-lg p-1 ${
-              user?.login.user.accountType === AccountType.TENANT ? "hidden" : ""
+              user?.login.user.accountType === AccountType.TENANT
+                ? "hidden"
+                : ""
             }`}
           >
             <ToggleButtonGroup
@@ -598,49 +584,24 @@ const House: FC = () => {
               disabled={false}
               value={""}
             />
-            <CustomInputField
-              onChange={setStatus}
-              name={"Status"}
-              id={"status"}
-              disabled={false}
-              value={""}
-            />
+          </div>
 
-            <TextArea
-              onChange={setDescription}
-              name={"Desription"}
-              id={"description"}
-              disabled={false}
-              value={""}
-            />
-            <div className="flex relative w-full h-auto flex-row place-content-between">
-              <div className="w-full">
-                <CustomInputField
-                  onChange={setImage}
-                  name={`${imageUrl.length} image`}
-                  id={"image"}
-                  disabled={false}
-                  value={""}
-                />
-              </div>
-              <span className="inset-y-0 flex h-full pl-2 pr-2 items-center">
-                <div className="flex flex-col gap-1">
-                  <FaPlus
-                    className={`cursor-pointer text-light-blue ${
-                      hidePlus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
-                    }`}
-                    onClick={handleAddImage}
-                  />
-                  <FaMinus
-                    className={`cursor-pointer text-light-blue ${
-                      hideMinus ? "hidden" : "h-1/2 bg-slate-200 rounded-md"
-                    }`}
-                    onClick={handleMinusImage}
-                  />
-                </div>
-              </span>
+          <div className="mt-5 gap-4 items-center justify-center flex flex-col 2xl:flex-row 2xl:gap-10 2xl:mx-24 2xl:items-start">
+            <div className="w-full sm:w-5/6 md:w-full lg:w-full xl:w-3/4">
+              <TextArea
+                onChange={setDescription}
+                name={"Desription"}
+                id={"description"}
+                disabled={false}
+                value={""}
+              />
+            </div>
+
+            <div className="w-full sm:w-5/6 md:w-full lg:w-full xl:w-3/4">
+              <FileUploading onChange={setImageUrl} />
             </div>
           </div>
+
           <div className="justify-center items-center flex mt-5">
             <CustomButton
               backgroundColor={colors.lightBlue}

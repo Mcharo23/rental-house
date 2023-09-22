@@ -1,6 +1,7 @@
 import React from "react";
 import { Carousel } from "primereact/carousel";
 import { Image } from "primereact/image";
+import { IMAGE_BASE } from "../../lib/api-base";
 
 type CarouselProps = {
   _id: string;
@@ -13,7 +14,7 @@ const HouseCarousel: React.FC<CarouselProps> = ({ imgUrl, _id }) => {
       <div className="border-1 w-full surface-border px-3 py-3 border-round m-2 text-center h-full">
         <div className="mb-3  h-full w-full rounded-lg">
           <Image
-            src={item}
+            src={`${IMAGE_BASE.BASE}${item}`}
             alt={_id}
             className="rounded-lg h-full"
             preview

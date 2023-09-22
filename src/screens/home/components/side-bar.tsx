@@ -1,5 +1,5 @@
-import { Text } from "@mantine/core";
-import { FC, useState } from "react";
+import { Indicator, Text } from "@mantine/core";
+import { FC, useEffect, useState } from "react";
 import {
   FiArrowUpCircle,
   FiChevronRight,
@@ -9,19 +9,103 @@ import { MessagesProps } from "../interface/type";
 import { MESSAGES } from "../../../message";
 import MessagesUI from "../../../global/components/messageUI";
 import { FaLightbulb } from "react-icons/fa";
+import {
+  clearUserData,
+  getUserAccessToken,
+  getUserData,
+} from "../../../utils/localStorageUtils";
+import { BookedHouseQuery } from "../../../generated/graphql";
+import { differenceInDays } from "date-fns";
+import useFetchBookedHouses from "../../Rental/components/fetchBookedHouses";
+import { AccountType } from "../../../lib/enums/gender";
 
-const Sidebar: FC = () => {
+type SidebarProps = {
+  onClick: (value: string) => void;
+};
+
+const Sidebar: FC<SidebarProps> = ({ onClick }) => {
+  const user = getUserData();
   const [messages] = useState<MessagesProps[]>(MESSAGES);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [pendingHouse, setPendingHouse] = useState<
+    BookedHouseQuery["myHouse"][0][]
+  >([]);
+  const [houseWithExpiredContracts, setHouseWithExpiredContracts] = useState<
+    BookedHouseQuery["myHouse"][0][]
+  >([]);
 
-  const renderMessages = () => {
+  useEffect(() => {
+    const token = getUserAccessToken();
+
+    if (token) {
+      setAccessToken(token);
+    }
+  }, []);
+
+  const { error, data } = useFetchBookedHouses(accessToken ?? "");
+
+  useEffect(() => {
+    const today = new Date();
+
+    if (data) {
+      const housesWithPendingStatus = data.myHouse.filter(
+        (house: BookedHouseQuery["myHouse"][0]) =>
+          house.status === "Pending" &&
+          house.contract.find((contract) => contract.isCurrent === true)
+      );
+
+      const filtered = data.myHouse.filter(
+        (house: BookedHouseQuery["myHouse"][0]) =>
+          house.status === "Booked" &&
+          house.contract.find((contract) => {
+            if (contract.End_of_contract) {
+              const endOfContract = new Date(contract.End_of_contract);
+              const daysDifference = differenceInDays(endOfContract, today);
+              return daysDifference < 1;
+            }
+            return false;
+          }) &&
+          house.contract.find((contract) => contract.isCurrent === true)
+      );
+
+      setPendingHouse(housesWithPendingStatus);
+      setHouseWithExpiredContracts(filtered);
+    }
+  }, [data]);
+
+  if (error) {
+    if (error.response.errors[0].message === "Unauthorized") {
+      clearUserData();
+    }
+  }
+
+  const renderpendingHouses = () => {
+    const lastThreeHouses = pendingHouse.slice(-3);
     return (
       <ul className="flex flex-col gap-2 w-full h-full">
-        {messages.length === 0 ? (
-          <p>No messages</p>
+        {pendingHouse.length === 0 ? (
+          <p>No new pending house</p>
         ) : (
-          messages.map((message, index) => (
+          lastThreeHouses.map((house, index) => (
             <li key={index}>
-              <MessagesUI {...message} />
+              <MessagesUI props={{ ...house }} />
+            </li>
+          ))
+        )}
+      </ul>
+    );
+  };
+
+  const renderTimeOutContracts = () => {
+    const lastThreeHouses = houseWithExpiredContracts.slice(-3);
+    return (
+      <ul className="flex flex-col gap-2 w-full h-full">
+        {houseWithExpiredContracts.length === 0 ? (
+          <p>All up to date</p>
+        ) : (
+          lastThreeHouses.map((house, index) => (
+            <li key={index}>
+              <MessagesUI props={{ ...house }} />
             </li>
           ))
         )}
@@ -31,37 +115,85 @@ const Sidebar: FC = () => {
 
   return (
     <div className="w-full h-full flex gap-2 flex-col place-content-between">
-      <div className="flex overflow-hidden flex-col w-full h-[75%] sm:gap-5 2xl:gap-2 md:gap-2 lg:gap-2 xl:gap-2">
-        <div className="flex relative w-full h-auto flex-row place-content-between font-semibold text-gray-800 text-2xl 2xl:text-base md:text-base xl:text-base">
-          <Text className="">Your Balance</Text>
-          <span className="inset-y-0 flex items-center">
-            <FiMoreHorizontal />
-          </span>
-        </div>
-        <div className="border border-slate-200 rounded-lg w-full h-auto flex flex-col text-slate-500 p-2 gap-5 2xl:gap-2 2xl:text-sm md:gap-2 lg:gap-2 xl:gap-2">
-          Payment ID: j45GH686
-          <Text className="font-semibold text-gray-800 text-2xl 2xl:text-lg md:text-lg lg:text-lg xl:text-lg">
-            $615245.287
-          </Text>
-          <div className="flex flex-row relative w-full">
-            <span className="absolute inset-y-0 flex items-center">
-              <FiArrowUpCircle className="text-green-600" />
-            </span>
-            <Text className="pl-5 w-full">+12.5% than last week</Text>
-          </div>
-        </div>
-        <div className="bg-violet-100 p-4 w-full h-auto rounded-lg flex justify-center items-center text-light-blue text-lg 2xl:p-2 md:p-2 lg:p-2 xl:p-2">
-          Top up balance
-        </div>
-        <div className="flex flex-col h-auto gap-1 2xl:text-sm md:text-sm lg:text-sm xl:text-sm">
-          <div className="flex relative w-full flex-row place-content-between font-semibold text-gray-800 text-2xl 2xl:text-base md:text-base lg:text-base xl:text-base">
-            <Text className="">Recent Messages</Text>
+      <div className="flex overflow-hidden flex-col w-full h-full sm:gap-5 2xl:gap-2 md:gap-2 lg:gap-2 xl:gap-2">
+        <div className="flex flex-col">
+          <div className="flex w-full h-auto flex-row place-content-between font-semibold text-gray-800 text-2xl 2xl:text-base md:text-base xl:text-base">
+            <div className="flex relative">
+              <Text className="mr-2">
+                Pending Houses-({pendingHouse.length})
+              </Text>
+              <Indicator
+                className={`absolute p-1 top-2 rounded-lg right-0 items-center justify-center flex animate-pulse ${
+                  pendingHouse.length === 0 ? "" : "hidden"
+                }`}
+                processing
+                color="indigo"
+                withBorder
+                size={18}
+              >
+                <Text></Text>
+              </Indicator>
+            </div>
             <span className="inset-y-0 flex items-center">
               <FiMoreHorizontal />
             </span>
           </div>
           <div className="w-full flex-col h-[95%] flex overflow-auto">
-            {renderMessages()}
+            {renderpendingHouses()}
+          </div>
+          <div
+            className={`flex-row-reverse flex text-light-blue cursor-pointer ${
+              pendingHouse.length !== 0 ? "" : "hidden"
+            }`}
+            onClick={() =>
+              onClick(
+                user?.login.user.accountType !== AccountType.TENANT
+                  ? "rentals"
+                  : "contracts"
+              )
+            }
+          >
+            See more...
+          </div>
+        </div>
+        <div className=" flex flex-col">
+          <div className="flex w-full h-auto flex-row place-content-between font-semibold text-gray-800 text-2xl 2xl:text-base md:text-base xl:text-base">
+            <div className="flex relative">
+              <Text className="mr-2">
+                Time out-({houseWithExpiredContracts.length})
+              </Text>
+              <Indicator
+                className={`absolute p-1 top-2 rounded-lg right-0 items-center justify-center flex animate-pulse ${
+                  pendingHouse.length === 0 ? "" : "hidden"
+                }`}
+                processing
+                color="indigo"
+                withBorder
+                size={18}
+              >
+                <Text></Text>
+              </Indicator>
+            </div>
+            <span className="inset-y-0 flex items-center">
+              <FiMoreHorizontal />
+            </span>
+          </div>
+          <div className="w-full flex-col h-[95%] flex overflow-auto">
+            {renderTimeOutContracts()}
+          </div>
+          <div
+            className={`flex-row-reverse flex text-light-blue cursor-pointer ${
+              houseWithExpiredContracts.length !== 0 ? "" : "hidden"
+            }`}
+            onClick={() =>
+              onClick(
+                user?.login.user.accountType !== AccountType.TENANT
+                  ? "tenants"
+                  : "contracts"
+              )
+            }
+          >
+            See more...
           </div>
         </div>
       </div>
@@ -87,6 +219,20 @@ const Sidebar: FC = () => {
           >
             <FiChevronRight className="text-2xl 2xl:text-lg md:text-lg lg:text-lg xl:text-lg" />
           </Text>
+        </div>
+        <div className="flex flex-col">
+          <span className="text-white">Help Center</span>
+          <span className="font-bold pi pi-phone pt-1">
+            <a href="tel:+255 767 164 152">
+              <span className="pl-1">+255 767 164 152</span>
+            </a>
+          </span>
+
+          <span className="font-bold pi pi-whatsapp pt-1">
+            <a href="https://wa.me/+255767164152">
+              <span className="pl-1">+255 767 164 152</span>
+            </a>
+          </span>
         </div>
       </div>
     </div>
