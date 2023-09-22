@@ -21,7 +21,6 @@ import ShowNotification from "../../global/components/show-notification";
 import Rentals from "../Rental/Rentals";
 import Tenants from "../tenants/tenant";
 import Contracts from "../tenants/contract";
-import RightBar from "./components/RightBar";
 import Sidebar from "./components/side-bar";
 
 const HomePage: FC = () => {

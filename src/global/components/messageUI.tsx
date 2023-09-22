@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { FaUser } from "react-icons/fa";
 import { Text } from "@mantine/core";
 import { BookedHouseQuery } from "../../generated/graphql";
 import { IMAGE_BASE } from "../../lib/api-base";

@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import { FileInput, FileInputProps, Text } from "@mantine/core";
 
 type FileUploadingProps = {

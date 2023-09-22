@@ -7,7 +7,6 @@ import {
   CreateContractInputMutation,
   GetHousesQuery,
   useCreateContractInputMutation,
-  useGetHousesQuery,
 } from "../../generated/graphql";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
 import {
@@ -25,7 +24,6 @@ import { GraphQLError } from "graphql";
 import LoadingNotification from "../../global/components/load-notification";
 import showMessage from "../../global/components/notification";
 import UpdateNotification from "../../global/components/update-notification";
-import useFetchBookedHouses from "../Rental/components/fetchBookedHouses";
 import useFetchHouses from "./components/fetchHouses";
 import ShowNotification from "../../global/components/show-notification";
 

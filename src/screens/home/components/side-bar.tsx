@@ -1,12 +1,9 @@
 import { Indicator, Text } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
 import {
-  FiArrowUpCircle,
   FiChevronRight,
   FiMoreHorizontal,
 } from "react-icons/fi";
-import { MessagesProps } from "../interface/type";
-import { MESSAGES } from "../../../message";
 import MessagesUI from "../../../global/components/messageUI";
 import { FaLightbulb } from "react-icons/fa";
 import {
@@ -25,7 +22,6 @@ type SidebarProps = {
 
 const Sidebar: FC<SidebarProps> = ({ onClick }) => {
   const user = getUserData();
-  const [messages] = useState<MessagesProps[]>(MESSAGES);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [pendingHouse, setPendingHouse] = useState<
     BookedHouseQuery["myHouse"][0][]
