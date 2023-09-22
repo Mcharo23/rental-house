@@ -1,9 +1,6 @@
 import { Indicator, Text } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
-import {
-  FiChevronRight,
-  FiMoreHorizontal,
-} from "react-icons/fi";
+import { FiChevronRight, FiMoreHorizontal } from "react-icons/fi";
 import MessagesUI from "../../../global/components/messageUI";
 import { FaLightbulb } from "react-icons/fa";
 import {
@@ -70,6 +67,7 @@ const Sidebar: FC<SidebarProps> = ({ onClick }) => {
   }, [data]);
 
   if (error) {
+    //@ts-ignore
     if (error.response.errors[0].message === "Unauthorized") {
       clearUserData();
     }

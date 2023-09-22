@@ -1,5 +1,5 @@
 import { GraphQLClient } from "graphql-request";
-import { RequestInit } from "graphql-request/dist/types.dom";
+// import { RequestInit } from "graphql-request/dist/types.dom";
 import {
   useMutation,
   useQuery,
@@ -26,7 +26,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never;
     };
-
+//@ts-ignore
 function fetcher<TData, TVariables extends { [key: string]: any }>(
   client: GraphQLClient,
   query: string,

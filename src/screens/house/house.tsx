@@ -147,8 +147,10 @@ const House: FC = () => {
         return;
       },
       onError: (error: GraphQLError) => {
+        //@ts-ignore
         Array.isArray(error.response.errors[0].extensions.originalError.message)
           ? Array(
+              //@ts-ignore
               error.response.errors[0].extensions.originalError.message.length
             )
               .fill(0)
@@ -181,7 +183,9 @@ const House: FC = () => {
       },
       onError: (error: GraphQLError) => {
         const errorMessage =
+          //@ts-ignore
           error.response.errors[0].extensions.originalError.message;
+        //@ts-ignore
         const title = error.response.errors[0].message;
 
         notifications.hide("update-house");
@@ -209,7 +213,9 @@ const House: FC = () => {
       },
       onError: (error: GraphQLError) => {
         const errorMessage =
+          //@ts-ignore
           error.response.errors[0].extensions.originalError.message;
+        //@ts-ignore
         const title = error.response.errors[0].message;
 
         notifications.hide("contract");
@@ -253,9 +259,11 @@ const House: FC = () => {
   if (errorMyHouse || errorHouses) {
     const errorMessage =
       errorMyHouse !== null
-        ? errorMyHouse.response.errors[0].message
+        ? //@ts-ignore
+          errorMyHouse.response.errors[0].message
         : errorHouses !== null
-        ? errorHouses.response.errors[0].message
+        ? //@ts-ignore
+          errorHouses.response.errors[0].message
         : "Unknow error occured";
 
     if (errorMessage === "Unauthorized") {

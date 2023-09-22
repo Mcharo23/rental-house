@@ -5,9 +5,7 @@ import { BackgroundImage } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 import { AccountType, Gender } from "../lib/enums/gender";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  useCreateUserInputMutation,
-} from "../generated/graphql";
+import { useCreateUserInputMutation } from "../generated/graphql";
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
 import { GraphQLError } from "graphql";
 import SelectsComponent from "../global/components/select";
@@ -52,7 +50,9 @@ const RegisterPage: FC = () => {
     },
     onError: (error: GraphQLError) => {
       const errorMessage =
+        //@ts-ignore
         error.response.errors[0].extensions.originalError.message;
+      //@ts-ignore
       const title = error.response.errors[0].message;
 
       notifications.hide(notificationId);

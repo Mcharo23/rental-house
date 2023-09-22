@@ -63,8 +63,10 @@ const Rentals: FC = () => {
   if (error) {
     const errorMessage =
       error !== null
+       //@ts-ignore
         ? error.response.errors[0].message
         : error !== null
+         //@ts-ignore
         ? error.response.errors[0].message
         : "Unknow error occured";
 

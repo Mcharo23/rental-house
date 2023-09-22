@@ -28,6 +28,7 @@ const FrontPage: FC = () => {
   if (errorHouses) {
     ShowNotification({
       title: "Error",
+      //@ts-ignore
       message: errorHouses.response.errors[0].message,
     });
   }

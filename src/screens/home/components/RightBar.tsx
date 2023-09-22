@@ -58,6 +58,7 @@ const RightBar: FC<rightBar> = ({ onClick }) => {
   }, [data]);
 
   if (error) {
+    //@ts-ignore
     if (error.response.errors[0].message === "Unauthorized") {
       clearUserData();
     }

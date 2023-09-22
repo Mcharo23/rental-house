@@ -57,9 +57,11 @@ const Contracts: FC = () => {
   if (contractError) {
     const errorMessage =
       contractError !== null
-        ? contractError.response.errors[0].message
+        ? //@ts-ignore
+          contractError.response.errors[0].message
         : contractError !== null
-        ? contractError.response.errors[0].message
+        ? //@ts-ignore
+          contractError.response.errors[0].message
         : "Unknow error occured";
 
     if (errorMessage === "Unauthorized") {

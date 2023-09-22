@@ -50,9 +50,11 @@ const Tenants: FC = () => {
   if (error) {
     const errorMessage =
       error !== null
-        ? error.response.errors[0].message
+        ? //@ts-ignore
+          error.response.errors[0].message
         : error !== null
-        ? error.response.errors[0].message
+        ? //@ts-ignore
+          error.response.errors[0].message
         : "Unknow error occured";
 
     if (errorMessage === "Unauthorized") {

@@ -66,7 +66,9 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
       },
       onError: (error: GraphQLError) => {
         const errorMessage =
+         //@ts-ignore
           error.response.errors[0].extensions.originalError.message;
+           //@ts-ignore
         const title = error.response.errors[0].message;
 
         notifications.hide("tenantIn");
@@ -95,7 +97,9 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
       },
       onError: (error: GraphQLError) => {
         const errorMessage =
+          //@ts-ignore
           error.response.errors[0].extensions.originalError.message;
+        //@ts-ignore
         const title = error.response.errors[0].message;
 
         notifications.hide("tenantIn");

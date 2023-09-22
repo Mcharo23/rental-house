@@ -63,7 +63,9 @@ const Booked: FC<BookedProps> = ({ props }) => {
     },
     onError: (error: GraphQLError) => {
       const errorMessage =
+        //@ts-ignore
         error.response.errors[0].extensions.originalError.message;
+      //@ts-ignore
       const title = error.response.errors[0].message;
 
       notifications.hide("tenantIn");
@@ -153,10 +155,7 @@ const Booked: FC<BookedProps> = ({ props }) => {
         reject={reject}
       />
       <div>
-        <CarouselScroll
-          imgUrl={props.imgUrl}
-          scrollStep={1}
-        />
+        <CarouselScroll imgUrl={props.imgUrl} scrollStep={1} />
       </div>
       <Indicator
         className={`absolute w-5 top-2 rounded-full left-3 bg-slate-200 items-center justify-center flex ${

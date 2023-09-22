@@ -84,7 +84,9 @@ const Dashboard: FC = () => {
       },
       onError: (error: GraphQLError) => {
         const errorMessage =
+         //@ts-ignore
           error.response.errors[0].extensions.originalError.message;
+           //@ts-ignore
         const title = error.response.errors[0].message;
 
         notifications.hide("contract");
@@ -96,6 +98,7 @@ const Dashboard: FC = () => {
   );
 
   if (errorHouses) {
+   //@ts-ignore
     const errorMessage = errorHouses.response.errors[0].message;
     console.log(errorMessage);
 
