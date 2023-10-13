@@ -21,10 +21,10 @@ import { useDisclosure } from "@mantine/hooks";
 import CustomPaper from "../../../global/components/paper";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import { Toast } from "primereact/toast";
-import LoadingNotification from "../../../global/components/load-notification";
+import LoadingNotification from "../../../globals/components/load-notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { useQueryClient } from "@tanstack/react-query";
-import UpdateNotification from "../../../global/components/update-notification";
+import UpdateNotification from "../../../globals/components/update-notification";
 import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
 import showMessage from "../../../global/components/notification";
@@ -66,9 +66,9 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
       },
       onError: (error: GraphQLError) => {
         const errorMessage =
-         //@ts-ignore
+          //@ts-ignore
           error.response.errors[0].extensions.originalError.message;
-           //@ts-ignore
+        //@ts-ignore
         const title = error.response.errors[0].message;
 
         notifications.hide("tenantIn");
@@ -199,7 +199,6 @@ const PendingHouse: FC<PendingProps> = ({ props }) => {
       life: 3000,
     });
   };
-  console.log(props);
 
   return (
     <div className="flex full h-full flex-col w-full bg-white rounded-lg p-1 relative">

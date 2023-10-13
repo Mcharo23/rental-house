@@ -1,3 +1,3 @@
-export type NavBarprop = {
-  onClick: (value: string) => void;
+export type NavBarProps = {
+  onClick: (activeScreen: string) => void;
 };

@@ -17,7 +17,7 @@ const uploadImages = async (files: File[], accessToken: string | null) => {
 
   try {
     const response = await axios.post(
-      "http://192.168.150.152:3000/house/upload-house-images/",
+      "http://localhost:3000/house/upload-house-images/",
       formData,
       { headers }
     );

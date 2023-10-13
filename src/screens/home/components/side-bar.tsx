@@ -11,7 +11,7 @@ import {
 import { BookedHouseQuery } from "../../../generated/graphql";
 import { differenceInDays } from "date-fns";
 import useFetchBookedHouses from "../../Rental/components/fetchBookedHouses";
-import { AccountType } from "../../../lib/enums/gender";
+import { AccountType } from "../../../lib/enums/enum";
 
 type SidebarProps = {
   onClick: (value: string) => void;

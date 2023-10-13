@@ -5,15 +5,10 @@ import "./index.css";
 import { MantineProvider } from "@mantine/core";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Notifications } from "@mantine/notifications";
-import { PrimeReactProvider } from "primereact/api";
-import { ChakraProvider } from "@chakra-ui/react";
 
-//theme
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-
-//core
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+//mantine
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
 
 export const queryclient = new QueryClient({
   defaultOptions: {
@@ -26,13 +21,9 @@ export const queryclient = new QueryClient({
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryclient}>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
+      <MantineProvider defaultColorScheme="light">
         <Notifications limit={3} position="top-right" />
-        <PrimeReactProvider>
-          <ChakraProvider>
-            <App />
-          </ChakraProvider>
-        </PrimeReactProvider>
+        <App />
       </MantineProvider>
     </QueryClientProvider>
   </React.StrictMode>

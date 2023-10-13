@@ -24,8 +24,8 @@ import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
 import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
-import LoadingNotification from "../../../global/components/load-notification";
-import UpdateNotification from "../../../global/components/update-notification";
+import LoadingNotification from "../../../globals/components/load-notification";
+import UpdateNotification from "../../../globals/components/update-notification";
 import showMessage from "../../../global/components/notification";
 import FormatDate from "../../../global/components/date-format";
 

@@ -1,12 +1,14 @@
 import { FC, useEffect, useState } from "react";
-import { Text } from "@mantine/core";
+import {
+  Button,
+  Container,
+  Flex,
+  Loader,
+  Notification,
+  Paper,
+  Space,
+} from "@mantine/core";
 import HouseUI from "../../components/houseUI";
-import { FiBell, FiMapPin } from "react-icons/fi";
-import ToggleButtonGroup from "../../global/components/toggle-button";
-import SearchBar from "../../global/components/search-bar";
-import CustomInputField from "../../global/components/input-text";
-import CustomButton from "../../components/custom-button";
-import colors from "../../lib/color/colors";
 import {
   CreateContractInputMutation,
   GetHousesQuery,
@@ -14,7 +16,6 @@ import {
   UpdateHouseInputMutation,
   useCreateContractInputMutation,
   useCreateHouseInputMutation,
-  useGetHousesQuery,
   useGetMyHouseQuery,
   useUpdateHouseInputMutation,
 } from "../../generated/graphql";
@@ -27,28 +28,32 @@ import {
   getUserData,
 } from "../../utils/localStorageUtils";
 import { notifications } from "@mantine/notifications";
-import { ProgressSpinner } from "primereact/progressspinner";
 import AllHousesUI from "../../global/components/houses";
 import ShowNotification from "../../global/components/show-notification";
-import TextArea from "../../global/components/text-area";
-import MyHouseInfo from "./components/my-house-info";
 import {
   MyHouseInfoUpdatedProps,
   OthersHouseInfoContractProps,
 } from "../../global/interfaces/type";
 import showMessage from "../../global/components/notification";
-import UpdateNotification from "../../global/components/update-notification";
-import LoadingNotification from "../../global/components/load-notification";
+import UpdateNotification from "../../globals/components/update-notification";
+import LoadingNotification from "../../globals/components/load-notification";
 import CustomizedNotification from "../../global/components/customized-notification";
-import OthersHouseInfo from "./components/othersHouseInfo";
 import TenantHouseUI from "./components/houses";
-import { AccountType } from "../../lib/enums/gender";
-import FileUploading from "../../global/components/file-uploading";
+import { AccountType } from "../../lib/enums/enum";
 import uploadImages from "./components/postHouseImages";
+import { useNavigate } from "react-router-dom";
+import Search from "../../globals/components/search";
+import { color } from "../../lib/color/mantine-color";
+import { IconPlus, IconX } from "@tabler/icons-react";
+import MyHouse from "./components/all-house";
 
 const House: FC = () => {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = getUserData();
+
+  // STRING STATES
+  const [currentView, setCurrentView] = useState<string>("my-house");
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [shouldFetchData, setShouldFetchData] = useState(false);
 
@@ -130,7 +135,6 @@ const House: FC = () => {
 
     if (token) {
       setAccessToken(token);
-      setShouldFetchData(true);
     }
   }, []);
 
@@ -225,51 +229,6 @@ const House: FC = () => {
       },
     }
   );
-
-  const {
-    isLoading: isLoadingMyHouse,
-    error: errorMyHouse,
-    data: dataMyHouse,
-  } = useGetMyHouseQuery<GetMyHouseQuery, Error>(
-    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
-    {},
-    {
-      enabled: shouldFetchData,
-    }
-  );
-
-  const {
-    isLoading: isLoadingHouses,
-    error: errorHouses,
-    data: dataHouses,
-  } = useGetHousesQuery<GetHousesQuery, Error>(
-    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
-    {},
-    {
-      enabled: shouldFetchData,
-    }
-  );
-
-  useEffect(() => {
-    if (dataMyHouse) {
-      setShouldFetchData(false);
-    }
-  }, [dataMyHouse]);
-
-  if (errorMyHouse || errorHouses) {
-    const errorMessage =
-      errorMyHouse !== null
-        ? //@ts-ignore
-          errorMyHouse.response.errors[0].message
-        : errorHouses !== null
-        ? //@ts-ignore
-          errorHouses.response.errors[0].message
-        : "Unknow error occured";
-
-    if (errorMessage === "Unauthorized") {
-      clearUserData();
-    }
-  }
 
   const handleAddhouse = async () => {
     if (
@@ -483,227 +442,17 @@ const House: FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden w-full text-gray-800 gap-5">
-      {/*TOP SECTION*/}
-      <div className="w-full flex flex-row  p-1 gap-5 items-center place-content-between ">
-        <div className="w-1/2 sm:w-full md:w-full lg:w-full xl:w-full 2xl:w-full h-full sm:flex sm:justify-center  sm:items-center md:justify-center md:items-center lg:justify-center lg:items-center xl:justify-center xl:items-center 2xl:justify-center 2xl:items-center ">
-          <SearchBar
-            onSearch={
-              selectedButton === "Mine" ? handleSearchInMyHouse : handleSearch
-            }
-          />
-        </div>
-        <div className="flex justify-end w-1/2 sm:w-auto md:w-auto lg:w-auto xl:w-auto 2xl:w-auto flex-row h-full gap-2">
-          <div
-            className={`bg-white w-36 h-full flex flex-row rounded-lg p-1 ${
-              user?.login.user.accountType === AccountType.TENANT
-                ? "hidden"
-                : ""
-            }`}
-          >
-            <ToggleButtonGroup
-              onClick={setSelectedButton}
-              name={"Mine"}
-              selectedButton={selectedButton}
-            />
-            <ToggleButtonGroup
-              onClick={setSelectedButton}
-              name={"Others"}
-              selectedButton={selectedButton}
-            />
-          </div>
-          <div className="bg-white h-full justify-center items-center flex w-10 rounded-lg">
-            <FiBell style={{ height: "100%", fontSize: 30 }} />
-          </div>
-        </div>
-      </div>
-      {/*OWNER HOUSES SECTION*/}
-      <div
-        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Mine" &&
-          !mineView &&
-          user?.login.user.accountType !== AccountType.TENANT
-            ? ""
-            : "hidden"
-        }`}
-      >
-        <div className="flex flex-row place-content-between gap-2">
-          <Text className="font-semibold font-serif">My Houses</Text>
-          <Text className="font-sans text-blue-600">Seen More</Text>
-        </div>
-        <div className="w-full h-4/6 flex-row sm:h-3/6 md:h-3/6 lg:h-3/6">
-          <div
-            className={`card justify-center items-center flex ${
-              isLoadingMyHouse === false ? "hidden" : ""
-            }`}
-          >
-            {isLoadingMyHouse && (
-              <ProgressSpinner
-                style={{ width: "50px", height: "50px" }}
-                strokeWidth="5"
-                fill="var(--surface-ground)"
-                animationDuration=".5s"
-              />
-            )}
-          </div>
-          {renderMyHouses()}
-        </div>
-        <div className="flex flex-row place-content-between gap-2">
-          <Text className="font-semibold font-serif ">Add more house</Text>
-          <Text className="font-sans text-blue-600 flex flex-row gap-3">
-            <FiMapPin /> Kinondoni
-          </Text>
-        </div>
-        <div className="bg-white w-full h-full flex-col flex rounded-lg p-3 overflow-auto ">
-          <div className="gap-6 pt-4 flex flex-col sm:grid sm:grid-cols-2 sm:gap-10 md:grid-cols-1 md:gap-6 lg:grid-cols-2 lg:gap-6 xl:grid-cols-2 xl:gap-6 2xl:grid-cols-3 2xl:gap-6 ">
-            <CustomInputField
-              onChange={setName}
-              name={"House Name"}
-              id={"name"}
-              disabled={false}
-              value={""}
-            />
-            <CustomInputField
-              onChange={setRegion}
-              name={"Region"}
-              id={"region"}
-              disabled={false}
-              value={""}
-            />
-            <CustomInputField
-              onChange={setDistrict}
-              name={"District"}
-              id={"district"}
-              disabled={false}
-              value={""}
-            />
-            <CustomInputField
-              onChange={setWard}
-              name={"Ward"}
-              id={"ward"}
-              disabled={false}
-              value={""}
-            />
+    <Container fluid>
+      
 
-            <CustomInputField
-              onChange={setPrice}
-              name={"Price"}
-              id={"price"}
-              disabled={false}
-              value={""}
-            />
-          </div>
-
-          <div className="mt-5 gap-4 items-center justify-center flex flex-col 2xl:flex-row 2xl:gap-10 2xl:mx-24 2xl:items-start">
-            <div className="w-full sm:w-5/6 md:w-full lg:w-full xl:w-3/4">
-              <TextArea
-                onChange={setDescription}
-                name={"Desription"}
-                id={"description"}
-                disabled={false}
-                value={""}
-              />
-            </div>
-
-            <div className="w-full sm:w-5/6 md:w-full lg:w-full xl:w-3/4">
-              <FileUploading onChange={setImageUrl} />
-            </div>
-          </div>
-
-          <div className="justify-center items-center flex mt-5">
-            <CustomButton
-              backgroundColor={colors.lightBlue}
-              borderRadius={8}
-              name={"Add"}
-              color={"white"}
-              fontSize={14}
-              border={"none"}
-              paddingLeft={30}
-              paddingRight={30}
-              paddingTop={10}
-              paddingBottom={10}
-              onClick={handleAddhouse}
-            />
-          </div>
-        </div>
-      </div>
-      {/*OTHHER HOUSES SECTION*/}
-      <div
-        className={`w-full overflow-auto text-sm gap-2 flex flex-col  ${
-          selectedButton === "Others" && !OthersView
-            ? "h-full"
-            : "hidden h-auto"
-        }`}
-      >
-        <div className="flex flex-row place-content-between gap-2">
-          <Text className="font-semibold font-serif">All Houses</Text>
-          <Text className="font-sans text-blue-600">Seen More</Text>
-        </div>
-        <div
-          className={`w-full ${
-            user?.login.user.accountType === AccountType.TENANT
-              ? "flex-col h-full mb-4 overflow-auto"
-              : "flex-row h-2/6"
-          }`}
-        >
-          <div
-            className={`card justify-center items-center flex w-full ${
-              isLoadingHouses === false ? "hidden" : ""
-            }`}
-          >
-            {isLoadingHouses && (
-              <ProgressSpinner
-                style={{ width: "50px", height: "50px" }}
-                strokeWidth="5"
-                fill="var(--surface-ground)"
-                animationDuration=".5s"
-              />
-            )}
-          </div>
-          {renderHouses()}
-        </div>
-        <div
-          className={`flex flex-row place-content-between gap-2 ${
-            user?.login.user.accountType === AccountType.TENANT ? "hidden" : ""
-          }`}
-        >
-          <Text className="font-semibold font-serif ">
-            Find the nearest of you
-          </Text>
-          <Text className="font-sans text-blue-600 flex flex-row gap-3">
-            <FiMapPin /> Kinondoni
-          </Text>
-        </div>
-      </div>
-      {/*EDITING PAGE*/}
-      <div
-        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Mine" &&
-          mineView &&
-          user?.login.user.accountType !== AccountType.TENANT
-            ? ""
-            : "hidden"
-        }`}
-      >
-        <MyHouseInfo
-          onClickBack={setMineView}
-          house={selectedHouse}
-          onChange={HandleOnSave}
+      {currentView === "my-house" && (
+        <MyHouse
+          onClick={(button: string) => {
+            setCurrentView(button);
+          }}
         />
-      </div>
-      {/*VIEW OTHERS HOUSE PAGE*/}
-      <div
-        className={`w-full overflow-auto text-sm gap-2 flex flex-col h-full ${
-          selectedButton === "Others" && OthersView ? "" : "hidden"
-        }`}
-      >
-        <OthersHouseInfo
-          onClickBack={setOthersView}
-          house={selectedOthersHouse}
-          onChange={handleOnSubmitContract}
-        />
-      </div>
-    </div>
+      )}
+    </Container>
   );
 };
 

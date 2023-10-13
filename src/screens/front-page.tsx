@@ -37,9 +37,7 @@ const FrontPage: FC = () => {
     navigate("/auth");
   };
 
-  const handleSignUpButton = () => {
-    navigate("/register");
-  };
+  
 
   const renderHouses = () => {
     return (
@@ -68,19 +66,6 @@ const FrontPage: FC = () => {
           paddingRight={0}
           paddingTop={0}
           paddingBottom={0}
-        />
-        <CustomButton
-          backgroundColor={colors.black}
-          borderRadius={30}
-          name={"Sign up"}
-          color={colors.white}
-          onClick={handleSignUpButton}
-          fontSize={14}
-          border={"none"}
-          paddingLeft={8}
-          paddingRight={8}
-          paddingTop={2}
-          paddingBottom={2}
         />
       </div>
       <div className="flex flex-col w-full h-2/4 p-5 sm:flex-row sm:flex sm:w-full sm:h-2/4 sm:p-5 ">

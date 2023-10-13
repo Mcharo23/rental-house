@@ -1,19 +1,18 @@
 import { FC, useEffect, useState } from "react";
 import {
+  Anchor,
   AppShell,
-  Navbar,
-  Header,
-  Aside,
-  MediaQuery,
+  Avatar,
   Burger,
-  useMantineTheme,
+  Flex,
+  Group,
+  Text,
 } from "@mantine/core";
 
 import Account from "../account/account";
 
-import Headers from "./components/header";
 import NavBar from "./components/navBar";
-import House from "../house/house";
+import House from "../house/house-page";
 import Dashboard from "../dashboard/dashboard";
 import { getUserAccessToken } from "../../utils/localStorageUtils";
 import { useNavigate } from "react-router-dom";
@@ -21,14 +20,15 @@ import ShowNotification from "../../global/components/show-notification";
 import Rentals from "../Rental/Rentals";
 import Tenants from "../tenants/tenant";
 import Contracts from "../tenants/contract";
-import Sidebar from "./components/side-bar";
+import Headers from "./components/header";
+import { logo } from "../../lib/images/url";
+import { ServerOverload } from "../error/server-error";
 
 const HomePage: FC = () => {
-  const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const navigate = useNavigate();
 
-  const [activeScreen, setActiveScreen] = useState<string>("dashboard");
+  const [activeScreen, setActiveScreen] = useState<string>("Dashboard");
   const token = getUserAccessToken();
 
   useEffect(() => {
@@ -44,75 +44,62 @@ const HomePage: FC = () => {
 
   return (
     <AppShell
-      className="bg-slate-200"
-      navbarOffsetBreakpoint="sm"
-      asideOffsetBreakpoint="sm"
-      navbar={
-        <Navbar
-          p="md"
-          hiddenBreakpoint="sm"
-          hidden={!opened}
-          width={{ sm: 200, lg: 300 }}
-          className="w-40 sm:w-52 "
-        >
-          <NavBar
-            onClick={(value: string) => {
-              setActiveScreen(value);
-              setOpened(!opened);
-            }}
-          />
-        </Navbar>
-      }
-      aside={
-        <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-          <Aside
-            p="md"
-            hiddenBreakpoint="sm"
-            width={{ sm: 250, lg: 350 }}
-            className=""
-          >
-            <Sidebar onClick={(value) => setActiveScreen(value)} />
-          </Aside>
-        </MediaQuery>
-      }
-      // footer={
-      //   <Footer height={60} p="md">
-      //     Application footer
-      //   </Footer>
-      // }
-      header={
-        <Header height={{ base: 50, md: 70 }} p="md">
-          <div
-            style={{ display: "flex", alignItems: "center", height: "100%" }}
-          >
-            <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-              <Burger
-                opened={opened}
-                onClick={() => setOpened((o) => !o)}
-                size="sm"
-                color={theme.colors.gray[6]}
-                mr="xl"
-              />
-            </MediaQuery>
-
-            <Headers />
-          </div>
-        </Header>
-      }
+      header={{ height: 50 }}
+      navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
     >
-      {activeScreen === "dashboard" ? (
-        <Dashboard />
-      ) : activeScreen === "house" ? (
-        <House />
-      ) : activeScreen === "rentals" ? (
-        <Rentals />
-      ) : activeScreen === "tenants" ? (
-        <Tenants />
-      ) : activeScreen === "contracts" ? (
-        <Contracts />
-      ) : (
-        <Account />
-      )}
+      <AppShell.Header>
+        <Flex
+          mih={50}
+          gap="md"
+          justify="space-between"
+          align={"center"}
+          direction="row"
+          display={"flex"}
+        >
+          <Group>
+            <Burger
+              opened={opened}
+              onClick={() => setOpened((o) => !o)}
+              size="sm"
+              hiddenFrom="sm"
+            />
+          </Group>
+          <Flex align={"center"} direction={"row"} justify={"center"}>
+            <Avatar src={`${logo}`} alt="logo" radius={"xl"} size={"md"} />
+            <Text size="lg">
+              The Estate <Anchor>Soko</Anchor>
+            </Text>
+          </Flex>
+          <Headers />
+        </Flex>
+      </AppShell.Header>
+
+      <AppShell.Navbar>
+        <NavBar
+          onClick={(value: string) => {
+            setActiveScreen(value);
+            setOpened(!opened);
+          }}
+        />
+      </AppShell.Navbar>
+
+      <AppShell.Main>
+        {activeScreen === "Dashboard" ? (
+          <Dashboard />
+        ) : activeScreen === "House" ? (
+          <House />
+        ) : activeScreen === "PendingNest" ? (
+          <Rentals />
+        ) : activeScreen === "Luxe Living" ? (
+          <Tenants />
+        ) : activeScreen === "Contracts" ? (
+          <Contracts />
+        ) : activeScreen === "Account" ? (
+          <Account />
+        ) : (
+          <ServerOverload />
+        )}
+      </AppShell.Main>
     </AppShell>
   );
 };

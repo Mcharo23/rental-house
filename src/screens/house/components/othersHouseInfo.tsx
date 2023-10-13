@@ -16,7 +16,7 @@ import { getUserData } from "../../../utils/localStorageUtils";
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import CustomInputField from "../../../global/components/input-text";
-import { AccountType } from "../../../lib/enums/gender";
+import { AccountType } from "../../../lib/enums/enum";
 
 const OthersHouseInfo: FC<OthersHouseInfoProps> = ({
   onClickBack,
