@@ -8,6 +8,7 @@ import {
   Container,
   Flex,
   Loader,
+  Modal,
   Notification,
   Paper,
   Space,
@@ -28,6 +29,8 @@ import { IconClock, IconHome, IconPlus, IconX } from "@tabler/icons-react";
 import { color } from "../../../lib/color/mantine-color";
 import Search from "../../../globals/components/search";
 import HouseTable from "./house-table";
+import { useDisclosure } from "@mantine/hooks";
+import NewHouseForm from "./new-house-form";
 
 type HouseTableProps = {
   onClick: (button: string) => void;
@@ -39,9 +42,14 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
 
   // STRING STATES
   const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [clickedButton, setClickedButton] = useState<string>("");
 
   //NUMBER STATES
   const [searchLength, setSearchLength] = useState<number>(0);
+
+  //BOOLEAN STATES
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
   // GRAPHQL STATES
   const [filteredHouse, setFilteredHouse] = useState<
@@ -209,6 +217,32 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
   };
   return (
     <>
+      {showModal && (
+        <Modal
+          opened={opened}
+          onClose={() => {
+            close();
+            setShowModal(false);
+          }}
+          title={clickedButton === "new" ? "New House" : ""}
+          transitionProps={{
+            transition: "fade",
+            duration: 600,
+            timingFunction: "linear",
+          }}
+        >
+          {clickedButton === "new" ? (
+            <NewHouseForm
+              onClick={() => {
+                setShowModal(false);
+                close();
+              }}
+            />
+          ) : (
+            ""
+          )}
+        </Modal>
+      )}
       <Paper bg={`${color.gray_light_color}`} p={"md"} mt={"md"} radius={"md"}>
         <Flex
           direction={"row"}
@@ -226,7 +260,16 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
               }}
             />
           </Paper>
-          <Button leftSection={<IconPlus />}>New House</Button>
+          <Button
+            leftSection={<IconPlus />}
+            onClick={() => {
+              setClickedButton("new");
+              setShowModal(true);
+              open();
+            }}
+          >
+            New House
+          </Button>
         </Flex>
       </Paper>
 

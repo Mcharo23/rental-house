@@ -1,88 +1,61 @@
-import { Flex, Text, Paper, Space, Anchor, Title } from "@mantine/core";
+import { Text, Card, Button, Group, rem } from "@mantine/core";
 import { FC } from "react";
-import { IconBath, IconBed, IconToolsKitchen } from "@tabler/icons-react";
-import { color } from "../../lib/color/mantine-color";
-import { IMAGE_BASE } from "../../lib/api-base";
+import { IconStar } from "@tabler/icons-react";
+import classes from "../css/CarouselCard.module.css";
+import { useNavigate } from "react-router-dom";
 import { GetHousesQuery } from "../../generated/graphql";
+import ImageSwiper from "./image-swiper";
+import { color } from "../../lib/color/mantine-color";
 
 type HouseCardUiProps = {
   props: GetHousesQuery["houses"][0];
 };
+
 const HouseCardUi: FC<HouseCardUiProps> = ({ props }) => {
+  const navigate = useNavigate();
+
+  const handleOnClick = () => {};
   return (
-    <Paper bg={`${color.gray_light_color}`}>
-      <div
-        style={{
-          display: "flex",
-          height: 450,
-          flexDirection: "column",
-          borderTopLeftRadius: "10px",
-          borderTopRightRadius: "10px",
-          borderBottomLeftRadius: "10px",
-          borderBottomRightRadius: "10px",
-        }}
-      >
-        <img
-          src={`${IMAGE_BASE.BASE}${props.imgUrl[0]}`}
-          alt={`image for ${props.name} house`}
-          style={{
-            width: "100%",
-            height: "60%",
-            borderTopLeftRadius: "10px",
-            borderTopRightRadius: "10px",
-          }}
-        />
-        <Flex p={"sm"} display={"flex"} direction={"column"}>
-          <Title order={4}>{props.name}</Title>
+    <Card radius="md" withBorder padding="xl" bg={`${color.gray_light_color}`}>
+      <Card.Section>
+        <ImageSwiper images={props.imgUrl} />
+      </Card.Section>
 
-          <Space h={"sm"} />
+      <Group justify="space-between" mt="lg">
+        <Text fw={500} fz="lg">
+          Forde, Norway
+        </Text>
 
-          <Flex justify={"space-between"}>
-            <Flex>
-              <IconBed />
-              <Text>3 bedrooms</Text>
-            </Flex>
+        <Group gap={5}>
+          <IconStar style={{ width: rem(16), height: rem(16) }} />
+          <Text fz="xs" fw={500}>
+            4.78
+          </Text>
+        </Group>
+      </Group>
 
-            <Flex>
-              <IconBath />
-              <Text>2 bathrooms</Text>
-            </Flex>
+      <Text fz="sm" c="dimmed" mt="sm" lineClamp={4}>
+        Relax, rejuvenate and unplug in this unique contemporary Birdbox. Feel
+        close to nature in ultimate comfort. Enjoy the view of the epic mountain
+        range of Blegja and the Førdefjord.
+      </Text>
 
-            <Flex>
-              <IconToolsKitchen />
-              <Text>3 kitchen</Text>
-            </Flex>
-          </Flex>
+      <Group justify="space-between" mt="md">
+        <div>
+          <Text fz="xl" span fw={500} className={classes.price}>
+            {props.price}Tsh
+          </Text>
+          <Text span fz="sm" c="dimmed">
+            {" "}
+            / month
+          </Text>
+        </div>
 
-          <Space h={"sm"} />
-
-          <Flex
-            direction={"row"}
-            justify={"space-between"}
-            align={"center"}
-            display={"flex"}
-          >
-            <Flex direction={"column"}>
-              <Anchor>{props.price}Tshs</Anchor>
-              <Text>
-                {props.District}, {props.Region}
-              </Text>
-            </Flex>
-
-            <Paper
-              withBorder
-              p={"sm"}
-              radius={"md"}
-              bg={`${color.gray_light_color}`}
-            >
-              <Anchor underline="never" href={`tel:${props.user.phoneNumber}`}>
-                Book Now
-              </Anchor>
-            </Paper>
-          </Flex>
-        </Flex>
-      </div>
-    </Paper>
+        <Button radius="md" onClick={handleOnClick}>
+          Book now
+        </Button>
+      </Group>
+    </Card>
   );
 };
 

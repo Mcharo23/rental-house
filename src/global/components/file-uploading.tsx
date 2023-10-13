@@ -71,7 +71,7 @@ const FileUploading: FC<FileUploadingProps> = ({ onChange }) => {
   const [selectedFiles, setSelectedFiles] = useState<File[] | null>(null);
 
   const handleFileChange = (files: File[]) => {
-    const filteredFiles = files?.filter((file) => validateFileSize(file));
+    const filteredFiles: File[] = files?.filter((file) => validateFileSize(file));
 
     setSelectedFiles(filteredFiles);
     onChange(filteredFiles);

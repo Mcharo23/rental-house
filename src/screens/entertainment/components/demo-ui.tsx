@@ -3,9 +3,10 @@ import { FC } from "react";
 import { GetDemoHousesQuery } from "../../../generated/graphql";
 import { IconStar } from "@tabler/icons-react";
 
-import classes from "../css/CarouselCard.module.css";
+import classes from "../../../globals/css/CarouselCard.module.css";
 import ImageSwiper from "../../../globals/components/image-swiper";
 import { useNavigate } from "react-router-dom";
+import { color } from "../../../lib/color/mantine-color";
 
 type DemoUiProps = {
   props: GetDemoHousesQuery["demo"][0];
@@ -19,7 +20,7 @@ const DemoUi: FC<DemoUiProps> = ({ props }) => {
   };
 
   return (
-    <Card radius="md" withBorder padding="xl">
+    <Card radius="md" withBorder padding="xl" bg={`${color.gray_light_color}`}>
       <Card.Section>
         <ImageSwiper images={props.imgUrl} />
       </Card.Section>
@@ -37,7 +38,7 @@ const DemoUi: FC<DemoUiProps> = ({ props }) => {
         </Group>
       </Group>
 
-      <Text fz="sm" c="dimmed" mt="sm">
+      <Text fz="sm" c="dimmed" mt="sm" lineClamp={4}>
         Relax, rejuvenate and unplug in this unique contemporary Birdbox. Feel
         close to nature in ultimate comfort. Enjoy the view of the epic mountain
         range of Blegja and the Førdefjord.

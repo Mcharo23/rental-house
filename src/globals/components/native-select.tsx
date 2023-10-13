@@ -31,6 +31,7 @@ const SelectComponent: React.FC<SelectComponentProps> = ({
           marginRight: rem(marginRight),
         },
       }}
+      required
     />
   );
 };

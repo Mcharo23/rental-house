@@ -8,7 +8,6 @@ import {
   Avatar,
   Flex,
   Container,
-  Image,
   Notification,
   Divider,
   Space,
@@ -16,12 +15,13 @@ import {
   Paper,
   Title,
 } from "@mantine/core";
-import { banner1, banner2, logo } from "../../lib/images/url";
+import { banner1, logo } from "../../lib/images/url";
 import { color } from "../../lib/color/mantine-color";
 import { useNavigate } from "react-router-dom";
 import useFetchDemoHouse from "./functions/get-demo-house";
 import { IconX } from "@tabler/icons-react";
 import DemoUi from "./components/demo-ui";
+import ColorScheme from "../../globals/components/dark-light-modal";
 
 const EntertainmentPage: FC = () => {
   const navigate = useNavigate();
@@ -39,11 +39,15 @@ const EntertainmentPage: FC = () => {
   };
 
   //CONSTANTS
-  const text = `We are a company that connects the world of real estate and finance. We provide a complete service for the sale, purchase or rental of real estate.
+  const about = `We are a company that connects the world of real estate and finance. We provide a complete service for the sale, purchase or rental of real estate.
 
 Our advantage is more than 15 years of experience and soil in attractive locations in Slovakia with branches in Bratislava and Košice. We have a connection to all banks on the Slovak market, so we can solve everything under one roof.
 
 By constantly innovating our business activities, we move forward and we are able to offer truly above-standard services that set us apart from the competition.`;
+
+  const header = `We help people to get
+home & renting with
+good proce`;
 
   return (
     <Container fluid>
@@ -67,6 +71,7 @@ By constantly innovating our business activities, we move forward and we are abl
             align={"center"}
             justify={"center"}
           >
+            <ColorScheme />
             <Button
               color="blue"
               variant="outline"
@@ -81,39 +86,64 @@ By constantly innovating our business activities, we move forward and we are abl
       <Flex
         direction={{
           base: "column",
-          sm: "row",
+          sm: "column",
           md: "row",
           lg: "row",
           xl: "row",
         }}
         gap={"md"}
         justify={"center"}
+        align={"center"}
         mt={"md"}
       >
-        <Flex direction={"column"}>
-          <Flex direction={"column"} justify={"center"} align={"center"}>
-            <Text size="xl">
-              <Title order={1}>Your dream</Title>
-            </Text>
-            <Text size="xl">
-              <Title order={2}>
-                <Anchor>House</Anchor> is here.
-              </Title>
-            </Text>
-            <Text>We provide a completeservice for the rent</Text>
-            <Text>of real estate. We have been operating in Mainland</Text>
-          </Flex>
+        <Flex
+          direction={"column"}
+          align={"center"}
+          justify={"center"}
+          w={{ sm: "50%" }}
+        >
+          <Text size="xl">
+            <Title order={1}>Your dream</Title>
+          </Text>
+          <Text size="xl">
+            <Title order={2}>
+              <Anchor size="25px">House</Anchor> is here.
+            </Title>
+          </Text>
+          <Text>We provide a completeservice for the rent</Text>
+          <Text>of real estate. We have been operating in Mainland</Text>
 
-          <Image src={`${banner2}`} radius="md" />
+          <Space h="md" />
+
+          <Text size="xl" c={`blue`}>
+            {header}
+          </Text>
         </Flex>
-        <Image src={`${banner1}`} radius="md" />
+        <Flex
+          w={{ sm: "100%", md: "50%", lg: "75%", xl: "75%" }}
+          h={{ sm: 300, md: 350, lg: 400, xl: 500 }}
+        >
+          <img
+            src={`${banner1}`}
+            style={{
+              width: "100%",
+              borderTopLeftRadius: 5,
+              borderTopRightRadius: 5,
+              borderBottomLeftRadius: 5,
+              borderBottomRightRadius: 5,
+            }}
+          />
+        </Flex>
       </Flex>
 
       <Divider orientation="horizontal" size={"sm"} mt={"xl"} />
 
-      <Text size="xl" mt={"xl"} c={"dark"}>
-        Top 10 House
-      </Text>
+      <Space h="xl" />
+
+      <Title order={2}>Top 10 House of the week</Title>
+
+      <Space h="sm" />
+
       <Text>
         Fullfill your career dreams, enjoy all the achievement of the city
       </Text>
@@ -151,7 +181,7 @@ By constantly innovating our business activities, we move forward and we are abl
         {data?.demo.map((house) => (
           <Flex
             key={house._id}
-            w={{ base: "85%", sm: "50%", md: "40%", lg: "30%", xl: "25%" }}
+            w={{ base: "85%", sm: "50%", md: "40%", lg: "30%", xl: "400px" }}
           >
             <DemoUi props={{ ...house }} />
           </Flex>
@@ -164,7 +194,7 @@ By constantly innovating our business activities, we move forward and we are abl
         <Flex direction={"row"} display={"flex"} align={"center"} p={"md"}>
           <Flex direction={"column"}>
             <Title>About us</Title>
-            <div style={textStyle}>{text}</div>
+            <div style={textStyle}>{about}</div>
           </Flex>
         </Flex>
       </Paper>

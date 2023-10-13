@@ -243,7 +243,7 @@ const Dashboard: FC = () => {
         {filteredInAllHouse.length !== 0 && searchLength > 0 ? (
           filteredInAllHouse.map((house) => (
             <Grid.Col
-              span={{ base: 12, sm: 6, md: 4, lg: 4, xl: 3 }}
+              span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
               key={house._id}
             >
               <HouseCardUi props={{ ...house }} />
@@ -258,7 +258,7 @@ const Dashboard: FC = () => {
         ) : (
           dataHouses?.houses.map((house) => (
             <Grid.Col
-              span={{ base: 12, sm: 6, md: 4, lg: 4, xl: 3 }}
+              span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
               key={house._id}
             >
               <HouseCardUi props={{ ...house }} />
