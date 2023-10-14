@@ -2,7 +2,6 @@ import { FC } from "react";
 import { GetMyHouseQuery } from "../../../generated/graphql";
 import { Anchor, Avatar, Group, Table } from "@mantine/core";
 import { IMAGE_BASE } from "../../../lib/api-base";
-import { color } from "../../../lib/color/mantine-color";
 import { IconEdit, IconEye } from "@tabler/icons-react";
 import colors from "../../../lib/color/colors";
 
@@ -54,8 +53,13 @@ const HouseTable: FC<HouseTableProps> = ({ onClick, props }) => {
       <Table.Td>{props.contract.length}</Table.Td>
       <Table.Td>
         <Group gap={"sm"}>
-          <IconEdit size={20} color="green" />
-          <IconEye size={20} color={`${colors.lightBlue}`} />
+          <IconEdit size={20} color="green" style={{ cursor: "pointer" }} />
+          <IconEye
+            size={20}
+            color={`${colors.lightBlue}`}
+            onClick={() => onClick("info", props)}
+            style={{ cursor: "pointer" }}
+          />
         </Group>
       </Table.Td>
     </Table.Tr>

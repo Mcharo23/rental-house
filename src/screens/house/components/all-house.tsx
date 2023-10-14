@@ -16,10 +16,7 @@ import {
   rem,
 } from "@mantine/core";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
-import {
-  clearUserData,
-  getUserAccessToken,
-} from "../../../utils/localStorageUtils";
+import { getUserAccessToken } from "../../../utils/localStorageUtils";
 import { useNavigate } from "react-router-dom";
 import { IconClock, IconHome, IconPlus, IconX } from "@tabler/icons-react";
 import { color } from "../../../lib/color/mantine-color";
@@ -28,11 +25,11 @@ import HouseTable from "./house-table";
 import { useDisclosure } from "@mantine/hooks";
 import NewHouseForm from "./new-house-form";
 
-type HouseTableProps = {
-  onClick: (button: string) => void;
+type MyHouseProps = {
+  onClick: (button: string, house: GetMyHouseQuery["myHouse"][0]) => void;
 };
 
-const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
+const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
   const navigate = useNavigate();
 
   // STRING STATES
@@ -80,7 +77,6 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
       const errorMessage = errorMyHouse.response.errors[0].message;
 
       if (errorMessage === "Unauthorized") {
-        clearUserData();
         navigate("/", { replace: true });
       }
     }
@@ -97,35 +93,12 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
               }}
               onClick={(
                 button: string,
-                house: {
-                  __typename?: "MyHouseType" | undefined;
-                  _id: string;
-                  name: string;
-                  Region: string;
-                  District: string;
-                  Ward: string;
-                  price: number;
-                  Description: string;
-                  status: string;
-                  imgUrl: string[];
-                  contract: {
-                    __typename?: "ContractType" | undefined;
-                    _id: string;
-                    Duration: number;
-                    Total_rent: string;
-                    Tenant: {
-                      __typename?: "UserType" | undefined;
-                      firstName: string;
-                      gender: string;
-                      lastname: string;
-                      middleName: string;
-                      phoneNumber: string;
-                      username: string;
-                    };
-                  }[];
-                }
+                house: GetMyHouseQuery["myHouse"][0]
               ) => {
-                throw new Error("Function not implemented.");
+                if (button === "info") {
+                  onClick(button, house);
+                } else {
+                }
               }}
             />
           );
@@ -143,7 +116,10 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
                 button: string,
                 house: GetMyHouseQuery["myHouse"][0]
               ) => {
-                throw new Error("Function not implemented.");
+                if (button === "info") {
+                  onClick(button, house);
+                } else {
+                }
               }}
             />
           );

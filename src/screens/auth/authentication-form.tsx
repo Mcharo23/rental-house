@@ -13,7 +13,6 @@ import {
   Notification,
   Space,
 } from "@mantine/core";
-import colors from "../../lib/color/colors";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
@@ -44,10 +43,6 @@ import LoadingNotification from "../../globals/components/load-notification";
 
 const AuthenticationForm: FC = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    clearUserData();
-  }, []);
 
   //TOGGLD STATES
   const [type, toggle] = useToggle(["login", "register"]);

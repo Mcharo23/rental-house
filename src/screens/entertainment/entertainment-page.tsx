@@ -30,7 +30,7 @@ const EntertainmentPage: FC = () => {
   const { isLoading, error, data } = useFetchDemoHouse();
   if (error?.message === "Network request failed") {
     localStorage.setItem("error", "/");
-    navigate("/error");
+    navigate("/error", { replace: true });
     window.location.reload();
   }
 
@@ -106,14 +106,10 @@ good proce`;
           justify={"center"}
           w={{ sm: "50%" }}
         >
-          <Text size="xl">
-            <Title order={1}>Your dream</Title>
-          </Text>
-          <Text size="xl">
-            <Title order={2}>
-              <Anchor size="25px">House</Anchor> is here.
-            </Title>
-          </Text>
+          <Title order={1}>Your dream</Title>
+          <Title order={2}>
+            <Anchor size="25px">House</Anchor> is here.
+          </Title>
           <Text>We provide a completeservice for the rent</Text>
           <Text>of real estate. We have been operating in Mainland</Text>
 

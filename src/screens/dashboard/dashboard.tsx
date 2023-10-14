@@ -71,21 +71,23 @@ const Dashboard: FC = () => {
   //   }
   // );
 
-  if (errorHouses) {
-    if (errorHouses.message === "Network request failed") {
-      localStorage.setItem("error", "/home");
-      navigate("/error", { replace: true });
-      window.location.reload();
-    } else {
-      //@ts-ignore
-      const errorMessage = errorHouses.response.errors[0].message;
+  useEffect(() => {
+    if (errorHouses) {
+      if (errorHouses.message === "Network request failed") {
+        localStorage.setItem("error", "/home");
+        navigate("/error", { replace: true });
+        window.location.reload();
+      } else {
+        //@ts-ignore
+        const errorMessage = errorHouses.response.errors[0].message;
 
-      if (errorMessage === "Unauthorized") {
-        clearUserData();
-        navigate("/", { replace: true });
+        if (errorMessage === "Unauthorized") {
+          clearUserData();
+          navigate("/", { replace: true });
+        }
       }
     }
-  }
+  }, [accessToken]);
 
   const handleSearch = (search: string) => {
     setSearchLength(search.length);

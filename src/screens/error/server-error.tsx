@@ -32,7 +32,7 @@ export function ServerOverload() {
               <Button
                 size="md"
                 variant="white"
-                onClick={() => navigate(`${destination}`)}
+                onClick={() => navigate(`${destination}`, { replace: true })}
               >
                 Refresh the page
               </Button>

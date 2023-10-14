@@ -1,6 +1,6 @@
 import { notifications } from "@mantine/notifications";
 
-import { CustomizedNotificationProps } from "../interfaces/type";
+import { CustomizedNotificationProps } from "../../global/interfaces/type";
 
 const ShowNotification = ({ title, message }: CustomizedNotificationProps) => {
   notifications.show({

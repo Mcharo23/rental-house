@@ -16,11 +16,6 @@ const App = () => {
         <Route path="/" element={<EntertainmentPage />} />
         <Route path="/auth" element={<AuthenticationForm />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/tenants" element={<Tenants />} />
-        <Route path="/rentals" element={<Rentals />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/house" element={<House />} />
-        <Route path="/contracts" element={<Contracts />} />
         <Route path="/error" element={<ServerOverload />} />
       </Routes>
     </BrowserRouter>

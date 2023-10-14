@@ -11,16 +11,17 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { IconPhoto, IconPlus } from "@tabler/icons-react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { locations, period } from "../../../globals/selections/constant";
 import SelectComponent from "../../../globals/components/native-select";
 import { notifications } from "@mantine/notifications";
 import { GraphQLError } from "graphql";
 import { useCreateHouseInputMutation } from "../../../generated/graphql";
-import ShowNotification from "../../../global/components/show-notification";
+import ShowNotification from "../../../globals/components/show-notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { useQueryClient } from "@tanstack/react-query";
 import uploadImages from "./postHouseImages";
+import { getUserAccessToken } from "../../../utils/localStorageUtils";
 
 type NewHouseFormProps = {
   onClick: () => void;
@@ -45,6 +46,15 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
   // FILE STATES
   const [selectedFiles, setSelectedFiles] = useState<File[] | null>(null);
 
+  //USE EFFECTS
+  useEffect(() => {
+    const token = getUserAccessToken();
+
+    if (token) {
+      setAccessToken(token);
+    }
+  }, []);
+
   // FORMS
   const newHouseForm = useForm({
     initialValues: {
@@ -63,7 +73,6 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
       ward: (val) => (val.length < 3 ? "Ward nmame is too short" : null),
       description: (val) => (val.length <= 100 ? "To short description" : null),
       option: (val) => (val === "" ? "Please select price options" : null),
-      images: (val) => (val.length > 4 ? null : "5 or more images"),
     },
   });
 
@@ -72,7 +81,11 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
     graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(["getMyHouse"]);
+        queryClient.invalidateQueries([
+          "getMyHouse",
+          "getDemoHouses",
+          "getHouses",
+        ]);
         ShowNotification({
           title: "House Added Successfully 🏡",
           message:
@@ -111,22 +124,22 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
           images: "maximum size of 1M and five 5 required",
         });
       } else {
-        // try {
-        //   const response = await uploadImages(selectedFiles, accessToken);
-        //   await createHouseMutate({
-        //     input: {
-        //       name: newHouseForm.values.name,
-        //       Region: newHouseForm.values.region,
-        //       District: newHouseForm.values.district,
-        //       Ward: newHouseForm.values.ward,
-        //       Description: newHouseForm.values.description,
-        //       price: Number(newHouseForm.values.price),
-        //       imgUrl: response,
-        //     },
-        //   });
-        // } catch (error) {
-        //   console.error("Error uploading files:", error);
-        // }
+        try {
+          const response = await uploadImages(selectedFiles, accessToken);
+          await createHouseMutate({
+            input: {
+              name: newHouseForm.values.name,
+              Region: newHouseForm.values.region,
+              District: newHouseForm.values.district,
+              Ward: newHouseForm.values.ward,
+              Description: newHouseForm.values.description,
+              price: Number(newHouseForm.values.price),
+              imgUrl: response,
+            },
+          });
+        } catch (error) {
+          console.error("Error uploading files:", error);
+        }
       }
     }
   };

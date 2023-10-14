@@ -9,7 +9,7 @@ import {
 import graphqlRequestClient from "../lib/clients/graphqlRequestClient";
 import AllHousesUI from "../global/components/houses";
 import { ProgressSpinner } from "primereact/progressspinner";
-import ShowNotification from "../global/components/show-notification";
+import ShowNotification from "../globals/components/show-notification";
 import { clearUserData } from "../utils/localStorageUtils";
 
 const FrontPage: FC = () => {
@@ -36,8 +36,6 @@ const FrontPage: FC = () => {
   const handleLoginButton = () => {
     navigate("/auth");
   };
-
-  
 
   const renderHouses = () => {
     return (
