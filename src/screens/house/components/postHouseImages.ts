@@ -1,4 +1,5 @@
 import axios from "axios";
+import { UPLOAD_IMAGE_BASE } from "../../../lib/api-base";
 
 const uploadImages = async (files: File[], accessToken: string | null) => {
   if (!accessToken) {
@@ -16,11 +17,9 @@ const uploadImages = async (files: File[], accessToken: string | null) => {
   };
 
   try {
-    const response = await axios.post(
-      "http://localhost:3000/house/upload-house-images/",
-      formData,
-      { headers }
-    );
+    const response = await axios.post(`${UPLOAD_IMAGE_BASE}`, formData, {
+      headers,
+    });
 
     if (response.status === 201) {
       return response.data;
@@ -34,3 +33,4 @@ const uploadImages = async (files: File[], accessToken: string | null) => {
 };
 
 export default uploadImages;
+// This is the test 1 conducted after migrating the project from using 4 providers for UI design which are tailwind, chakra, prime react and mantine so currently on this test aims testing uploading house using Modal from mantine

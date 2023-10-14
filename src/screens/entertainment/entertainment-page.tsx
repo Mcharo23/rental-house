@@ -22,6 +22,7 @@ import useFetchDemoHouse from "./functions/get-demo-house";
 import { IconX } from "@tabler/icons-react";
 import DemoUi from "./components/demo-ui";
 import ColorScheme from "../../globals/components/dark-light-modal";
+import { clearUserData } from "../../utils/localStorageUtils";
 
 const EntertainmentPage: FC = () => {
   const navigate = useNavigate();
@@ -75,7 +76,10 @@ good proce`;
             <Button
               color="blue"
               variant="outline"
-              onClick={() => navigate("auth")}
+              onClick={() => {
+                clearUserData();
+                navigate("/auth");
+              }}
             >
               Log in
             </Button>

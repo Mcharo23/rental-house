@@ -7,69 +7,27 @@ import {
   Notification,
   Paper,
   Space,
-  Text,
   Title,
 } from "@mantine/core";
-import { FiBell, FiMapPin } from "react-icons/fi";
-import AllHousesUI from "../../global/components/houses";
-import {
-  CreateContractInputMutation,
-  GetHousesQuery,
-  useCreateContractInputMutation,
-} from "../../generated/graphql";
-import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
+import { GetHousesQuery } from "../../generated/graphql";
 import {
   clearUserData,
   getUserAccessToken,
 } from "../../utils/localStorageUtils";
-import { ProgressSpinner } from "primereact/progressspinner";
-import OthersHouseInfo from "../house/components/othersHouseInfo";
-import {
-  MyHouseInfoUpdatedProps,
-  OthersHouseInfoContractProps,
-} from "../../global/interfaces/type";
-import { notifications } from "@mantine/notifications";
-import { GraphQLError } from "graphql";
-import LoadingNotification from "../../globals/components/load-notification";
-import showMessage from "../../global/components/notification";
-import UpdateNotification from "../../globals/components/update-notification";
 import useFetchHouses from "./components/fetchHouses";
-import ShowNotification from "../../global/components/show-notification";
 import Search from "../../globals/components/search";
 import { color } from "../../lib/color/mantine-color";
 import { IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import DemoUi from "../entertainment/components/demo-ui";
 import HouseCardUi from "../../globals/components/house-card";
 
 const Dashboard: FC = () => {
   const navigate = useNavigate();
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [detailView, setDetailView] = useState<boolean>(false);
   const [filteredInAllHouse, setFilteredInAllHouse] = useState<
     GetHousesQuery["houses"][0][]
   >([]);
-  const [selectedOthersHouse, setSelectedOthersHouse] = useState<
-    GetHousesQuery["houses"][0]
-  >({
-    _id: "",
-    name: "",
-    Region: "",
-    District: "",
-    Ward: "",
-    Description: "",
-    imgUrl: [],
-    price: 0,
-    status: "",
-    user: {
-      firstName: "",
-      lastname: "",
-      middleName: "",
-      phoneNumber: "",
-      username: "",
-      gender: "",
-    },
-  });
+
   const [searchLength, setSearchLength] = useState<number>(0);
 
   useEffect(() => {

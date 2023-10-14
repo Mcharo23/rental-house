@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import {
   Anchor,
   AppShell,
@@ -12,35 +12,19 @@ import {
 import Account from "../account/account";
 
 import NavBar from "./components/navBar";
-import House from "../house/house-page";
 import Dashboard from "../dashboard/dashboard";
-import { getUserAccessToken } from "../../utils/localStorageUtils";
-import { useNavigate } from "react-router-dom";
-import ShowNotification from "../../global/components/show-notification";
 import Rentals from "../Rental/Rentals";
 import Tenants from "../tenants/tenant";
 import Contracts from "../tenants/contract";
 import Headers from "./components/header";
 import { logo } from "../../lib/images/url";
 import { ServerOverload } from "../error/server-error";
+import House from "../house/house-page";
 
 const HomePage: FC = () => {
   const [opened, setOpened] = useState(false);
-  const navigate = useNavigate();
 
   const [activeScreen, setActiveScreen] = useState<string>("Dashboard");
-  const token = getUserAccessToken();
-
-  useEffect(() => {
-    if (!token) {
-      ShowNotification({
-        title: "Session Expired ⚠️",
-        message:
-          " Your session has expired. Please log in again to continue. 🔐",
-      });
-      navigate("/", { replace: true });
-    }
-  }, [activeScreen, navigate, token]);
 
   return (
     <AppShell

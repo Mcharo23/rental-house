@@ -5,7 +5,6 @@ import {
 } from "../../../generated/graphql";
 import {
   Button,
-  Container,
   Flex,
   Loader,
   Modal,
@@ -14,11 +13,8 @@ import {
   Space,
   Table,
   Tabs,
-  Text,
-  Title,
   rem,
 } from "@mantine/core";
-import { useQueryClient } from "@tanstack/react-query";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import {
   clearUserData,
@@ -38,7 +34,6 @@ type HouseTableProps = {
 
 const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   // STRING STATES
   const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -140,6 +135,7 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
       : dataMyHouse?.myHouse.map((house) => {
           return (
             <HouseTable
+              key={house._id}
               props={{
                 ...house,
               }}
@@ -160,6 +156,7 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
           .map((house) => {
             return (
               <HouseTable
+                key={house._id}
                 props={{
                   ...house,
                 }}
@@ -179,6 +176,7 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
           .map((house) => {
             return (
               <HouseTable
+                key={house._id}
                 props={{
                   ...house,
                 }}
@@ -215,6 +213,7 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
       setFilteredHouse([]);
     }
   };
+
   return (
     <>
       {showModal && (
@@ -341,6 +340,7 @@ const MyHouse: FC<HouseTableProps> = ({ onClick }) => {
               <Loader color="blue" type="bars" />
             </Flex>
           )}
+
           {errorMyHouse && (
             <Flex align={"center"} justify={"center"}>
               <Notification icon={<IconX />} color="red" title="Oops!">

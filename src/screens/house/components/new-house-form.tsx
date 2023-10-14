@@ -105,28 +105,28 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
 
   //METHODS
   const handleOnSubmit = async () => {
-    if (selectedFiles!.length < 5) {
-      newHouseForm.setErrors({
-        images: "maximum size of 1M and five 5 required",
-      });
-    } else {
-      if (selectedFiles !== null) {
-        try {
-          const response = await uploadImages(selectedFiles, accessToken);
-          await createHouseMutate({
-            input: {
-              name: newHouseForm.values.name,
-              Region: newHouseForm.values.region,
-              District: newHouseForm.values.district,
-              Ward: newHouseForm.values.ward,
-              Description: newHouseForm.values.description,
-              price: Number(newHouseForm.values.price),
-              imgUrl: response,
-            },
-          });
-        } catch (error) {
-          console.error("Error uploading files:", error);
-        }
+    if (selectedFiles !== null) {
+      if (selectedFiles.length < 5) {
+        newHouseForm.setErrors({
+          images: "maximum size of 1M and five 5 required",
+        });
+      } else {
+        // try {
+        //   const response = await uploadImages(selectedFiles, accessToken);
+        //   await createHouseMutate({
+        //     input: {
+        //       name: newHouseForm.values.name,
+        //       Region: newHouseForm.values.region,
+        //       District: newHouseForm.values.district,
+        //       Ward: newHouseForm.values.ward,
+        //       Description: newHouseForm.values.description,
+        //       price: Number(newHouseForm.values.price),
+        //       imgUrl: response,
+        //     },
+        //   });
+        // } catch (error) {
+        //   console.error("Error uploading files:", error);
+        // }
       }
     }
   };
