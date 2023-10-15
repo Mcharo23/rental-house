@@ -1,5 +1,5 @@
 import { FC, useState } from "react";
-import { Container, Text } from "@mantine/core";
+import { Container } from "@mantine/core";
 import MyHouse from "./components/all-house";
 import { GetMyHouseQuery } from "../../generated/graphql";
 import HouseInfo from "./components/house-info";

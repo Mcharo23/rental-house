@@ -6,8 +6,8 @@ export enum Gender {
 export const genderData = ["Male", "Female"];
 
 export enum AccountType {
-  TENANT = "tenant",
-  OWNER = "landlord",
+  TENANT = "Tenant",
+  OWNER = "Landlord",
 }
 
-export const accounttypedata = ["tenant", "landlord"];
+export const accounttypedata = ["Tenant", "Landlord"];

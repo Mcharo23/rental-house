@@ -1,18 +1,28 @@
 import { FC, useEffect, useState } from "react";
 import {
+  Button,
+  Checkbox,
   Container,
   Flex,
   Grid,
+  Group,
   Loader,
+  Modal,
   Notification,
   Paper,
   Space,
+  Text,
+  TextInput,
   Title,
 } from "@mantine/core";
-import { GetHousesQuery } from "../../generated/graphql";
+import {
+  GetHousesQuery,
+  useCreateContractInputMutation,
+} from "../../generated/graphql";
 import {
   clearUserData,
   getUserAccessToken,
+  getUserData,
 } from "../../utils/localStorageUtils";
 import useFetchHouses from "./components/fetchHouses";
 import Search from "../../globals/components/search";
@@ -20,10 +30,30 @@ import { color } from "../../lib/color/mantine-color";
 import { IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
 import HouseCardUi from "../../globals/components/house-card";
+import { useDisclosure } from "@mantine/hooks";
+import { AccountType } from "../../lib/enums/enum";
+import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
+import { GraphQLError } from "graphql";
+import showMessage from "../../global/components/notification";
+import LoadingNotification from "../../globals/components/load-notification";
+import UpdateNotification from "../../globals/components/update-notification";
+import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
+import SelectComponent from "../../globals/components/native-select";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Dashboard: FC = () => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  // STRING STATES
+
   const [accessToken, setAccessToken] = useState<string | null>(null);
+
+  //BOOLEAN STATES
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [opened, { open, close }] = useDisclosure(false);
+
   const [filteredInAllHouse, setFilteredInAllHouse] = useState<
     GetHousesQuery["houses"][0][]
   >([]);
@@ -43,33 +73,62 @@ const Dashboard: FC = () => {
     data: dataHouses,
   } = useFetchHouses(accessToken ?? "");
 
-  // const { mutate: createContractMutate } = useCreateContractInputMutation(
-  //   graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
-  //   {
-  //     onSuccess: (data: CreateContractInputMutation) => {
-  //       UpdateNotification(
-  //         {
-  //           id: "contract",
-  //           message: data.createContract._id,
-  //           title: "Successfully",
-  //         },
-  //         3000
-  //       );
-  //     },
-  //     onError: (error: GraphQLError) => {
-  //       const errorMessage =
-  //         //@ts-ignore
-  //         error.response.errors[0].extensions.originalError.message;
-  //       //@ts-ignore
-  //       const title = error.response.errors[0].message;
+  const bookForm = useForm({
+    initialValues: {
+      time: "",
+      total_rent: "",
+      duration: "",
+      _id: "",
+      name: "",
+      price: 0,
+      terms: false,
+    },
+    validate: {
+      time: (val) => (val.length === 0 ? "Time required" : null),
+      duration: (val) => (val === "" ? "Please select duration" : null),
+      terms: (val) => (val ? null : "You must agree"),
+    },
+  });
 
-  //       notifications.hide("contract");
-  //       Array.isArray(errorMessage)
-  //         ? showMessage(title, errorMessage)
-  //         : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
-  //     },
-  //   }
-  // );
+  const { mutate: createContractMutate } = useCreateContractInputMutation(
+    graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries([
+          "getMyHouse",
+          "getDemoHouses",
+          "getHouses",
+        ]);
+        UpdateNotification(
+          {
+            id: "contract",
+            message: "Contact the landlord for signing contract",
+            title: "Successfully",
+          },
+          3000
+        );
+        setShowModal(false);
+        close();
+        bookForm.reset();
+        return;
+      },
+      onError: (error: GraphQLError) => {
+        setShowModal(false);
+        close();
+        bookForm.reset();
+        const errorMessage =
+          //@ts-ignore
+          error.response.errors[0].extensions.originalError.message;
+        //@ts-ignore
+        const title = error.response.errors[0].message;
+
+        notifications.hide("contract");
+        Array.isArray(errorMessage)
+          ? showMessage(title, errorMessage)
+          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
+      },
+    }
+  );
 
   useEffect(() => {
     if (errorHouses) {
@@ -108,60 +167,108 @@ const Dashboard: FC = () => {
     }
   };
 
-  // const handleOnSubmitContract = async (
-  //   value: MyHouseInfoUpdatedProps,
-  //   contract: OthersHouseInfoContractProps
-  // ) => {
-  //   LoadingNotification({
-  //     id: "contract",
-  //     message: "Please wait...",
-  //     title: "Updating",
-  //   });
-  //   await createContractMutate({
-  //     input: {
-  //       Duration: contract.Duration,
-  //       House: value._id,
-  //       Total_rent: String(contract.totTotal_rent),
-  //     },
-  //   });
-  // };
+  const handleOnSubmitContract = async () => {
+    LoadingNotification({
+      id: "contract",
+      message: "Please wait...",
+      title: "Updating",
+    });
+    await createContractMutate({
+      input: {
+        Duration: Number(bookForm.values.time),
+        House: bookForm.values._id,
+        Total_rent: String(
+          bookForm.values.price * Number(bookForm.values.time)
+        ),
+      },
+    });
+  };
 
-  // const renderHouses = () => {
-  //   return (
-  //     <ul className="flex flex-row gap-3 h-full overscroll-auto overflow-auto ">
-  //       {filteredInAllHouse.length === 0 && searchLength !== 0 ? (
-  //         <div className="font-sans text-2xl"></div>
-  //       ) : searchLength === 0 ? (
-  //         dataHouses?.houses.map((house, index) => (
-  //           <li key={index}>
-  //             <AllHousesUI
-  //               onClick={(value, visible) => {
-  //                 setDetailView(visible);
-  //                 setSelectedOthersHouse(value);
-  //               }}
-  //               {...house}
-  //             />
-  //           </li>
-  //         ))
-  //       ) : (
-  //         filteredInAllHouse.map((house, index) => (
-  //           <li key={index}>
-  //             <AllHousesUI
-  //               onClick={(value, visible) => {
-  //                 setDetailView(visible);
-  //                 setSelectedOthersHouse(value);
-  //               }}
-  //               {...house}
-  //             />
-  //           </li>
-  //         ))
-  //       )}
-  //     </ul>
-  //   );
-  // };
+  //SELECTIONS
+  const select = (
+    <SelectComponent
+      data={[
+        { value: "", label: "Duration" },
+        { value: "/Months", label: "Month" },
+        { value: "/years", label: "Years" },
+      ]}
+      value={bookForm.values.duration}
+      width={110}
+      onChange={(value) => bookForm.setFieldValue("duration", value)}
+    />
+  );
 
   return (
     <Container fluid>
+      {showModal && (
+        <Modal
+          opened={opened}
+          onClose={() => {
+            close();
+            setShowModal(false);
+            bookForm.reset();
+          }}
+          title={`Book ${bookForm.values.name} house`}
+          transitionProps={{
+            transition: "fade",
+            duration: 600,
+            timingFunction: "linear",
+          }}
+        >
+          {getUserData()?.login.user.accountType === AccountType.OWNER ? (
+            <Text>Sorry! you are not authorized to have tenant role</Text>
+          ) : (
+            <form onSubmit={bookForm.onSubmit(handleOnSubmitContract)}>
+              <TextInput
+                label="Duration"
+                type="number"
+                value={bookForm.values.time}
+                placeholder="5"
+                rightSection={select}
+                rightSectionWidth={110}
+                onChange={(event) => {
+                  bookForm.setFieldValue("time", event.currentTarget.value);
+                  bookForm.setFieldValue(
+                    "total_rent",
+                    String(
+                      bookForm.values.price * Number(event.currentTarget.value)
+                    )
+                  );
+                }}
+                error={bookForm.errors.time && "invalid price input"}
+                required
+              />
+
+              <Space h={"md"} />
+
+              {bookForm.values.time !== "" && (
+                <Paper bg={`${color.gray_light_color}`} radius={"md"} p={"md"}>
+                  Total rent: {bookForm.values.total_rent} Tshs
+                </Paper>
+              )}
+
+              <Space h={"md"} />
+
+              <Group>
+                <Checkbox
+                  label="I agree all terms and condition"
+                  checked={bookForm.values.terms}
+                  onChange={(e) => {
+                    bookForm.setFieldValue("terms", e.currentTarget.checked);
+                  }}
+                  error={bookForm.errors.terms && "You must agree"}
+                />
+              </Group>
+
+              <Space h={"md"} />
+
+              <Button type="submit" fullWidth>
+                Submit
+              </Button>
+            </form>
+          )}
+        </Modal>
+      )}
       <Paper bg={`${color.gray_light_color}`} p={"md"} mt={"md"} radius={"md"}>
         <Flex direction={"row"} align={"center"} justify={"flex-end"}>
           <Paper>
@@ -206,7 +313,14 @@ const Dashboard: FC = () => {
               span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
               key={house._id}
             >
-              <HouseCardUi props={{ ...house }} />
+              <HouseCardUi
+                props={{ ...house }}
+                onClick={(id: string, name: string, price: number) => {
+                  setShowModal(true);
+                  open();
+                  bookForm.setValues({ _id: id, name: name, price: price });
+                }}
+              />
             </Grid.Col>
           ))
         ) : filteredInAllHouse.length === 0 && searchLength !== 0 ? (
@@ -221,7 +335,14 @@ const Dashboard: FC = () => {
               span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
               key={house._id}
             >
-              <HouseCardUi props={{ ...house }} />
+              <HouseCardUi
+                props={{ ...house }}
+                onClick={(id: string, name: string, price: number) => {
+                  setShowModal(true);
+                  open();
+                  bookForm.setValues({ _id: id, name: name, price: price });
+                }}
+              />
             </Grid.Col>
           ))
         )}

@@ -20,6 +20,7 @@ import Headers from "./components/header";
 import { logo } from "../../lib/images/url";
 import { ServerOverload } from "../error/server-error";
 import House from "../house/house-page";
+import PendingNest from "../PendingNest/pending-nest-page";
 
 const HomePage: FC = () => {
   const [opened, setOpened] = useState(false);
@@ -73,7 +74,7 @@ const HomePage: FC = () => {
         ) : activeScreen === "House" ? (
           <House />
         ) : activeScreen === "PendingNest" ? (
-          <Rentals />
+          <PendingNest />
         ) : activeScreen === "Luxe Living" ? (
           <Tenants />
         ) : activeScreen === "Contracts" ? (

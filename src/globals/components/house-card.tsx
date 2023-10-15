@@ -2,19 +2,16 @@ import { Text, Card, Button, Group, rem } from "@mantine/core";
 import { FC } from "react";
 import { IconStar } from "@tabler/icons-react";
 import classes from "../css/CarouselCard.module.css";
-import { useNavigate } from "react-router-dom";
 import { GetHousesQuery } from "../../generated/graphql";
 import ImageSwiper from "./image-swiper";
 import { color } from "../../lib/color/mantine-color";
 
 type HouseCardUiProps = {
   props: GetHousesQuery["houses"][0];
+  onClick: (id: string, name: string, price: number) => void;
 };
 
-const HouseCardUi: FC<HouseCardUiProps> = ({ props }) => {
-  const navigate = useNavigate();
-
-  const handleOnClick = () => {};
+const HouseCardUi: FC<HouseCardUiProps> = ({ props, onClick }) => {
   return (
     <Card radius="md" withBorder padding="xl" bg={`${color.gray_light_color}`}>
       <Card.Section>
@@ -51,8 +48,11 @@ const HouseCardUi: FC<HouseCardUiProps> = ({ props }) => {
           </Text>
         </div>
 
-        <Button radius="md" onClick={handleOnClick}>
-          Book now
+        <Button
+          radius="md"
+          onClick={() => onClick(props._id, props.name, props.price)}
+        >
+          {props.status === "Booked" ? props.status : "Book now"}
         </Button>
       </Group>
     </Card>
