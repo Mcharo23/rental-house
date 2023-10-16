@@ -46,10 +46,6 @@ Our advantage is more than 15 years of experience and soil in attractive locatio
 
 By constantly innovating our business activities, we move forward and we are able to offer truly above-standard services that set us apart from the competition.`;
 
-  const header = `We help people to get
-home & renting with
-good proce`;
-
   return (
     <Container fluid>
       <Flex

@@ -18,7 +18,7 @@ import {
   Space,
   Button,
 } from "@mantine/core";
-import { IconX, IconWritingSign, IconPhoneCall } from "@tabler/icons-react";
+import { IconX, IconWritingSign } from "@tabler/icons-react";
 import { IMAGE_BASE } from "../../../lib/api-base";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";

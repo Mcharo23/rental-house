@@ -1,10 +1,7 @@
 import { FC, useEffect, useState } from "react";
 import {
   BookedHouseQuery,
-  RejectContractMutation,
   TenantInMutation,
-  useRejectContractMutation,
-  useSignContractMutation,
   useTenantInMutation,
 } from "../../../generated/graphql";
 import {
@@ -22,8 +19,6 @@ import {
 } from "@mantine/core";
 import {
   IconX,
-  IconWritingSign,
-  IconPhoneCall,
   IconHomePlus,
 } from "@tabler/icons-react";
 import { IMAGE_BASE } from "../../../lib/api-base";

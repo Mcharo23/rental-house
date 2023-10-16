@@ -13,7 +13,7 @@ import {
   Notification,
   Space,
 } from "@mantine/core";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "@mantine/form";
 import {
@@ -22,7 +22,7 @@ import {
   useLoginUserInputMutation,
 } from "../../generated/graphql";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
-import { clearUserData, saveUserData } from "../../utils/localStorageUtils";
+import { saveUserData } from "../../utils/localStorageUtils";
 import { GraphQLError } from "graphql";
 import showMessage from "../../global/components/notification";
 import { useToggle } from "@mantine/hooks";

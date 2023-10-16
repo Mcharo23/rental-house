@@ -13,7 +13,6 @@ import Account from "../account/account";
 
 import NavBar from "./components/navBar";
 import Dashboard from "../dashboard/dashboard";
-import Rentals from "../Rental/Rentals";
 import Tenants from "../tenants/tenant";
 import Contracts from "../tenants/contract";
 import Headers from "./components/header";

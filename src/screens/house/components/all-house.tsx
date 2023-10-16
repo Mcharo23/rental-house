@@ -137,8 +137,6 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                   ...house,
                 }}
                 onClick={(
-                  button: string,
-                  house: GetMyHouseQuery["myHouse"][0]
                 ) => {
                   throw new Error("Function not implemented.");
                 }}
@@ -157,8 +155,6 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                   ...house,
                 }}
                 onClick={(
-                  button: string,
-                  house: GetMyHouseQuery["myHouse"][0]
                 ) => {
                   throw new Error("Function not implemented.");
                 }}
