@@ -15,14 +15,14 @@ import {
   Paper,
   Title,
 } from "@mantine/core";
-import { banner1, logo } from "../../lib/images/url";
+import { images, logo } from "../../lib/images/url";
 import { color } from "../../lib/color/mantine-color";
 import { useNavigate } from "react-router-dom";
 import useFetchDemoHouse from "./functions/get-demo-house";
 import { IconX } from "@tabler/icons-react";
 import DemoUi from "./components/demo-ui";
-import ColorScheme from "../../globals/components/dark-light-modal";
 import { clearUserData } from "../../utils/localStorageUtils";
+import EffectCreativeSwiper from "../../globals/components/effect-createive-image-swiper";
 
 const EntertainmentPage: FC = () => {
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ good proce`;
             align={"center"}
             justify={"center"}
           >
-            <ColorScheme />
+            {/* <ColorScheme /> */}
             <Button
               color="blue"
               variant="outline"
@@ -110,29 +110,20 @@ good proce`;
           <Title order={2}>
             <Anchor size="25px">House</Anchor> is here.
           </Title>
-          <Text>We provide a completeservice for the rent</Text>
+          {/* <Text>We provide a completeservice for the rent</Text>
           <Text>of real estate. We have been operating in Mainland</Text>
 
           <Space h="md" />
 
           <Text size="xl" c={`blue`}>
             {header}
-          </Text>
+          </Text> */}
         </Flex>
         <Flex
           w={{ sm: "100%", md: "50%", lg: "75%", xl: "75%" }}
           h={{ sm: 300, md: 350, lg: 400, xl: 500 }}
         >
-          <img
-            src={`${banner1}`}
-            style={{
-              width: "100%",
-              borderTopLeftRadius: 5,
-              borderTopRightRadius: 5,
-              borderBottomLeftRadius: 5,
-              borderBottomRightRadius: 5,
-            }}
-          />
+          <EffectCreativeSwiper images={images} />
         </Flex>
       </Flex>
 

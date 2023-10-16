@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { MyContractQuery } from "../../../generated/graphql";
 import { Indicator, Divider, Modal } from "@mantine/core";
 import { FiMapPin, FiCalendar } from "react-icons/fi";
-import FormatDate from "../../../global/components/date-format";
+import FormatDate from "../../../globals/functions/date-format";
 import CarouselScroll from "../../../global/components/rental-carousel";
 import { Text } from "@mantine/core";
 import { FaPhoneAlt, FaEnvelope, FaUser } from "react-icons/fa";

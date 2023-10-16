@@ -27,7 +27,7 @@ import { ConfirmDialog } from "primereact/confirmdialog";
 import LoadingNotification from "../../../globals/components/load-notification";
 import UpdateNotification from "../../../globals/components/update-notification";
 import showMessage from "../../../global/components/notification";
-import FormatDate from "../../../global/components/date-format";
+import FormatDate from "../../../globals/functions/date-format";
 
 type BookedProps = {
   props: BookedHouseQuery["myHouse"][0];

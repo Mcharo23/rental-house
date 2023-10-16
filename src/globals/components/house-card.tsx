@@ -3,7 +3,7 @@ import { FC } from "react";
 import { IconStar } from "@tabler/icons-react";
 import classes from "../css/CarouselCard.module.css";
 import { GetHousesQuery } from "../../generated/graphql";
-import ImageSwiper from "./image-swiper";
+import ImageSwiper from "./fade-image-swiper";
 import { color } from "../../lib/color/mantine-color";
 
 type HouseCardUiProps = {
@@ -52,7 +52,9 @@ const HouseCardUi: FC<HouseCardUiProps> = ({ props, onClick }) => {
           radius="md"
           onClick={() => onClick(props._id, props.name, props.price)}
         >
-          {props.status === "Booked" ? props.status : "Book now"}
+          {props.status === "Booked" || props.status === "Pending"
+            ? props.status
+            : "Book now"}
         </Button>
       </Group>
     </Card>

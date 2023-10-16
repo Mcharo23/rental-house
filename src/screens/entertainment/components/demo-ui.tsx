@@ -4,7 +4,7 @@ import { GetDemoHousesQuery } from "../../../generated/graphql";
 import { IconStar } from "@tabler/icons-react";
 
 import classes from "../../../globals/css/CarouselCard.module.css";
-import ImageSwiper from "../../../globals/components/image-swiper";
+import ImageSwiper from "../../../globals/components/fade-image-swiper";
 import { useNavigate } from "react-router-dom";
 import { color } from "../../../lib/color/mantine-color";
 

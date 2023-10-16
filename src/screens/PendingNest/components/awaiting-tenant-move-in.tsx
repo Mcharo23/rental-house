@@ -2,8 +2,10 @@ import { FC, useEffect, useState } from "react";
 import {
   BookedHouseQuery,
   RejectContractMutation,
+  TenantInMutation,
   useRejectContractMutation,
   useSignContractMutation,
+  useTenantInMutation,
 } from "../../../generated/graphql";
 import {
   Table,
@@ -18,7 +20,12 @@ import {
   Space,
   Button,
 } from "@mantine/core";
-import { IconX, IconWritingSign, IconPhoneCall } from "@tabler/icons-react";
+import {
+  IconX,
+  IconWritingSign,
+  IconPhoneCall,
+  IconHomePlus,
+} from "@tabler/icons-react";
 import { IMAGE_BASE } from "../../../lib/api-base";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
@@ -32,11 +39,13 @@ import LoadingNotification from "../../../globals/components/load-notification";
 import FormatDate from "../../../globals/functions/date-format";
 import { IconEye } from "@tabler/icons-react";
 
-type PendingSignatureTableProps = {
+type AwaitingTenantMoveInTableProps = {
   props: BookedHouseQuery["myHouse"][0];
 };
 
-const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
+const AwaitingTenantMoveInTable: FC<AwaitingTenantMoveInTableProps> = ({
+  props,
+}) => {
   const queryClient = useQueryClient();
 
   const [currentTenant, setCurrentTenant] =
@@ -46,73 +55,38 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
   const [visible, setVisible] = useState<boolean>(false);
 
   //MUTATIONS
-  const { mutate: RejectContract } = useRejectContractMutation(
-    graphqlRequestClient,
-    {
-      onSuccess: (data: RejectContractMutation) => {
-        queryClient.invalidateQueries(["bookedHouse"]);
-        UpdateNotification(
-          {
-            id: "reject",
-            message: data.rejectContract,
-            title: "Successfully",
-          },
-          3000
-        );
-        close();
-        setVisible(false);
-        return;
-      },
-      onError: (error: GraphQLError) => {
-        close();
-        setVisible(false);
-        const errorMessage =
-          //@ts-ignore
-          error.response.errors[0].extensions.originalError.message;
+
+  const { mutate } = useTenantInMutation(graphqlRequestClient, {
+    onSuccess: (data: TenantInMutation) => {
+      queryClient.invalidateQueries(["bookedHouse"]);
+      UpdateNotification(
+        {
+          id: "tenantIn",
+          message: data.tenantIn,
+          title: "Successfully",
+        },
+        3000
+      );
+
+      close();
+      setVisible(false);
+      return;
+    },
+    onError: (error: GraphQLError) => {
+      close();
+      setVisible(false);
+      const errorMessage =
         //@ts-ignore
-        const title = error.response.errors[0].message;
+        error.response.errors[0].extensions.originalError.message;
+      //@ts-ignore
+      const title = error.response.errors[0].message;
 
-        notifications.hide("tenantIn");
-        Array.isArray(errorMessage)
-          ? showMessage(title, errorMessage)
-          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
-      },
-    }
-  );
-
-  const { mutate: SignContract } = useSignContractMutation(
-    graphqlRequestClient,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(["bookedHouse"]);
-        UpdateNotification(
-          {
-            id: "sign-contract",
-            message: "Data was saved successfully.",
-            title: "Successfully",
-          },
-          3000
-        );
-        close();
-        setVisible(false);
-        return;
-      },
-      onError: (error: GraphQLError) => {
-        close();
-        setVisible(false);
-        const errorMessage =
-          //@ts-ignore
-          error.response.errors[0].extensions.originalError.message;
-        //@ts-ignore
-        const title = error.response.errors[0].message;
-
-        notifications.hide("tenantIn");
-        Array.isArray(errorMessage)
-          ? showMessage(title, errorMessage)
-          : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
-      },
-    }
-  );
+      notifications.hide("tenantIn");
+      Array.isArray(errorMessage)
+        ? showMessage(title, errorMessage)
+        : showMessage("Conflict", [`${errorMessage} 😡😡😡`]);
+    },
+  });
 
   useEffect(() => {
     const currentContract = props.contract.find(
@@ -130,15 +104,16 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
     setCurrentTenant(currentContract);
   };
 
-  const handleSignContract = async () => {
+  const handleTenantIn = async () => {
     filterCurrentTenant();
+
     LoadingNotification({
-      id: "sign-contract",
+      id: "tenantIn",
       message: "Please wait while saving your data",
-      title: "Sign Contract",
+      title: "Tenant In",
     });
 
-    await SignContract({
+    await mutate({
       input: {
         ContractID: currentTenant?._id ?? "",
       },
@@ -149,15 +124,21 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
     filterCurrentTenant();
     LoadingNotification({
       id: "reject",
-      message: "Please wait while saving your data",
+      message: "This action did not implemented",
       title: "Reject contract",
     });
 
-    await RejectContract({
-      input: {
-        ContractID: currentTenant?._id ?? "",
+    close();
+    setVisible(false);
+
+    UpdateNotification(
+      {
+        id: "reject",
+        message: "",
+        title: "",
       },
-    });
+      3
+    );
   };
 
   return (
@@ -182,17 +163,16 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
             timingFunction: "linear",
           }}
         >
-          {buttonType === "sign" ? (
+          {buttonType === "tenantIn" ? (
             <>
               <Text>
-                Are you sure you declare that the contract has signed between
-                you and{" "}
+                This action will be reversed if the tenant{" "}
                 <Anchor>
                   {currentTenant?.Tenant.firstName}{" "}
                   {currentTenant?.Tenant.middleName}{" "}
                   {currentTenant?.Tenant.lastname}
                 </Anchor>{" "}
-                ?
+                did not follow the rules ?
               </Text>
               <Space h={"md"} />
               <Flex
@@ -211,12 +191,8 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
                   Cancel
                 </Button>
 
-                <Button
-                  variant="filled"
-                  color="green"
-                  onClick={handleSignContract}
-                >
-                  Confirm
+                <Button variant="filled" color="green" onClick={handleTenantIn}>
+                  Move in
                 </Button>
               </Flex>
             </>
@@ -328,16 +304,21 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
             : "N/A"}
         </Table.Td>
         <Table.Td>
-          {CalculateDuration(currentTenant?.createdAt)?.days} days
+          {currentTenant?.createdAt
+            ? FormatDate(new Date(currentTenant.Date_of_signing))
+            : "N/A"}
+        </Table.Td>
+        <Table.Td>
+          {CalculateDuration(currentTenant?.Date_of_signing)?.days} days
         </Table.Td>
         <Table.Td>
           <Group gap={"sm"}>
             <ActionIcon size={42} variant="default">
-              <IconWritingSign
+              <IconHomePlus
                 onClick={() => {
                   open();
                   setVisible(true);
-                  setButtonType("sign");
+                  setButtonType("tenantIn");
                 }}
                 color="green"
               />
@@ -360,4 +341,4 @@ const PendingSignatureTable: FC<PendingSignatureTableProps> = ({ props }) => {
   );
 };
 
-export default PendingSignatureTable;
+export default AwaitingTenantMoveInTable;

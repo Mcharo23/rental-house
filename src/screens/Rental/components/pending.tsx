@@ -28,7 +28,7 @@ import UpdateNotification from "../../../globals/components/update-notification"
 import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
 import showMessage from "../../../global/components/notification";
-import FormatDate from "../../../global/components/date-format";
+import FormatDate from "../../../globals/functions/date-format";
 
 type PendingProps = {
   props: BookedHouseQuery["myHouse"][0];

@@ -22,7 +22,7 @@ import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
 import showMessage from "../../../global/components/notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
-import FormatDate from "../../../global/components/date-format";
+import FormatDate from "../../../globals/functions/date-format";
 
 type BookedProps = {
   props: BookedHouseQuery["myHouse"][0];

@@ -39,6 +39,7 @@ const HouseInfo: FC<HouseInfoProps> = ({ props, onClick }) => {
     display: "block",
     width: "100%",
   };
+
   return (
     <Container fluid>
       <Space h={"md"} />

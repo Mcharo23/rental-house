@@ -17,6 +17,7 @@ import { getUserAccessToken } from "../../utils/localStorageUtils";
 import useFetchBookedHouses from "./functions/useFetchBookedHouses";
 import { IconX } from "@tabler/icons-react";
 import PendingSignatureTable from "./components/pending-signature-table";
+import AwaitingTenantMoveInTable from "./components/awaiting-tenant-move-in";
 
 const PendingNest: FC = () => {
   const navigate = useNavigate();
@@ -103,7 +104,7 @@ const PendingNest: FC = () => {
   const pending_move_in =
     pendingHouse.length !== 0 && searchLength > 0
       ? pendingHouse.map((house) => {
-          return <PendingSignatureTable props={{ ...house }} />;
+          return <AwaitingTenantMoveInTable props={{ ...house }} />;
         })
       : pendingHouse.length === 0 && searchLength > 0
       ? ""
@@ -117,7 +118,7 @@ const PendingNest: FC = () => {
           )
           .map((pending) => {
             return (
-              <PendingSignatureTable
+              <AwaitingTenantMoveInTable
                 props={{
                   ...pending,
                 }}
@@ -173,7 +174,7 @@ const PendingNest: FC = () => {
           {/* TABLE */}
           {!isLoading && (
             <Table.ScrollContainer
-              minWidth={900}
+              minWidth={1200}
               bg={`${color.gray_light_color}`}
               p={"md"}
             >
@@ -184,9 +185,9 @@ const PendingNest: FC = () => {
                     <Table.Th>Region</Table.Th>
                     <Table.Th>District</Table.Th>
                     <Table.Th>Ward</Table.Th>
-                    <Table.Th>Price</Table.Th>
-                    <Table.Th>Status</Table.Th>
-                    <Table.Th>Contracts</Table.Th>
+                    <Table.Th>Requesting tenant</Table.Th>
+                    <Table.Th>Created at</Table.Th>
+                    <Table.Th>days</Table.Th>
                     <Table.Th>Contract action</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
@@ -219,7 +220,7 @@ const PendingNest: FC = () => {
           {/* TABLE */}
           {!isLoading && (
             <Table.ScrollContainer
-              minWidth={900}
+              minWidth={1300}
               bg={`${color.gray_light_color}`}
               p={"md"}
             >
@@ -230,10 +231,11 @@ const PendingNest: FC = () => {
                     <Table.Th>Region</Table.Th>
                     <Table.Th>District</Table.Th>
                     <Table.Th>Ward</Table.Th>
-                    <Table.Th>Price</Table.Th>
-                    <Table.Th>Status</Table.Th>
-                    <Table.Th>Contracts</Table.Th>
-                    <Table.Th></Table.Th>
+                    <Table.Th>Requesting tenant</Table.Th>
+                    <Table.Th>Created at</Table.Th>
+                    <Table.Th>Signed on</Table.Th>
+                    <Table.Th>days</Table.Th>
+                    <Table.Th>Move in</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
 
