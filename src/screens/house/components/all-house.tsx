@@ -211,7 +211,8 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
           )}
         </Modal>
       )}
-      <Paper p={"md"} mt={"md"} radius={"md"}>
+      <Space h="md" />
+      <Paper p={"md"} shadow="sm" radius={"md"}>
         <Flex
           direction={"row"}
           align={"center"}
@@ -278,25 +279,25 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
 
           {/* TABLE */}
           {!isLoadingMyHouse && (
-            <Paper>
+            <Paper p={"md"} shadow="sm" radius={"md"}>
               <Table.ScrollContainer minWidth={900} p={"md"}>
-              <Table verticalSpacing={"xs"}>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>House name</Table.Th>
-                    <Table.Th>Region</Table.Th>
-                    <Table.Th>District</Table.Th>
-                    <Table.Th>Ward</Table.Th>
-                    <Table.Th>Price</Table.Th>
-                    <Table.Th>Status</Table.Th>
-                    <Table.Th>Contracts</Table.Th>
-                    <Table.Th>Action</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
+                <Table verticalSpacing={"xs"}>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>House name</Table.Th>
+                      <Table.Th>Region</Table.Th>
+                      <Table.Th>District</Table.Th>
+                      <Table.Th>Ward</Table.Th>
+                      <Table.Th>Price</Table.Th>
+                      <Table.Th>Status</Table.Th>
+                      <Table.Th>Contracts</Table.Th>
+                      <Table.Th>Action</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
 
-                <Table.Tbody>{rows}</Table.Tbody>
-              </Table>
-            </Table.ScrollContainer>
+                  <Table.Tbody>{rows}</Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
             </Paper>
           )}
         </Tabs.Panel>
@@ -321,24 +322,26 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
 
           {/* TABLE */}
           {!isLoadingMyHouse && (
-            <Table.ScrollContainer minWidth={900} p={"md"}>
-              <Table verticalSpacing={"xs"}>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>House name</Table.Th>
-                    <Table.Th>Region</Table.Th>
-                    <Table.Th>District</Table.Th>
-                    <Table.Th>Ward</Table.Th>
-                    <Table.Th>Price</Table.Th>
-                    <Table.Th>Status</Table.Th>
-                    <Table.Th>Contracts</Table.Th>
-                    <Table.Th>Action</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
+            <Paper radius={"md"} p={"sm"}>
+              <Table.ScrollContainer minWidth={900} p={"md"}>
+                <Table verticalSpacing={"xs"}>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>House name</Table.Th>
+                      <Table.Th>Region</Table.Th>
+                      <Table.Th>District</Table.Th>
+                      <Table.Th>Ward</Table.Th>
+                      <Table.Th>Price</Table.Th>
+                      <Table.Th>Status</Table.Th>
+                      <Table.Th>Contracts</Table.Th>
+                      <Table.Th>Action</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
 
-                <Table.Tbody>{occupied}</Table.Tbody>
-              </Table>
-            </Table.ScrollContainer>
+                  <Table.Tbody>{occupied}</Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
+            </Paper>
           )}
         </Tabs.Panel>
       </Tabs>
