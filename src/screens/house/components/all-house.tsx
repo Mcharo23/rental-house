@@ -19,7 +19,6 @@ import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { getUserAccessToken } from "../../../utils/localStorageUtils";
 import { useNavigate } from "react-router-dom";
 import { IconClock, IconHome, IconPlus, IconX } from "@tabler/icons-react";
-import { color } from "../../../lib/color/mantine-color";
 import Search from "../../../globals/components/search";
 import HouseTable from "./house-table";
 import { useDisclosure } from "@mantine/hooks";
