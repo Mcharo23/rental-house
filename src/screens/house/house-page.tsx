@@ -90,7 +90,7 @@ const House: FC = () => {
   // };
 
   return (
-    <Container fluid>
+    <Container size={"xl"}>
       {currentView === "house" && (
         <MyHouse
           onClick={(button: string, house: GetMyHouseQuery["myHouse"][0]) => {

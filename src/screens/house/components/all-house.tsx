@@ -136,8 +136,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                 props={{
                   ...house,
                 }}
-                onClick={(
-                ) => {
+                onClick={() => {
                   throw new Error("Function not implemented.");
                 }}
               />
@@ -154,8 +153,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                 props={{
                   ...house,
                 }}
-                onClick={(
-                ) => {
+                onClick={() => {
                   throw new Error("Function not implemented.");
                 }}
               />
@@ -214,7 +212,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
           )}
         </Modal>
       )}
-      <Paper bg={`${color.gray_light_color}`} p={"md"} mt={"md"} radius={"md"}>
+      <Paper p={"md"} mt={"md"} radius={"md"}>
         <Flex
           direction={"row"}
           align={"center"}
@@ -281,11 +279,8 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
 
           {/* TABLE */}
           {!isLoadingMyHouse && (
-            <Table.ScrollContainer
-              minWidth={900}
-              bg={`${color.gray_light_color}`}
-              p={"md"}
-            >
+            <Paper>
+              <Table.ScrollContainer minWidth={900} p={"md"}>
               <Table verticalSpacing={"xs"}>
                 <Table.Thead>
                   <Table.Tr>
@@ -303,6 +298,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                 <Table.Tbody>{rows}</Table.Tbody>
               </Table>
             </Table.ScrollContainer>
+            </Paper>
           )}
         </Tabs.Panel>
 
@@ -326,11 +322,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
 
           {/* TABLE */}
           {!isLoadingMyHouse && (
-            <Table.ScrollContainer
-              minWidth={900}
-              bg={`${color.gray_light_color}`}
-              p={"md"}
-            >
+            <Table.ScrollContainer minWidth={900} p={"md"}>
               <Table verticalSpacing={"xs"}>
                 <Table.Thead>
                   <Table.Tr>

@@ -20,6 +20,7 @@ import { logo } from "../../lib/images/url";
 import { ServerOverload } from "../error/server-error";
 import House from "../house/house-page";
 import PendingNest from "../PendingNest/pending-nest-page";
+import { color } from "../../lib/color/mantine-color";
 
 const HomePage: FC = () => {
   const [opened, setOpened] = useState(false);
@@ -30,6 +31,7 @@ const HomePage: FC = () => {
     <AppShell
       header={{ height: 50 }}
       navbar={{ width: 300, breakpoint: "sm", collapsed: { mobile: !opened } }}
+      bg={`${color.gray_light_color}`}
     >
       <AppShell.Header>
         <Flex

@@ -199,7 +199,7 @@ const Dashboard: FC = () => {
   );
 
   return (
-    <Container fluid>
+    <Container size={"xl"}>
       {showModal && (
         <Modal
           opened={opened}
@@ -269,7 +269,8 @@ const Dashboard: FC = () => {
           )}
         </Modal>
       )}
-      <Paper bg={`${color.gray_light_color}`} p={"md"} mt={"md"} radius={"md"}>
+
+      <Paper p={"md"} mt={"md"} radius={"md"}>
         <Flex direction={"row"} align={"center"} justify={"flex-end"}>
           <Paper>
             <Search

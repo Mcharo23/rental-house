@@ -13,7 +13,7 @@ type HouseCardUiProps = {
 
 const HouseCardUi: FC<HouseCardUiProps> = ({ props, onClick }) => {
   return (
-    <Card radius="md" withBorder padding="xl" bg={`${color.gray_light_color}`}>
+    <Card radius="md" padding="xl" bg={`${color.blue_light_color}`}>
       <Card.Section>
         <ImageSwiper images={props.imgUrl} />
       </Card.Section>
