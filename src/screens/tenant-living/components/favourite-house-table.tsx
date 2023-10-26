@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { MyContractQuery } from "../../../generated/graphql";
 import { Table, Group, Avatar, Anchor } from "@mantine/core";
-import { CalculateDaysDifference } from "../../../globals/functions/calculate-days-difference";
-import FormatDate from "../../../globals/functions/date-format";
+import { CalculateDaysDifference } from "../../../global/functions/calculate-days-difference";
+import FormatDate from "../../../global/functions/date-format";
 import { IMAGE_BASE } from "../../../lib/api-base";
 
 type FavouriteHouseTableProps = {

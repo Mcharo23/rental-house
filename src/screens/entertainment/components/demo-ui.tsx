@@ -3,8 +3,8 @@ import { FC } from "react";
 import { GetDemoHousesQuery } from "../../../generated/graphql";
 import { IconStar } from "@tabler/icons-react";
 
-import classes from "../../../globals/css/CarouselCard.module.css";
-import ImageSwiper from "../../../globals/components/fade-image-swiper";
+import classes from "../../../global/css/CarouselCard.module.css";
+import ImageSwiper from "../../../global/components/fade-image-swiper";
 import { useNavigate } from "react-router-dom";
 import { color } from "../../../lib/color/mantine-color";
 

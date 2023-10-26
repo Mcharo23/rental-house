@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { IconHeart, IconCurrentLocation } from "@tabler/icons-react";
 import { FC, useEffect, useState } from "react";
-import Search from "../../globals/components/search";
+import Search from "../../global/components/search";
 import { useNavigate } from "react-router-dom";
 import useFetchMyContracts from "./functions/myContract";
 import { MyContractQuery } from "../../generated/graphql";

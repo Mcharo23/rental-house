@@ -19,7 +19,7 @@ import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { getUserAccessToken } from "../../../utils/localStorageUtils";
 import { useNavigate } from "react-router-dom";
 import { IconClock, IconHome, IconPlus, IconX } from "@tabler/icons-react";
-import Search from "../../../globals/components/search";
+import Search from "../../../global/components/search";
 import HouseTable from "./house-table";
 import { useDisclosure } from "@mantine/hooks";
 import NewHouseForm from "./new-house-form";

@@ -1,6 +1,11 @@
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
-import { LoadAndHideNotificationProps } from "../../global/interfaces/type";
+
+type LoadAndHideNotificationProps = {
+  id: string;
+  title: string;
+  message: string;
+};
 
 const UpdateNotification = (
   { id, title, message }: LoadAndHideNotificationProps,

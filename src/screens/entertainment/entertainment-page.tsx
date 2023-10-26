@@ -22,7 +22,7 @@ import useFetchDemoHouse from "./functions/get-demo-house";
 import { IconX } from "@tabler/icons-react";
 import DemoUi from "./components/demo-ui";
 import { clearUserData } from "../../utils/localStorageUtils";
-import EffectCreativeSwiper from "../../globals/components/effect-createive-image-swiper";
+import EffectCreativeSwiper from "../../global/components/effect-createive-image-swiper";
 
 const EntertainmentPage: FC = () => {
   const navigate = useNavigate();

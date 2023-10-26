@@ -17,13 +17,13 @@ import {
   TenantOutMutation,
   useTenantOutMutation,
 } from "../../../generated/graphql";
-import FormatDate from "../../../globals/functions/date-format";
-import { CalculateDaysDifference } from "../../../globals/functions/calculate-days-difference";
-import LoadingNotification from "../../../globals/components/load-notification";
+import FormatDate from "../../../global/functions/date-format";
+import { CalculateDaysDifference } from "../../../global/functions/calculate-days-difference";
+import LoadingNotification from "../../../global/components/load-notification";
 import { notifications } from "@mantine/notifications";
 import { GraphQLError } from "graphql";
-import showMessage from "../../../globals/components/notification";
-import UpdateNotification from "../../../globals/components/update-notification";
+import showMessage from "../../../global/components/notification";
+import UpdateNotification from "../../../global/components/update-notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -190,7 +190,6 @@ const LuxeLivingTable: FC<LuxeLivingTableProps> = ({ house }) => {
             </ActionIcon>
           </Group>
         </Table.Td>
-        
       </Table.Tr>
     </>
   );

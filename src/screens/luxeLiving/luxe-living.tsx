@@ -15,7 +15,7 @@ import {
   clearUserData,
 } from "../../utils/localStorageUtils";
 import useFetchBookedHouses from "./functions/fetchBookedHouses";
-import Search from "../../globals/components/search";
+import Search from "../../global/components/search";
 import { BookedHouseQuery } from "../../generated/graphql";
 import LuxeLivingTable from "./components/luxe-living-table";
 

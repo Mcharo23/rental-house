@@ -22,14 +22,14 @@ import { IconX, IconWritingSign } from "@tabler/icons-react";
 import { IMAGE_BASE } from "../../../lib/api-base";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
-import { CalculateDuration } from "../../../globals/functions/calculate-duration";
+import { CalculateDuration } from "../../../global/functions/calculate-duration";
 import { notifications } from "@mantine/notifications";
 import { GraphQLError } from "graphql";
-import showMessage from "../../../globals/components/notification";
-import UpdateNotification from "../../../globals/components/update-notification";
+import showMessage from "../../../global/components/notification";
+import UpdateNotification from "../../../global/components/update-notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
-import LoadingNotification from "../../../globals/components/load-notification";
-import FormatDate from "../../../globals/functions/date-format";
+import LoadingNotification from "../../../global/components/load-notification";
+import FormatDate from "../../../global/functions/date-format";
 import { IconEye } from "@tabler/icons-react";
 
 type PendingSignatureTableProps = {

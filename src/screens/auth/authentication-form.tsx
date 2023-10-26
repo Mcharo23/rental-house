@@ -24,10 +24,10 @@ import {
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
 import { saveUserData } from "../../utils/localStorageUtils";
 import { GraphQLError } from "graphql";
-import showMessage from "../../globals/components/notification";
+import showMessage from "../../global/components/notification";
 import { useToggle } from "@mantine/hooks";
-import SelectComponent from "../../globals/components/native-select";
-import { eastAfricanCountries } from "../../globals/selections/constant";
+import SelectComponent from "../../global/components/native-select";
+import { eastAfricanCountries } from "../../global/selections/constant";
 import {
   AccountType,
   Gender,
@@ -36,10 +36,10 @@ import {
 } from "../../lib/enums/enum";
 import { logo } from "../../lib/images/url";
 import { color } from "../../lib/color/mantine-color";
-import UpdateNotification from "../../globals/components/update-notification";
+import UpdateNotification from "../../global/components/update-notification";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
-import LoadingNotification from "../../globals/components/load-notification";
+import LoadingNotification from "../../global/components/load-notification";
 
 const AuthenticationForm: FC = () => {
   const navigate = useNavigate();

@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { FC, useEffect, useState } from "react";
 import { color } from "../../lib/color/mantine-color";
-import Search from "../../globals/components/search";
+import Search from "../../global/components/search";
 import { BookedHouseQuery } from "../../generated/graphql";
 import { useNavigate } from "react-router-dom";
 import { getUserAccessToken } from "../../utils/localStorageUtils";

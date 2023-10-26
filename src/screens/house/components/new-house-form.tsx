@@ -12,12 +12,12 @@ import {
 import { useForm } from "@mantine/form";
 import { IconPhoto, IconPlus } from "@tabler/icons-react";
 import { FC, useEffect, useState } from "react";
-import { locations, period } from "../../../globals/selections/constant";
-import SelectComponent from "../../../globals/components/native-select";
+import { locations, period } from "../../../global/selections/constant";
+import SelectComponent from "../../../global/components/native-select";
 import { notifications } from "@mantine/notifications";
 import { GraphQLError } from "graphql";
 import { useCreateHouseInputMutation } from "../../../generated/graphql";
-import ShowNotification from "../../../globals/components/show-notification";
+import ShowNotification from "../../../global/components/show-notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import { useQueryClient } from "@tanstack/react-query";
 import uploadImages from "./postHouseImages";

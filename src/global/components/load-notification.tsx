@@ -1,5 +1,10 @@
 import { notifications } from "@mantine/notifications";
-import { LoadAndHideNotificationProps } from "../../global/interfaces/type";
+
+type LoadAndHideNotificationProps = {
+  id: string;
+  title: string;
+  message: string;
+};
 
 const LoadingNotification = ({
   id,

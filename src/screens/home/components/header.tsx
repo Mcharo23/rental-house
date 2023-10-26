@@ -1,5 +1,5 @@
 import { FC } from "react";
-import ColorScheme from "../../../globals/components/dark-light-modal";
+import ColorScheme from "../../../global/components/dark-light-modal";
 import { FiBell } from "react-icons/fi";
 import { Flex } from "@mantine/core";
 

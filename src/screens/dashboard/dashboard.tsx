@@ -26,21 +26,21 @@ import {
   getUserData,
 } from "../../utils/localStorageUtils";
 import useFetchHouses from "./components/fetchHouses";
-import Search from "../../globals/components/search";
+import Search from "../../global/components/search";
 import { color } from "../../lib/color/mantine-color";
 import { IconX } from "@tabler/icons-react";
 import { useNavigate } from "react-router-dom";
-import HouseCardUi from "../../globals/components/house-card";
+import HouseCardUi from "../../global/components/house-card";
 import { useDisclosure } from "@mantine/hooks";
 import { AccountType } from "../../lib/enums/enum";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { GraphQLError } from "graphql";
-import showMessage from "../../globals/components/notification";
-import LoadingNotification from "../../globals/components/load-notification";
-import UpdateNotification from "../../globals/components/update-notification";
+import showMessage from "../../global/components/notification";
+import LoadingNotification from "../../global/components/load-notification";
+import UpdateNotification from "../../global/components/update-notification";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
-import SelectComponent from "../../globals/components/native-select";
+import SelectComponent from "../../global/components/native-select";
 import { useQueryClient } from "@tanstack/react-query";
 
 const Dashboard: FC = () => {
