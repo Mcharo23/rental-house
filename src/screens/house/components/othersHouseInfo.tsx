@@ -10,7 +10,7 @@ import { FaArrowCircleLeft, FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import CustomButton from "../../../components/custom-button";
 import CustomButtons from "../../../global/components/custom-button";
 import CustomInputNumber from "../../../global/components/input-number";
-import showMessage from "../../../global/components/notification";
+import showMessage from "../../../globals/components/notification";
 import { getUserData } from "../../../utils/localStorageUtils";
 
 import { Button } from "primereact/button";

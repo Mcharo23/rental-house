@@ -11,6 +11,7 @@ import {
   Notification,
   Paper,
   Space,
+  Stack,
   Text,
   TextInput,
   Title,
@@ -35,7 +36,7 @@ import { AccountType } from "../../lib/enums/enum";
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { GraphQLError } from "graphql";
-import showMessage from "../../global/components/notification";
+import showMessage from "../../globals/components/notification";
 import LoadingNotification from "../../globals/components/load-notification";
 import UpdateNotification from "../../globals/components/update-notification";
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
@@ -51,7 +52,6 @@ const Dashboard: FC = () => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
 
   //BOOLEAN STATES
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [opened, { open, close }] = useDisclosure(false);
 
   const [filteredInAllHouse, setFilteredInAllHouse] = useState<
@@ -94,11 +94,7 @@ const Dashboard: FC = () => {
     graphqlRequestClient.setHeaders({ Authorization: `Bearer ${accessToken}` }),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([
-          "getMyHouse",
-          "getDemoHouses",
-          "getHouses",
-        ]);
+        queryClient.invalidateQueries(["getHouses"]);
         UpdateNotification(
           {
             id: "contract",
@@ -107,13 +103,11 @@ const Dashboard: FC = () => {
           },
           3000
         );
-        setShowModal(false);
         close();
         bookForm.reset();
         return;
       },
       onError: (error: GraphQLError) => {
-        setShowModal(false);
         close();
         bookForm.reset();
         const errorMessage =
@@ -200,156 +194,161 @@ const Dashboard: FC = () => {
 
   return (
     <Container size={"xl"}>
-      {showModal && (
-        <Modal
-          opened={opened}
-          onClose={() => {
-            close();
-            setShowModal(false);
-            bookForm.reset();
-          }}
-          title={`Book ${bookForm.values.name} house`}
-          transitionProps={{
-            transition: "fade",
-            duration: 600,
-            timingFunction: "linear",
-          }}
-        >
-          {getUserData()?.login.user.accountType === AccountType.OWNER ? (
-            <Text>Sorry! you are not authorized to have tenant role</Text>
-          ) : (
-            <form onSubmit={bookForm.onSubmit(handleOnSubmitContract)}>
-              <TextInput
-                label="Duration"
-                type="number"
-                value={bookForm.values.time}
-                placeholder="5"
-                rightSection={select}
-                rightSectionWidth={110}
-                onChange={(event) => {
-                  bookForm.setFieldValue("time", event.currentTarget.value);
-                  bookForm.setFieldValue(
-                    "total_rent",
-                    String(
-                      bookForm.values.price * Number(event.currentTarget.value)
-                    )
-                  );
-                }}
-                error={bookForm.errors.time && "invalid price input"}
-                required
-              />
-
-              <Space h={"md"} />
-
-              {bookForm.values.time !== "" && (
-                <Paper bg={`${color.gray_light_color}`} radius={"md"} p={"md"}>
-                  Total rent: {bookForm.values.total_rent} Tshs
-                </Paper>
-              )}
-
-              <Space h={"md"} />
-
-              <Group>
-                <Checkbox
-                  label="I agree all terms and condition"
-                  checked={bookForm.values.terms}
-                  onChange={(e) => {
-                    bookForm.setFieldValue("terms", e.currentTarget.checked);
-                  }}
-                  error={bookForm.errors.terms && "You must agree"}
-                />
-              </Group>
-
-              <Space h={"md"} />
-
-              <Button type="submit" fullWidth>
-                Submit
-              </Button>
-            </form>
-          )}
-        </Modal>
-      )}
-
-      <Paper p={"md"} mt={"md"} radius={"md"}>
-        <Flex direction={"row"} align={"center"} justify={"flex-end"}>
-          <Paper>
-            <Search
-              props={{
-                placeholder: "Search house",
-                onChange: (value: string) => {
-                  handleSearch(value);
-                },
-              }}
-            />
-          </Paper>
-        </Flex>
-      </Paper>
-
-      <Space h="md" />
-
-      {isLoadingHouses && (
-        <Flex align={"center"} justify={"center"}>
-          <Loader color="blue" type="bars" />
-        </Flex>
-      )}
-      {errorHouses && (
-        <Flex align={"center"} justify={"center"}>
-          <Notification icon={<IconX />} color="red" title="Oops!">
-            {
-              //@ts-ignore
-              error.response.errors[0].message
-            }
-          </Notification>
-        </Flex>
-      )}
-
-      {isLoadingHouses === false && <Title order={2}>General</Title>}
-
-      <Space h="md" />
-
-      <Grid gutter="sm" justify="flex-start" align="flex-start">
-        {filteredInAllHouse.length !== 0 && searchLength > 0 ? (
-          filteredInAllHouse.map((house) => (
-            <Grid.Col
-              span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
-              key={house._id}
-            >
-              <HouseCardUi
-                props={{ ...house }}
-                onClick={(id: string, name: string, price: number) => {
-                  setShowModal(true);
-                  open();
-                  bookForm.setValues({ _id: id, name: name, price: price });
-                }}
-              />
-            </Grid.Col>
-          ))
-        ) : filteredInAllHouse.length === 0 && searchLength !== 0 ? (
-          <Container>
-            <Notification icon={<IconX />} color="red" title="Oops!">
-              No such house
-            </Notification>
-          </Container>
+      <Modal
+        opened={opened}
+        onClose={() => {
+          close();
+          bookForm.reset();
+        }}
+        title={`Book ${bookForm.values.name} house`}
+        transitionProps={{
+          transition: "fade",
+          duration: 600,
+          timingFunction: "linear",
+        }}
+      >
+        {getUserData()?.login.user.accountType === AccountType.OWNER ? (
+          <Text>Sorry! you are not authorized to have tenant role</Text>
         ) : (
-          dataHouses?.houses.map((house) => (
-            <Grid.Col
-              span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
-              key={house._id}
-            >
-              <HouseCardUi
-                props={{ ...house }}
-                onClick={(id: string, name: string, price: number) => {
-                  setShowModal(true);
-                  open();
-                  bookForm.setValues({ _id: id, name: name, price: price });
-                }}
-              />
-            </Grid.Col>
-          ))
-        )}
-      </Grid>
+          <form onSubmit={bookForm.onSubmit(handleOnSubmitContract)}>
+            <TextInput
+              label="Duration"
+              type="number"
+              value={bookForm.values.time}
+              placeholder="5"
+              rightSection={select}
+              rightSectionWidth={110}
+              onChange={(event) => {
+                bookForm.setFieldValue("time", event.currentTarget.value);
+                bookForm.setFieldValue(
+                  "total_rent",
+                  String(
+                    bookForm.values.price * Number(event.currentTarget.value)
+                  )
+                );
+              }}
+              error={bookForm.errors.time && "invalid price input"}
+              required
+            />
 
-      <Space h={"xl"} />
+            <Space h={"md"} />
+
+            {bookForm.values.time !== "" && (
+              <Paper bg={`${color.gray_light_color}`} radius={"md"} p={"md"}>
+                Total rent: {bookForm.values.total_rent} Tshs
+              </Paper>
+            )}
+
+            <Space h={"md"} />
+
+            <Group>
+              <Checkbox
+                label="I agree all terms and condition"
+                checked={bookForm.values.terms}
+                onChange={(e) => {
+                  bookForm.setFieldValue("terms", e.currentTarget.checked);
+                }}
+                error={bookForm.errors.terms && "You must agree"}
+              />
+            </Group>
+
+            <Space h={"md"} />
+
+            <Button type="submit" fullWidth>
+              Submit
+            </Button>
+          </form>
+        )}
+      </Modal>
+
+      <Space h="md" />
+
+      <Flex direction={"row"} align={"center"} justify={"flex-end"}>
+        <Paper>
+          <Search
+            props={{
+              placeholder: "Search house",
+              onChange: (value: string) => {
+                handleSearch(value);
+              },
+            }}
+          />
+        </Paper>
+      </Flex>
+
+      <Stack>
+        {isLoadingHouses && (
+          <Flex align={"center"} justify={"center"}>
+            <Loader color="blue" type="bars" />
+          </Flex>
+        )}
+        {errorHouses && (
+          <Flex align={"center"} justify={"center"}>
+            <Notification icon={<IconX />} color="red" title="Oops!">
+              {
+                //@ts-ignore
+                error.response.errors[0].message
+              }
+            </Notification>
+          </Flex>
+        )}
+
+        {isLoadingHouses === false && <Title order={2}>General</Title>}
+
+        {!isLoadingHouses && (
+          <Grid gutter="sm" justify="flex-start" align="flex-start">
+            {filteredInAllHouse.length !== 0 && searchLength > 0 ? (
+              filteredInAllHouse.map((house) => (
+                <Grid.Col
+                  span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
+                  key={house._id}
+                >
+                  <HouseCardUi
+                    props={{ ...house }}
+                    onClick={(id: string, name: string, price: number) => {
+                      open();
+                      bookForm.setValues({
+                        _id: id,
+                        name: name,
+                        price: price,
+                      });
+                    }}
+                  />
+                </Grid.Col>
+              ))
+            ) : filteredInAllHouse.length === 0 && searchLength !== 0 ? (
+              <Container>
+                <Notification icon={<IconX />} color="red" title="Oops!">
+                  No such house
+                </Notification>
+              </Container>
+            ) : (
+              dataHouses?.houses.map((house) => (
+                <Grid.Col
+                  span={{ base: 12, sm: 12, md: 6, lg: 5, xl: 4 }}
+                  key={house._id}
+                >
+                  <HouseCardUi
+                    props={{ ...house }}
+                    onClick={(id: string, name: string, price: number) => {
+                      open();
+                      bookForm.setValues({
+                        _id: id,
+                        name: name,
+                        price: price,
+                      });
+                    }}
+                  />
+                </Grid.Col>
+              ))
+            )}
+          </Grid>
+          // <Paper p={"md"} shadow="sm" radius={"md"}>
+          // </Paper>
+        )}
+
+        <Space h={"xl"} />
+      </Stack>
     </Container>
   );
 };

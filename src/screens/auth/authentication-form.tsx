@@ -24,7 +24,7 @@ import {
 import graphqlRequestClient from "../../lib/clients/graphqlRequestClient";
 import { saveUserData } from "../../utils/localStorageUtils";
 import { GraphQLError } from "graphql";
-import showMessage from "../../global/components/notification";
+import showMessage from "../../globals/components/notification";
 import { useToggle } from "@mantine/hooks";
 import SelectComponent from "../../globals/components/native-select";
 import { eastAfricanCountries } from "../../globals/selections/constant";

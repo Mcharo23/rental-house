@@ -2,7 +2,11 @@ import { FC, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { clearUserData, getUserData } from "../../../utils/localStorageUtils";
 import { NavBarProps } from "../interface/type";
-import { IconDashboard, IconSwitchHorizontal } from "@tabler/icons-react";
+import {
+  IconDashboard,
+  IconHomeHeart,
+  IconSwitchHorizontal,
+} from "@tabler/icons-react";
 import { IconWindow } from "@tabler/icons-react";
 import { IconClock } from "@tabler/icons-react";
 import { IconKey } from "@tabler/icons-react";
@@ -30,6 +34,11 @@ const tabs = {
     },
     {
       link: "",
+      label: "Home",
+      icon: IconHomeHeart,
+    },
+    {
+      link: "",
       label: "Luxe Living",
       icon: IconKey,
     },
@@ -45,13 +54,20 @@ const NavBar: FC<NavBarProps> = ({ onClick }) => {
   const navigate = useNavigate();
   const [active, setActive] = useState<string>("Dashboard");
 
-  const linksToHideForTenant = ["PendingNest", "House"];
+  const userAccountType = getUserData()?.login.user.accountType;
 
   const links = tabs.general.map((item) => {
-    // Check if the user is not a tenant to show the "PendingNest" link
     if (
-      getUserData()?.login.user.accountType === AccountType.OWNER ||
-      !linksToHideForTenant.includes(item.label)
+      (userAccountType === AccountType.TENANT &&
+        ["Dashboard", "Home", "Account"].includes(item.label)) ||
+      (userAccountType === AccountType.OWNER &&
+        [
+          "Dashboard",
+          "House",
+          "PendingNest",
+          "Luxe Living",
+          "Account",
+        ].includes(item.label))
     ) {
       return (
         <a
@@ -70,7 +86,7 @@ const NavBar: FC<NavBarProps> = ({ onClick }) => {
         </a>
       );
     }
-    return null; // Return null to hide the link for tenants
+    return null;
   });
 
   const handleLogOut = () => {

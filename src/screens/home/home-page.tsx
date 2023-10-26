@@ -13,7 +13,6 @@ import Account from "../account/account";
 
 import NavBar from "./components/navBar";
 import Dashboard from "../dashboard/dashboard";
-import Tenants from "../tenants/tenant";
 import Contracts from "../tenants/contract";
 import Headers from "./components/header";
 import { logo } from "../../lib/images/url";
@@ -21,6 +20,8 @@ import { ServerOverload } from "../error/server-error";
 import House from "../house/house-page";
 import PendingNest from "../PendingNest/pending-nest-page";
 import { color } from "../../lib/color/mantine-color";
+import LuxeLivingPage from "../luxeLiving/luxe-living";
+import TenantLiving from "../tenant-living/tenantLiving";
 
 const HomePage: FC = () => {
   const [opened, setOpened] = useState(false);
@@ -77,7 +78,9 @@ const HomePage: FC = () => {
         ) : activeScreen === "PendingNest" ? (
           <PendingNest />
         ) : activeScreen === "Luxe Living" ? (
-          <Tenants />
+          <LuxeLivingPage />
+        ) : activeScreen === "Home" ? (
+          <TenantLiving />
         ) : activeScreen === "Contracts" ? (
           <Contracts />
         ) : activeScreen === "Account" ? (

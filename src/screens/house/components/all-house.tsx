@@ -39,7 +39,6 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
   const [searchLength, setSearchLength] = useState<number>(0);
 
   //BOOLEAN STATES
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [opened, { open, close }] = useDisclosure(false);
 
   // GRAPHQL STATES
@@ -185,62 +184,56 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
 
   return (
     <>
-      {showModal && (
-        <Modal
-          opened={opened}
-          onClose={() => {
-            close();
-            setShowModal(false);
-          }}
-          title={clickedButton === "new" ? "New House" : ""}
-          transitionProps={{
-            transition: "fade",
-            duration: 600,
-            timingFunction: "linear",
-          }}
-        >
-          {clickedButton === "new" ? (
-            <NewHouseForm
-              onClick={() => {
-                setShowModal(false);
-                close();
-              }}
-            />
-          ) : (
-            ""
-          )}
-        </Modal>
-      )}
-      <Space h="md" />
-      <Paper p={"md"} shadow="sm" radius={"md"}>
-        <Flex
-          direction={"row"}
-          align={"center"}
-          justify={"space-between"}
-          gap={"md"}
-        >
-          <Paper>
-            <Search
-              props={{
-                placeholder: "Search house",
-                onChange: (value: string) => {
-                  handleSearch(value);
-                },
-              }}
-            />
-          </Paper>
-          <Button
-            leftSection={<IconPlus />}
+      <Modal
+        opened={opened}
+        onClose={() => {
+          close();
+        }}
+        title={clickedButton === "new" ? "New House" : ""}
+        transitionProps={{
+          transition: "fade",
+          duration: 600,
+          timingFunction: "linear",
+        }}
+      >
+        {clickedButton === "new" ? (
+          <NewHouseForm
             onClick={() => {
-              setClickedButton("new");
-              setShowModal(true);
-              open();
+              close();
             }}
-          >
-            New House
-          </Button>
-        </Flex>
-      </Paper>
+          />
+        ) : (
+          ""
+        )}
+      </Modal>
+
+      <Space h="md" />
+      <Flex
+        direction={"row"}
+        align={"center"}
+        justify={"space-between"}
+        gap={"md"}
+      >
+        <Paper>
+          <Search
+            props={{
+              placeholder: "Search house",
+              onChange: (value: string) => {
+                handleSearch(value);
+              },
+            }}
+          />
+        </Paper>
+        <Button
+          leftSection={<IconPlus />}
+          onClick={() => {
+            setClickedButton("new");
+            open();
+          }}
+        >
+          New House
+        </Button>
+      </Flex>
 
       <Space h="md" />
 
@@ -322,7 +315,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
 
           {/* TABLE */}
           {!isLoadingMyHouse && (
-            <Paper radius={"md"} p={"sm"}>
+            <Paper p={"md"} shadow="sm" radius={"md"}>
               <Table.ScrollContainer minWidth={900} p={"md"}>
                 <Table verticalSpacing={"xs"}>
                   <Table.Thead>

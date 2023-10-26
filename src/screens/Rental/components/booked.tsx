@@ -26,7 +26,7 @@ import { Toast } from "primereact/toast";
 import { ConfirmDialog } from "primereact/confirmdialog";
 import LoadingNotification from "../../../globals/components/load-notification";
 import UpdateNotification from "../../../globals/components/update-notification";
-import showMessage from "../../../global/components/notification";
+import showMessage from "../../../globals/components/notification";
 import FormatDate from "../../../globals/functions/date-format";
 
 type BookedProps = {

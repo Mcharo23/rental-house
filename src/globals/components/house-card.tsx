@@ -13,7 +13,7 @@ type HouseCardUiProps = {
 
 const HouseCardUi: FC<HouseCardUiProps> = ({ props, onClick }) => {
   return (
-    <Card radius="md" padding="xl" bg={`${color.blue_light_color}`}>
+    <Card radius="md" padding="xl" bg={`${color.body_color}`} shadow="sm">
       <Card.Section>
         <ImageSwiper images={props.imgUrl} />
       </Card.Section>
@@ -35,6 +35,7 @@ const HouseCardUi: FC<HouseCardUiProps> = ({ props, onClick }) => {
         Relax, rejuvenate and unplug in this unique contemporary Birdbox. Feel
         close to nature in ultimate comfort. Enjoy the view of the epic mountain
         range of Blegja and the Førdefjord.
+        {/* {props.Description} */}
       </Text>
 
       <Group justify="space-between" mt="md">

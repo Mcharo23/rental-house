@@ -27,7 +27,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import UpdateNotification from "../../../globals/components/update-notification";
 import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
-import showMessage from "../../../global/components/notification";
+import showMessage from "../../../globals/components/notification";
 import FormatDate from "../../../globals/functions/date-format";
 
 type PendingProps = {

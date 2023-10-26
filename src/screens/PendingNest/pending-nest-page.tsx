@@ -127,23 +127,22 @@ const PendingNest: FC = () => {
           });
 
   return (
-    <Container fluid>
+    <Container size={"xl"}>
       <Space h={"md"} />
 
-      <Paper bg={`${color.gray_light_color}`} p={"md"} mt={"md"} radius={"md"}>
-        <Flex direction={"row"} align={"center"} justify={"flex-end"}>
-          <Paper>
-            <Search
-              props={{
-                placeholder: "Search house",
-                onChange: (value: string) => {
-                  handleSearch(value);
-                },
-              }}
-            />
-          </Paper>
-        </Flex>
-      </Paper>
+      <Flex direction={"row"} align={"center"} justify={"flex-end"}>
+        <Paper>
+          <Search
+            props={{
+              placeholder: "Search house",
+              onChange: (value: string) => {
+                handleSearch(value);
+              },
+            }}
+          />
+        </Paper>
+      </Flex>
+
       <Space h={"md"} />
 
       <Tabs color={`${color.blue_light_filled}`} defaultValue="first">
@@ -173,28 +172,26 @@ const PendingNest: FC = () => {
 
           {/* TABLE */}
           {!isLoading && (
-            <Table.ScrollContainer
-              minWidth={1200}
-              bg={`${color.gray_light_color}`}
-              p={"md"}
-            >
-              <Table verticalSpacing={"xs"}>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>House name</Table.Th>
-                    <Table.Th>Region</Table.Th>
-                    <Table.Th>District</Table.Th>
-                    <Table.Th>Ward</Table.Th>
-                    <Table.Th>Requesting tenant</Table.Th>
-                    <Table.Th>Created at</Table.Th>
-                    <Table.Th>days</Table.Th>
-                    <Table.Th>Contract action</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
+            <Paper p={"md"} shadow="sm" radius={"md"}>
+              <Table.ScrollContainer minWidth={1200} p={"md"}>
+                <Table verticalSpacing={"xs"}>
+                  <Table.Thead bg={`${color.blue_light_color}`}>
+                    <Table.Tr>
+                      <Table.Th>House name</Table.Th>
+                      <Table.Th>Region</Table.Th>
+                      <Table.Th>District</Table.Th>
+                      <Table.Th>Ward</Table.Th>
+                      <Table.Th>Requesting tenant</Table.Th>
+                      <Table.Th>Created at</Table.Th>
+                      <Table.Th>days</Table.Th>
+                      <Table.Th>Contract action</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
 
-                <Table.Tbody>{pending_signature}</Table.Tbody>
-              </Table>
-            </Table.ScrollContainer>
+                  <Table.Tbody>{pending_signature}</Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
+            </Paper>
           )}
         </Tabs.Panel>
 
@@ -219,29 +216,27 @@ const PendingNest: FC = () => {
 
           {/* TABLE */}
           {!isLoading && (
-            <Table.ScrollContainer
-              minWidth={1300}
-              bg={`${color.gray_light_color}`}
-              p={"md"}
-            >
-              <Table verticalSpacing={"xs"}>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>House name</Table.Th>
-                    <Table.Th>Region</Table.Th>
-                    <Table.Th>District</Table.Th>
-                    <Table.Th>Ward</Table.Th>
-                    <Table.Th>Requesting tenant</Table.Th>
-                    <Table.Th>Created at</Table.Th>
-                    <Table.Th>Signed on</Table.Th>
-                    <Table.Th>days</Table.Th>
-                    <Table.Th>Move in</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
+            <Paper p={"md"} shadow="sm" radius={"md"}>
+              <Table.ScrollContainer minWidth={1300} p={"md"}>
+                <Table verticalSpacing={"xs"}>
+                  <Table.Thead bg={`${color.blue_light_color}`}>
+                    <Table.Tr>
+                      <Table.Th>House name</Table.Th>
+                      <Table.Th>Region</Table.Th>
+                      <Table.Th>District</Table.Th>
+                      <Table.Th>Ward</Table.Th>
+                      <Table.Th>Requesting tenant</Table.Th>
+                      <Table.Th>Created at</Table.Th>
+                      <Table.Th>Signed on</Table.Th>
+                      <Table.Th>days</Table.Th>
+                      <Table.Th>Move in</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
 
-                <Table.Tbody>{pending_move_in}</Table.Tbody>
-              </Table>
-            </Table.ScrollContainer>
+                  <Table.Tbody>{pending_move_in}</Table.Tbody>
+                </Table>
+              </Table.ScrollContainer>
+            </Paper>
           )}
         </Tabs.Panel>
       </Tabs>

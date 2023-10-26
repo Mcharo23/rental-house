@@ -20,7 +20,7 @@ import LoadingNotification from "../../../globals/components/load-notification";
 import UpdateNotification from "../../../globals/components/update-notification";
 import { GraphQLError } from "graphql";
 import { notifications } from "@mantine/notifications";
-import showMessage from "../../../global/components/notification";
+import showMessage from "../../../globals/components/notification";
 import graphqlRequestClient from "../../../lib/clients/graphqlRequestClient";
 import FormatDate from "../../../globals/functions/date-format";
 

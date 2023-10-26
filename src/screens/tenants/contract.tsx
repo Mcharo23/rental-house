@@ -9,7 +9,7 @@ import {
 } from "../../utils/localStorageUtils";
 import { FiBell } from "react-icons/fi";
 import ToggleButtonGroup from "../../global/components/toggle-button";
-import useFetchMyContracts from "./components/myContract";
+import useFetchMyContracts from "../tenant-living/functions/myContract";
 import CurrentContractUI from "./components/current-contract";
 
 const Contracts: FC = () => {
