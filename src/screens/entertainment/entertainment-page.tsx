@@ -154,16 +154,6 @@ By constantly innovating our business activities, we move forward and we are abl
         </Flex>
       )}
 
-      {/* <Grid gutter="sm" justify="flex-start" align="flex-start">
-        {data?.demo.map((house) => (
-          <Grid.Col
-            span={{ base: 12, sm: 6, md: 4, lg: 4, xl: 3 }}
-            key={house._id}
-          >
-            <DemoUi props={{ ...house }} />
-          </Grid.Col>
-        ))}
-      </Grid> */}
       <Flex direction={"row"} gap={"sm"} style={{ overflowX: "scroll" }}>
         {data?.demo.map((house) => (
           <Flex

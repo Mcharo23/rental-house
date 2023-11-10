@@ -27,7 +27,7 @@ const DemoUi: FC<DemoUiProps> = ({ props }) => {
 
       <Group justify="space-between" mt="lg">
         <Text fw={500} fz="lg">
-          Forde, Norway
+          {props.District} {props.Region}
         </Text>
 
         <Group gap={5}>
@@ -39,9 +39,10 @@ const DemoUi: FC<DemoUiProps> = ({ props }) => {
       </Group>
 
       <Text fz="sm" c="dimmed" mt="sm" lineClamp={4}>
-        Relax, rejuvenate and unplug in this unique contemporary Birdbox. Feel
+        {/* Relax, rejuvenate and unplug in this unique contemporary Birdbox. Feel
         close to nature in ultimate comfort. Enjoy the view of the epic mountain
-        range of Blegja and the Førdefjord.
+        range of Blegja and the Førdefjord. */}
+        {props.Description}
       </Text>
 
       <Group justify="space-between" mt="md">

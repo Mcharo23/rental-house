@@ -282,7 +282,7 @@ const Dashboard: FC = () => {
             <Loader color="blue" type="bars" />
           </Flex>
         )}
-        {errorHouses && (
+        {/* {errorHouses && (
           <Flex align={"center"} justify={"center"}>
             <Notification icon={<IconX />} color="red" title="Oops!">
               {
@@ -291,7 +291,7 @@ const Dashboard: FC = () => {
               }
             </Notification>
           </Flex>
-        )}
+        )} */}
 
         {isLoadingHouses === false && <Title order={2}>General</Title>}
 

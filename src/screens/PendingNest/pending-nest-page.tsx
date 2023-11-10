@@ -159,7 +159,7 @@ const PendingNest: FC = () => {
               <Loader color="blue" type="bars" />
             </Flex>
           )}
-          {error && (
+          {/* {error && (
             <Flex align={"center"} justify={"center"}>
               <Notification icon={<IconX />} color="red" title="Oops!">
                 {
@@ -168,7 +168,7 @@ const PendingNest: FC = () => {
                 }
               </Notification>
             </Flex>
-          )}
+          )} */}
 
           {/* TABLE */}
           {!isLoading && (
@@ -203,7 +203,7 @@ const PendingNest: FC = () => {
               <Loader color="blue" type="bars" />
             </Flex>
           )}
-          {error && (
+          {/* {error && (
             <Flex align={"center"} justify={"center"}>
               <Notification icon={<IconX />} color="red" title="Oops!">
                 {
@@ -212,7 +212,7 @@ const PendingNest: FC = () => {
                 }
               </Notification>
             </Flex>
-          )}
+          )} */}
 
           {/* TABLE */}
           {!isLoading && (

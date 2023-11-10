@@ -259,7 +259,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
               <Loader color="blue" type="bars" />
             </Flex>
           )}
-          {errorMyHouse && (
+          {/* {errorMyHouse && (
             <Flex align={"center"} justify={"center"}>
               <Notification icon={<IconX />} color="red" title="Oops!">
                 {
@@ -268,7 +268,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                 }
               </Notification>
             </Flex>
-          )}
+          )} */}
 
           {/* TABLE */}
           {!isLoadingMyHouse && (
@@ -302,7 +302,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
             </Flex>
           )}
 
-          {errorMyHouse && (
+          {/* {errorMyHouse && (
             <Flex align={"center"} justify={"center"}>
               <Notification icon={<IconX />} color="red" title="Oops!">
                 {
@@ -311,7 +311,7 @@ const MyHouse: FC<MyHouseProps> = ({ onClick }) => {
                 }
               </Notification>
             </Flex>
-          )}
+          )} */}
 
           {/* TABLE */}
           {!isLoadingMyHouse && (

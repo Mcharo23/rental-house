@@ -71,7 +71,7 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
       region: (val) => (val === "" ? "please pick house region" : null),
       name: (val) => (val.length < 5 ? "House name is too short" : null),
       ward: (val) => (val.length < 3 ? "Ward nmame is too short" : null),
-      description: (val) => (val.length <= 100 ? "To short description" : null),
+      description: (val) => (val.length <= 300 ? "To short description" : null),
       option: (val) => (val === "" ? "Please select price options" : null),
     },
   });
@@ -255,7 +255,7 @@ const NewHouseForm: FC<NewHouseFormProps> = ({ onClick }) => {
 
               <Textarea
                 label="Description"
-                description="must be greater than 100 words"
+                description="must be greater than 300 words"
                 value={newHouseForm.values.description}
                 placeholder="your description"
                 onChange={(event) =>
